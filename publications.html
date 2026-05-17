@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Publications | Algebraic Systems Biology</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+		<style>
+			/* Pull the page up a bit */
+			#page-top {
+				padding-top: 1rem !important;
+			}
+
+			/* Keep the filter on the left and publications on the right */
+			.publications-layout {
+				display: flex !important;
+				align-items: flex-start;
+				gap: 2rem;
+				margin-top: 0;
+				width: 100%;
+			}
+
+			#publications-filter {
+				flex: 0 0 18rem;
+				max-width: 18rem;
+			}
+
+			#publications-list {
+				flex: 1 1 auto;
+				min-width: 0;
+			}
+
+			/* Make the filter menu vertical */
+			#publications-filter ul.theme-filter-list {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: block;
+			}
+
+			#publications-filter ul.theme-filter-list li {
+				display: block;
+				margin: 0 0 0.5rem 0;
+			}
+
+			#publications-filter .theme-filter {
+				width: 100%;
+				text-align: left;
+			}
+
+			/* Let the layout stack nicely on small screens */
+			@media screen and (max-width: 900px) {
+				.publications-layout {
+					flex-direction: column;
+				}
+
+				#publications-filter {
+					flex: 1 1 auto;
+					max-width: none;
+					width: 100%;
+				}
+			}
+		</style>
+	</head>
+
+	<body class="is-preload">
+
+		<div id="wrapper" class="divided">
+
+			<section class="wrapper style1 align-center" id="page-top">
+				<div class="inner">
+					<header>
+						<h1>Publications</h1>
+						<p id="theme-title">All Publications</p>
+						<p id="theme-editorial" class="publication-editorial" hidden></p>
+					</header>
+
+					<div class="publications-layout">
+						<aside id="publications-filter">
+							<ul class="alt theme-filter-list">
+								<li><button type="button" class="theme-filter is-active" data-theme="All">All</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Applied Algebraic Geometry & Tensors" data-accent="#c7a59e">Applied Algebraic Geometry &amp; Tensors</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Topological Data Analysis" data-accent="#9fa8b5">Topological Data Analysis</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Software & Computational Mathematics" data-accent="#b79b88">Software &amp; Computational Mathematics</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Identifiability, Statistics, & AI" data-accent="#a89db5">Identifiability, Statistics, &amp; AI</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Dynamical Systems & Mathematical Modelling" data-accent="#9fb2a3">Dynamical Systems &amp; Mathematical Modelling</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Biological Networks" data-accent="#b1a38f">Biological Networks</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Morphology & Spatial Biology" data-accent="#c0b0a0">Morphology &amp; Spatial Biology</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Omics" data-accent="#d0b4ac">Omics</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Oncology" data-accent="#c98f86">Oncology</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Immunology" data-accent="#9f8fb2">Immunology</button></li>
+								<li><button type="button" class="theme-filter" data-theme="Neuroscience" data-accent="#7f8290">Neuroscience</button></li>
+							</ul>
+						</aside>
+
+						<div id="publications-list"></div>
+					</div>
+				</div>
+			</section>
+
+<footer class="wrapper style1 align-center">
+	<div class="inner">
+		<p>
+			&copy; Algebraic Systems Biology Group.
+			<a href="privacy.html">Privacy Policy</a>
+		</p>
+	</div>
+</footer>
+
+		</div>
+
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<script src="assets/js/publications.js"></script>
+	</body>
+</html>
