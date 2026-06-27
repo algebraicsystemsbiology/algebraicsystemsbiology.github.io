@@ -1,0 +1,676 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Who We Are | Algebraic Systems Biology</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+		/* Dropdown submenus */
+		.hero-menu .has-dropdown {
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+		.hero-menu .has-dropdown > a {
+			display: inline;
+		}
+		.hero-menu .has-dropdown::after {
+			content: '';
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			height: 1rem;
+		}
+		.hero-menu .dropdown {
+			position: absolute;
+			top: calc(100% + 1rem);
+			left: 0;
+			background: none;
+			border: none;
+			box-shadow: none;
+			padding: 0;
+			min-width: max-content;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.15s ease;
+			z-index: 100;
+		}
+		.hero-menu .has-dropdown:hover .dropdown {
+			opacity: 1;
+			pointer-events: auto;
+		}
+		.hero-menu .dropdown a {
+			display: block;
+			padding: 0.25rem 0 0.25rem 1.2rem;
+			font-size: 0.65rem;
+			font-weight: 600;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: #999;
+			text-decoration: none;
+			border-bottom: none;
+			transition: color 0.2s ease;
+		}
+		.hero-menu .dropdown a:hover {
+			color: #1ebdd1;
+			background: none;
+		}
+
+		/* Institution tag */
+		.member-institution {
+			display: inline-block;
+			font-size: 0.65rem;
+			font-weight: 600;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			padding: 0.15rem 0.5rem;
+			border-radius: 999px;
+			margin-top: 0.25rem;
+		}
+		.member-institution.mpi {
+			background: rgba(30, 189, 209, 0.12);
+			color: #0e9aac;
+		}
+		.member-institution.oxford {
+			background: rgba(70, 110, 180, 0.12);
+			color: #3a5fa0;
+		}
+
+		/* Alumni section */
+		.alumni-section {
+			margin-top: 0;
+		}
+		#alumni-heading {
+			cursor: pointer;
+			user-select: none;
+		}
+		#alumni-heading .members-caret {
+			display: inline-block;
+			transition: transform 0.2s ease;
+			margin-left: 0.4rem;
+		}
+		.alumni-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+			gap: 1.5rem;
+			margin-top: 1.5rem;
+		}
+		.alumni-card {
+			text-align: center;
+			padding: 1.25rem 1rem;
+		}
+		.alumni-card img {
+			width: 140px;
+			height: 140px;
+			border-radius: 50%;
+			object-fit: cover;
+			margin-bottom: 0.75rem;
+		}
+		.alumni-card h3 {
+			font-size: 0.95rem;
+			margin-bottom: 0.2rem;
+		}
+		.alumni-card .alumni-role {
+			font-size: 0.78rem;
+			color: #888;
+			margin-bottom: 0.25rem;
+		}
+		.alumni-card .alumni-dates {
+			font-size: 0.72rem;
+			color: #aaa;
+			margin-bottom: 0.5rem;
+		}
+		.alumni-card .alumni-now {
+			font-size: 0.78rem;
+			color: #555;
+			margin-top: 0.4rem;
+		}
+		.alumni-card .alumni-now a {
+			color: #1ebdd1;
+			text-decoration: none;
+			border-bottom: 1px solid rgba(30,189,209,0.3);
+		}
+		.alumni-card .alumni-now a:hover {
+			border-bottom-color: #1ebdd1;
+		}
+		.alumni-card .alumni-now.placeholder {
+			color: #bbb;
+			font-style: italic;
+		}
+		
+		/* Remove dividing lines between sections */
+		#wrapper.divided > * {
+			box-shadow: none !important;
+		}
+		#members + #alumni {
+			border-top: 1px solid rgba(0,0,0,0.1);
+		}
+		#alumni + #who-works-on-what {
+			border-top: 1px solid rgba(0,0,0,0.1);
+		}
+		/* Single dividing line only between Alumni and Who Works On What */
+		#alumni + #who-works-on-what {
+			border-top: 1px solid rgba(0,0,0,0.1);
+		}
+
+		/* Who We Work With viz */
+		#collab-viz {
+			width: 100%;
+			max-width: 1060px;
+			margin: 2rem auto 0;
+			position: relative;
+		}
+		#collab-viz svg {
+			width: 100%;
+			height: auto;
+			overflow: visible;
+		}
+		.collab-node circle {
+			transition: opacity 0.2s;
+			cursor: default;
+		}
+		.collab-node text {
+			font-family: "Helvetica Neue", sans-serif;
+			font-size: 18px;
+			fill: #444;
+			pointer-events: none;
+		}
+		.collab-tooltip {
+			position: absolute;
+			background: rgba(255,255,255,0.97);
+			border: 1px solid #e0e0e0;
+			border-radius: 6px;
+			padding: 0.6rem 0.9rem;
+			font-family: "Helvetica Neue", sans-serif;
+			font-size: 0.75rem;
+			color: #333;
+			pointer-events: none;
+			opacity: 0;
+			transition: opacity 0.15s;
+			max-width: 220px;
+			line-height: 1.5;
+			z-index: 100;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+		}
+		.collab-tooltip strong {
+			display: block;
+			font-size: 0.8rem;
+			color: #111;
+			margin-bottom: 0.15rem;
+		}
+		.collab-caption {
+			text-align: center;
+			font-family: "Helvetica Neue", sans-serif;
+			font-size: 0.68rem;
+			color: #bbb;
+			letter-spacing: 0.05em;
+			margin-top: 1rem;
+		}
+	
+		/* Who Works On What — network diagram (scoped) */
+		.network-block {
+			width: 100%;
+			max-width: 1400px;
+			margin: 0 auto;
+			position: relative;
+		}
+		.network-block svg {
+			width: 100%;
+			min-height: 860px;
+			height: auto;
+			overflow: visible;
+		}
+		.link {
+			stroke-opacity: 0.28;
+			transition: stroke-opacity 0.2s;
+		}
+		.node circle { cursor: pointer; }
+		.node text {
+			font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
+			font-size: 15px;
+			fill: #555;
+			cursor: pointer;
+			pointer-events: none;
+		}
+		.node.theme text {
+			font-size: 15px;
+			font-weight: 600;
+			fill: #333;
+		}
+		.node.dimmed circle { opacity: 0.1; }
+		.node.dimmed text   { opacity: 0.1; }
+		.link.dimmed        { stroke-opacity: 0.04; }
+		.link.highlighted   { stroke-opacity: 0.8; }
+		.node.highlighted text { fill: #111; font-weight: 600; }
+		#network-tooltip {
+			position: fixed;
+			background: rgba(255,255,255,0.97);
+			border: 1px solid #e0e0e0;
+			border-radius: 6px;
+			padding: 0.7rem 1rem;
+			font-family: 'Helvetica Neue', sans-serif;
+			font-size: 0.76rem;
+			color: #333;
+			pointer-events: none;
+			opacity: 0;
+			transition: opacity 0.15s;
+			max-width: 230px;
+			line-height: 1.5;
+			z-index: 100;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+		}
+		#network-tooltip strong {
+			display: block;
+			font-size: 0.82rem;
+			color: #111;
+			margin-bottom: 0.2rem;
+		}
+		#network-tooltip .sub {
+			color: #7fc6c8;
+			font-size: 0.68rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+		}
+		#network-tooltip .themes-list {
+			margin-top: 0.35rem;
+			color: #888;
+			font-size: 0.68rem;
+			line-height: 1.6;
+		}
+		.network-legend {
+			display: flex;
+			gap: 1.8rem;
+			justify-content: center;
+			font-family: 'Helvetica Neue', sans-serif;
+			font-size: 0.7rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: #888;
+			flex-wrap: wrap;
+			margin-bottom: 1rem;
+		}
+		.legend-item { display: flex; align-items: center; gap: 0.45rem; }
+		.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+		.network-caption {
+			text-align: center;
+			font-family: 'Helvetica Neue', sans-serif;
+			font-size: 0.68rem;
+			color: #bbb;
+			letter-spacing: 0.05em;
+			margin-top: 1rem;
+		}
+	
+		/* Make members caret point same direction as alumni */
+	</style>
+	</head>
+
+	<body class="is-preload">
+
+		<div id="wrapper" class="divided">
+
+<section class="wrapper style1 align-center" id="page-top">
+	<div class="inner" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
+		<nav class="hero-menu">
+			<a href="index.html">HOME</a>
+			<a href="research.html">OUR RESEARCH</a>
+			<span class="has-dropdown">
+				<a href="who-we-are.html">WHO WE ARE</a>
+				<div class="dropdown">
+					<a href="#members">Current Members</a>
+					<a href="#alumni">Alumni</a>
+					<a href="#who-works-on-what">Who Works On What</a>
+				</div>
+			</span>
+			<a href="we-connect.html">WE CONNECT</a>
+			<a href="publications.html">PUBLICATIONS</a>
+		</nav>
+
+	</div>
+</section>
+
+<!-- Current Members -->
+<section class="wrapper style1 align-center" id="members">
+	<div class="inner" style="padding-top: 0.5rem; padding-bottom: 0; margin-bottom: 0;">
+		<h2 id="members-heading">
+			Current Members
+		</h2>
+		<div id="members-content">
+				<p>The ASB group is led by Professor Heather Harrington, and based at the Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG), Dresden and the Mathematical Institute, University of Oxford.</p>
+			<div id="members-grid" class="items style1 medium onscroll-fade-in"></div>
+		</div>
+	</div>
+</section>
+
+<!-- Alumni -->
+<section class="wrapper style1 align-center alumni-section" id="alumni">
+	<div class="inner">
+		<h2 id="alumni-heading">
+			Alumni
+		</h2>
+		<div id="alumni-content">
+			<div id="alumni-grid" class="alumni-grid"></div>
+		</div>
+	</div>
+</section>
+
+
+<!-- Who Works On What -->
+<section class="wrapper style1 align-center" id="who-works-on-what">
+	<div class="inner" style="padding-bottom: 0;">
+		<h2>Who Works On What</h2>
+		<p>Current group members and the research themes they work on. Hover a name or theme to trace connections — click a theme to see its publications.</p>
+
+		<div class="network-legend">
+			<div class="legend-item">
+				<div class="legend-dot" style="background:linear-gradient(90deg,#889baa,#c8a794)"></div>
+				<span>Research Theme</span>
+			</div>
+			<div class="legend-item">
+				<div class="legend-dot" style="background:#b0b8be"></div>
+				<span>Researcher</span>
+			</div>
+		</div>
+
+		<div class="network-block">
+			<svg id="network-svg"></svg>
+			<p id="network-state-message" hidden></p>
+		</div>
+		<p class="network-caption">Hover a node to explore connections · Click to pin</p>
+	</div>
+</section>
+
+<div id="network-tooltip"></div>
+
+
+<!-- Footer -->
+<footer class="wrapper style1 align-center">
+	<div class="inner">
+		<ul class="icons">
+			<li><a href="https://github.com" class="icon brands style2 fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+			<li><a href="https://www.mpi-cbg.de/research/researchgroups/currentgroups/heather-harrington/research" class="icon solid style2 fa-globe" target="_blank" rel="noopener"><span class="label">Website</span></a></li>
+			<li><a href="https://www.linkedin.com/in/heather-harrington-7a814a5/" class="icon brands style2 fa-linkedin-in" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+			<li><a href="mailto:harringtonoffice@mpi-cbg.de" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+		</ul>
+		<p>
+			&copy; ASB Group.
+			<a href="privacy.html">Privacy Policy</a>.
+			Design: <a href="https://html5up.net">HTML5 UP</a>.
+		</p>
+	</div>
+</footer>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+		<script src="assets/js/who-we-are.js"></script>
+
+
+		<script>
+(function () {
+
+// Theme colours — matching the site's own gradient exactly
+// (blue-grey → mauve → warm terracotta, as shown in the keyword filter UI)
+const THEME_COLOURS = {
+  "Applied Algebraic Geometry & Tensors":      "#abbbca",
+  "Topological Data Analysis":                 "#8c959f",
+  "Software & Computational Mathematics":      "#929ba2",
+  "Identifiability, Statistics, & AI":         "#948d93",
+  "Dynamical Systems & Mathematical Modeling": "#857b7f",
+  "Biological Networks":                       "#b0b0b2",
+  "Morphology & Spatial Biology":              "#ad9c96",
+  "Omics":                                     "#e0d6d1",
+  "Oncology":                                  "#e1cdc2",
+  "Immunology":                                "#e8d5d0",
+  "Neuroscience":                              "#ead8d4",
+  "Other Applications":                        "#c5c0c2",
+};
+
+// People nodes: single neutral tone, differentiated only by size
+const PERSON_COLOUR = "#b0b8be";
+
+// ── Data loading ─────────────────────────────────────────────────────
+// This is the only part of the page that talks to the data file. Everything
+// below is rendering logic that reacts to whatever it's given — so updating
+// data/group_members.json (adding, removing, or editing a member's keywords)
+// is all that's needed to change what's drawn here. No code changes required.
+
+const DATA_URL = './data/group_members.json';
+
+async function loadMembers() {
+  const res = await fetch(DATA_URL, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to load ${DATA_URL}: ${res.status}`);
+  const raw = await res.json();
+
+  const knownThemes = new Set(Object.keys(THEME_COLOURS));
+
+  const members = Object.values(raw)
+    .filter(m => m && m.temporal_tag === 'Current' && m.name_full)
+    .map(m => ({
+      id: m.name_full,
+      role: (m.internal_roles && m.internal_roles[0]) || '',
+      keywords: (m.keywords || []).filter(k => knownThemes.has(k))
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  return members;
+}
+
+function showMessage(text) {
+  const el = document.getElementById('network-state-message');
+  el.textContent = text;
+  el.hidden = false;
+  document.getElementById('network-svg').style.display = 'none';
+}
+
+// ── Render ───────────────────────────────────────────────────────────
+
+
+  function wrapLabel(text, maxCharsPerLine = 20) {
+    if (text.length <= maxCharsPerLine) return [text];
+    const words = text.split(' ');
+    let line1 = '', line2 = '';
+    for (const word of words) {
+      if ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1) {
+        line1 = (line1 + ' ' + word).trim();
+      } else {
+        line2 = (line2 + ' ' + word).trim();
+      }
+    }
+    return line2 ? [line1, line2] : [line1];
+  }
+
+  function render(members) {
+  const themes = Object.keys(THEME_COLOURS).filter(
+    t => members.some(m => m.keywords.includes(t))
+  );
+
+  if (!members.length || !themes.length) {
+    showMessage('No current members with tagged research themes yet.');
+    return;
+  }
+
+  const edges = [];
+  members.forEach(m => {
+    m.keywords.forEach(kw => {
+      if (themes.includes(kw)) edges.push({ source: m.id, target: kw });
+    });
+  });
+
+  const width = 1200, height = Math.max(1100, Math.max(members.length, themes.length) * 26);
+  const leftX = 280, rightX = 920;
+  const topPad = 55, bottomPad = 55;
+
+  const svg = d3.select('#network-svg').attr('viewBox', `0 0 ${width} ${height}`);
+  svg.selectAll('*').remove();
+
+  const themeY = d3.scalePoint()
+    .domain(themes)
+    .range([topPad, height - bottomPad])
+    .padding(0.3);
+
+  const memberY = d3.scalePoint()
+    .domain(members.map(m => m.id))
+    .range([topPad, height - bottomPad])
+    .padding(0.2);
+
+  const nodePos = {};
+  themes.forEach(t  => { nodePos[t]    = { x: leftX,  y: themeY(t)    }; });
+  members.forEach(m => { nodePos[m.id] = { x: rightX, y: memberY(m.id) }; });
+
+  const themeDegree  = {};
+  themes.forEach(t  => { themeDegree[t] = members.filter(m => m.keywords.includes(t)).length; });
+  const memberDegree = {};
+  members.forEach(m => { memberDegree[m.id] = m.keywords.length; });
+
+  // Links — coloured by theme
+  const linkSel = svg.append('g').selectAll('path')
+    .data(edges)
+    .join('path')
+    .attr('class', 'link')
+    .attr('d', d => {
+      const s = nodePos[d.source], t = nodePos[d.target];
+      const mx = (s.x + t.x) / 2;
+      return `M${s.x},${s.y} C${mx},${s.y} ${mx},${t.y} ${t.x},${t.y}`;
+    })
+    .attr('fill', 'none')
+    .attr('stroke', d => THEME_COLOURS[d.target] || '#aaa')
+    .attr('stroke-width', 1.4);
+
+  // Theme nodes
+  const themeNodes = svg.append('g').selectAll('g')
+    .data(themes)
+    .join('g')
+    .attr('class', 'node theme')
+    .attr('transform', d => `translate(${leftX},${themeY(d)})`);
+
+  themeNodes.append('circle')
+    .attr('r', d => 7 + Math.sqrt(themeDegree[d]) * 3.5)
+    .attr('fill', d => THEME_COLOURS[d])
+    .attr('fill-opacity', 0.9);
+
+  themeNodes.each(function(d) {
+    const lines = wrapLabel(d);
+    const lineHeight = 26;
+    const startDy = -((lines.length - 1) * lineHeight) / 2;
+    const g = d3.select(this);
+    lines.forEach((line, i) => {
+      g.append('text')
+        .attr('x', -28)
+        .attr('dy', (startDy + i * lineHeight) + 'px')
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'middle')
+        .text(line);
+    });
+  });
+
+  // Member nodes
+  const memberNodes = svg.append('g').selectAll('g')
+    .data(members)
+    .join('g')
+    .attr('class', 'node member')
+    .attr('transform', d => `translate(${rightX},${memberY(d.id)})`);
+
+  memberNodes.append('circle')
+    .attr('r', d => d.role === 'Director' ? 18 : 7 + Math.sqrt(memberDegree[d.id]) * 3)
+    .attr('fill', PERSON_COLOUR)
+    .attr('fill-opacity', 0.85);
+
+  memberNodes.append('text')
+    .attr('x', 22).attr('dy', '0.35em')
+    .attr('text-anchor', 'start')
+    .text(d => d.id);
+
+  // Interaction
+  const tooltip = d3.select('#network-tooltip');
+  let pinned = null;
+
+  function connectedIds(id) {
+    const s = new Set([id]);
+    edges.forEach(e => {
+      if (e.source === id) s.add(e.target);
+      if (e.target === id) s.add(e.source);
+    });
+    return s;
+  }
+
+  function highlight(id) {
+    const s = connectedIds(id);
+    d3.selectAll('.node')
+      .classed('dimmed',      d => !s.has(d.id || d))
+      .classed('highlighted', d =>  s.has(d.id || d));
+    linkSel
+      .classed('dimmed',      d => d.source !== id && d.target !== id)
+      .classed('highlighted', d => d.source === id || d.target === id);
+  }
+
+  function clear() {
+    d3.selectAll('.node').classed('dimmed', false).classed('highlighted', false);
+    linkSel.classed('dimmed', false).classed('highlighted', false);
+  }
+
+  function tip(event, html) {
+    tooltip.html(html).style('opacity', 1)
+      .style('left', (event.clientX + 14) + 'px')
+      .style('top', (event.clientY - 10) + 'px');
+  }
+
+  function moveTip(event) {
+    tooltip.style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 10) + 'px');
+  }
+
+  themeNodes
+    .on('mouseover', (ev, d) => {
+      if (!pinned) {
+        highlight(d);
+        tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`);
+      }
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
+    .on('click', (ev, d) => {
+      if (pinned === d) { pinned = null; clear(); tooltip.style('opacity', 0); }
+      else { pinned = d; highlight(d); tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`); }
+    });
+
+  memberNodes
+    .on('mouseover', (ev, d) => {
+      if (!pinned) {
+        highlight(d.id);
+        tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`);
+      }
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
+    .on('click', (ev, d) => {
+      if (pinned === d.id) { pinned = null; clear(); tooltip.style('opacity', 0); }
+      else { pinned = d.id; highlight(d.id); tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`); }
+    });
+
+  svg.on('click', ev => {
+    if (ev.target === svg.node()) { pinned = null; clear(); tooltip.style('opacity', 0); }
+  });
+}
+
+loadMembers()
+  .then(render)
+  .catch(err => {
+    console.error(err);
+    showMessage('Sorry — the research network could not be loaded.');
+  });
+
+})();
+		</script>
+
+	</body>
+</html>

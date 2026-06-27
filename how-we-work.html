@@ -1,0 +1,492 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>How We Work | Algebraic Systems Biology</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	<style>
+		/* Dropdown submenus */
+		.hero-menu .has-dropdown {
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+		.hero-menu .has-dropdown > a { display: inline; }
+		.hero-menu .has-dropdown::after {
+			content: '';
+			position: absolute;
+			top: 100%; left: 0;
+			width: 100%; height: 1rem;
+		}
+		.hero-menu .dropdown {
+			position: absolute;
+			top: calc(100% + 1rem); left: 0;
+			background: none; border: none; box-shadow: none;
+			padding: 0; min-width: max-content;
+			opacity: 0; pointer-events: none;
+			transition: opacity 0.15s ease; z-index: 100;
+		}
+		.hero-menu .has-dropdown:hover .dropdown {
+			opacity: 1; pointer-events: auto;
+		}
+		.hero-menu .dropdown a {
+			display: block; padding: 0;
+			font-size: 0.65rem; font-weight: 600;
+			letter-spacing: 0.08em; text-transform: uppercase;
+			color: inherit; text-decoration: none;
+			border-bottom: 2px solid transparent;
+			transition: border-bottom-color 0.2s ease;
+		}
+		.hero-menu .dropdown a:hover { border-bottom-color: currentColor; }
+
+		/* Collapsible sections */
+		.collapsible-heading {
+			cursor: pointer;
+			user-select: none;
+		}
+		.collapsible-heading .members-caret {
+			display: inline-block;
+			transition: transform 0.2s ease;
+			margin-left: 0.4rem;
+		}
+		.collapsible-content.is-hidden { display: none; }
+
+		/* Remove dividing lines */
+		#wrapper.divided > * { box-shadow: none !important; }
+
+		/* Collab viz */
+		#collab-viz {
+			width: 100%; max-width: 860px;
+			margin: 2rem auto 0; position: relative;
+		}
+		#collab-viz svg { width: 100%; height: auto; overflow: visible; }
+		.collab-node circle { transition: opacity 0.2s; cursor: default; }
+		.collab-node text {
+			font-family: "Helvetica Neue", sans-serif;
+			font-size: 11px; fill: #444; pointer-events: none;
+		}
+		.collab-tooltip {
+			position: absolute;
+			background: rgba(255,255,255,0.97);
+			border: 1px solid #e0e0e0; border-radius: 6px;
+			padding: 0.6rem 0.9rem;
+			font-family: "Helvetica Neue", sans-serif;
+			font-size: 0.75rem; color: #333;
+			pointer-events: none; opacity: 0;
+			transition: opacity 0.15s; max-width: 220px;
+			line-height: 1.5; z-index: 100;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+		}
+		.collab-tooltip strong { display: block; font-size: 0.8rem; color: #111; margin-bottom: 0.15rem; }
+		.collab-caption {
+			text-align: center; font-family: "Helvetica Neue", sans-serif;
+			font-size: 0.68rem; color: #bbb; letter-spacing: 0.05em; margin-top: 1rem;
+		}
+	
+		/* Hide collapsed content */
+		.is-hidden { display: none !important; }
+
+		/* How We Work — consistent caret direction */
+		.collapsible-heading .members-caret {
+			display: inline-block;
+			transition: transform 0.2s ease;
+			margin-left: 0.4rem;
+		}
+		.collapsible-heading[aria-expanded="true"] .members-caret {
+			transform: rotate(180deg);
+		}
+		.collapsible-heading[aria-expanded="false"] .members-caret {
+			transform: rotate(0deg);
+		}
+	
+		.hero-menu .has-dropdown {
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+		.hero-menu .has-dropdown > a { display: inline; }
+		.hero-menu .has-dropdown::after {
+			content: '';
+			position: absolute;
+			top: 100%; left: 0;
+			width: 100%; height: 1rem;
+		}
+		.hero-menu .dropdown {
+			position: absolute;
+			top: calc(100% + 1rem); left: 0;
+			background: none; border: none; box-shadow: none;
+			padding: 0; min-width: max-content;
+			opacity: 0; pointer-events: none;
+			transition: opacity 0.15s ease; z-index: 100;
+		}
+		.hero-menu .has-dropdown:hover .dropdown {
+			opacity: 1; pointer-events: auto;
+		}
+		.hero-menu .dropdown a {
+			display: block;
+			padding: 0.25rem 0 0.25rem 1.2rem;
+			font-size: 0.65rem;
+			font-weight: 600;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: #999;
+			text-decoration: none;
+			border-bottom: none;
+			transition: color 0.2s ease;
+		}
+		.hero-menu .dropdown a:hover {
+			color: #1ebdd1;
+			background: none;
+		}
+	</style>
+	</head>
+
+	<body class="is-preload">
+		<div id="wrapper" class="divided">
+
+<section class="wrapper style1 align-center" id="page-top">
+	<div class="inner" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
+		<nav class="hero-menu">
+			<a href="index.html">HOME</a>
+			<a href="research.html">OUR RESEARCH</a>
+			<a href="who-we-are.html">WHO WE ARE</a>
+			<span class="has-dropdown">
+				<a href="how-we-work.html">HOW WE WORK</a>
+				<div class="dropdown">
+					<a href="#Collaborators">Who We Work With</a>
+					<a href="#Explainers">How We Engage</a>
+				</div>
+			</span>
+			<a href="publications.html">PUBLICATIONS</a>
+		</nav>
+	</div>
+</section>
+
+<!-- Who We Work With -->
+<section class="wrapper style1 align-center" id="Collaborators" style="padding-top: 0; margin-top: -2rem;">
+	<div class="inner" style="padding-top: 0.5rem; padding-bottom: 0; margin-bottom: 0;">
+		<h2 id="collabs-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="collabs-content">
+			Who We Work With
+			<span class="members-caret" aria-hidden="true">▾</span>
+		</h2>
+		<div id="collabs-content">
+			<p>Researchers and institutions the group has published with — sized by number of shared publications.</p>
+			<div id="collab-viz"></div>
+		</div>
+	</div>
+</section>
+
+<!-- How We Engage -->
+<section class="wrapper style1 align-center" id="Explainers" style="border-top: 1px solid rgba(0,0,0,0.1);">
+	<div class="inner">
+		<h2 id="media-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="media-content">
+			How We Engage
+			<span class="members-caret" aria-hidden="true">▾</span>
+		</h2>
+		<div id="media-content">
+			<p>The group's work explained in plain terms. Short talks by group members on the ideas, methods, and questions that drive the research.</p>
+		</div>
+	</div>
+	<div class="gallery style2 medium onscroll-fade-in">
+	<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=H-FxziQrwNU" target="_blank">
+            <img src="https://img.youtube.com/vi/H-FxziQrwNU/hqdefault.jpg" alt="Talk title" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is a tree space?</h3>
+        <p>Dr. Gill Grindstaff explains</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=H-FxziQrwNU" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=eIh9Fs15YKk" target="_blank">
+            <img src="https://img.youtube.com/vi/eIh9Fs15YKk/hqdefault.jpg" alt="What is a loop space?" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is a loop space?</h3>
+        <p>Dr. Daniel Tolosa explains.</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=eIh9Fs15YKk" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=2eIqTUcySNg" target="_blank">
+            <img src="https://img.youtube.com/vi/2eIqTUcySNg/hqdefault.jpg" alt="" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is a tensor</h3>
+        <p>Dr. Vincenzo Galgano explains.</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=2eIqTUcySNg" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=hny4dQsUO9Q" target="_blank">
+            <img src="https://img.youtube.com/vi/hny4dQsUO9Q/hqdefault.jpg" alt="What is algebraic statistics?" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is algebraic statistics?</h3>
+        <p>Dr. Jane Coons explains.</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=hny4dQsUO9Q" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=2nFE6oeJGr8" target="_blank">
+            <img src="https://img.youtube.com/vi/2nFE6oeJGr8/hqdefault.jpg" alt="What is the Topological Morphology Descriptor?" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is the Topological Morphology Descriptor?</h3>
+        <p>Dr. David Beers explains.</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=2nFE6oeJGr8" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+<article>
+    <div class="image">
+        <a href="https://www.youtube.com/watch?v=Oa4SJ4mtrvs" target="_blank">
+            <img src="https://img.youtube.com/vi/Oa4SJ4mtrvs/hqdefault.jpg" alt="What is the Euler Characteristic Transform?" />
+        </a>
+    </div>
+    <div class="caption">
+        <h3>What is the Euler Characteristic Transform?</h3>
+        <p>Haochen Yang explains.</p>
+        <ul class="actions fixed">
+            <li><a href="https://www.youtube.com/watch?v=Oa4SJ4mtrvs" target="_blank" class="button small">Watch</a></li>
+        </ul>
+    </div>
+</article>
+				</div>
+</section>
+
+<!-- Footer -->
+	<footer class="wrapper style1 align-center">
+		<div class="inner">
+			<ul class="icons">
+				<li><a href="https://github.com" class="icon brands style2 fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+				<li><a href="https://www.mpi-cbg.de/research/researchgroups/currentgroups/heather-harrington/research" class="icon solid style2 fa-globe" target="_blank" rel="noopener"><span class="label">Website</span></a></li>
+				<li><a href="https://www.linkedin.com/in/heather-harrington-7a814a5/" class="icon brands style2 fa-linkedin-in" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+				<li><a href="mailto:harringtonoffice@mpi-cbg.de" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+			</ul>
+			<p>&copy; ASB Group. <a href="privacy.html">Privacy Policy</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</div>
+	</footer>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+		<script>
+		// Collapsible sections
+		(function() {
+		function wireToggle(headingId, contentId) {
+			var h = document.getElementById(headingId);
+			var c = document.getElementById(contentId);
+			if (!h || !c) return;
+			h.addEventListener('click', function() {
+				var hidden = c.classList.toggle('is-hidden');
+				h.setAttribute('aria-expanded', String(!hidden));
+			});
+		}
+			wireToggle('collabs-heading', 'collabs-content');
+			wireToggle('media-heading', 'media-content');
+		})();
+		</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+		<script>
+		(function() {
+			const COLLABS = [
+				{ name: "Helen M Byrne",          institution: "University of Oxford",         papers: 19 },
+				{ name: "Ulrike Tillmann",         institution: "University of Oxford",         papers: 11 },
+				{ name: "Mason A Porter",          institution: "UCLA",                         papers: 8  },
+				{ name: "Michael PH Stumpf",       institution: "University of Melbourne",      papers: 7  },
+				{ name: "Elizabeth Gross",         institution: "University of Hawaiʻi",        papers: 6  },
+				{ name: "Kenneth L Ho",            institution: "TSMC",                         papers: 5  },
+				{ name: "Mariano Beguerisse-Díaz", institution: "University of Oxford",         papers: 4  },
+				{ name: "Thomas Thorne",           institution: "University of Surrey",         papers: 4  },
+				{ name: "Lewis Marsh",             institution: "Novo Nordisk",                 papers: 4  },
+				{ name: "Alain Goriely",           institution: "University of Oxford",         papers: 4  },
+				{ name: "Nicolette Meshkat",       institution: "Santa Clara University",       papers: 4  },
+				{ name: "Aneesha Bhandari",        institution: "University of Oxford",         papers: 3  },
+				{ name: "Zhouchun Shang",          institution: "BGI-Shenzhen",                 papers: 3  },
+				{ name: "Yanan Xing",              institution: "Medical College of Wisconsin", papers: 3  },
+				{ name: "Yanru An",                institution: "BGI-Shenzhen",                 papers: 3  },
+				{ name: "Nannan Zhang",            institution: "Karolinska Institutet",        papers: 3  },
+				{ name: "Peter Grindrod",          institution: "University of Oxford",         papers: 3  },
+				{ name: "Robert A Van Gorder",     institution: "University of Otago",          papers: 3  },
+				{ name: "Joshua A Bull",           institution: "University of Oxford",         papers: 3  },
+				{ name: "Anne Shiu",               institution: "Texas A&M University",         papers: 3  },
+				{ name: "Eamonn A Gaffney",        institution: "University of Oxford",         papers: 2  },
+				{ name: "Thomas E Woolley",        institution: "Cardiff University",           papers: 2  },
+				{ name: "Christian Bick",          institution: "Vrije Universiteit Amsterdam", papers: 2  },
+				{ name: "Sarah Filippi",           institution: "Imperial College London",      papers: 2  },
+				{ name: "Vidit Nanda",             institution: "University of Oxford",         papers: 2  },
+				{ name: "Hal Schenck",             institution: "Auburn University",            papers: 2  },
+				{ name: "Zvi Rosen",               institution: "UNH Franklin Pierce",          papers: 2  },
+			];
+
+			// Aggregate by institution
+			const instMap = {};
+			COLLABS.forEach(d => {
+				if (!instMap[d.institution]) {
+					instMap[d.institution] = { institution: d.institution, papers: 0, people: [] };
+				}
+				instMap[d.institution].papers += d.papers;
+				instMap[d.institution].people.push(d.name);
+			});
+			const nodes = Object.values(instMap);
+
+			const INST_COLOURS = {
+				"University of Oxford":         "#a3bdca",
+				"UCLA":                         "#acc2ce",
+				"University of Melbourne":      "#c0cace",
+				"University of Hawaiʻi":        "#cacece",
+				"TSMC":                         "#d5d4cd",
+				"University of Surrey":         "#dad5cd",
+				"Novo Nordisk":                 "#e2d7cd",
+				"Santa Clara University":       "#e7dbce",
+				"BGI-Shenzhen":                 "#e1cdc2",
+				"Medical College of Wisconsin": "#e8d5d0",
+				"Karolinska Institutet":        "#ead8d4",
+				"University of Otago":          "#c5c0c2",
+				"Texas A&M University":         "#b0b0b2",
+				"Cardiff University":           "#ad9c96",
+				"Vrije Universiteit Amsterdam": "#948d93",
+				"Imperial College London":      "#857b7f",
+				"Auburn University":            "#929ba2",
+				"UNH Franklin Pierce":          "#8c959f",
+			};
+
+			function colour(inst) { return INST_COLOURS[inst] || "#b0b0b2"; }
+
+			document.addEventListener("DOMContentLoaded", function() {
+				const container = document.getElementById("collab-viz");
+				if (!container) return;
+
+				const W = 860, H = 480;
+				const cx = W / 2, cy = H / 2;
+
+				const svg = d3.select(container)
+					.append("svg")
+					.attr("viewBox", `0 0 ${W} ${H}`);
+
+				const rScale = d3.scaleSqrt()
+					.domain([0, d3.max(nodes, d => d.papers)])
+					.range([32, 80]);
+
+				nodes.forEach(d => { d.r = rScale(d.papers); });
+
+				const sim = d3.forceSimulation(nodes)
+					.force("charge", d3.forceManyBody().strength(6))
+					.force("collide", d3.forceCollide(d => d.r + 5).strength(1))
+					.force("x", d3.forceX(d => d.institution === "University of Oxford" ? cx : cx + (Math.random() < 0.5 ? -1 : 1) * (200 + Math.random() * 180)).strength(0.15))
+					.force("y", d3.forceY(cy).strength(0.08))
+					.stop();
+
+				for (let i = 0; i < 400; i++) sim.tick();
+
+				nodes.forEach(d => {
+					d.x = Math.max(d.r + 8, Math.min(W - d.r - 8, d.x));
+					d.y = Math.max(d.r + 8, Math.min(H - d.r - 8, d.y));
+				});
+
+				const tooltip = d3.select(container)
+					.append("div")
+					.attr("class", "collab-tooltip");
+
+				const nodeG = svg.selectAll("g")
+					.data(nodes)
+					.join("g")
+					.attr("class", "collab-node")
+					.attr("transform", d => `translate(${d.x},${d.y})`);
+
+				nodeG.append("circle")
+					.attr("r", d => d.r)
+					.attr("fill", d => colour(d.institution))
+					.attr("fill-opacity", 0.88)
+					.attr("stroke", "#fff")
+					.attr("stroke-width", 1.5);
+
+				// Institution label inside bubble if large enough
+				nodeG.each(function(d) {
+					const g = d3.select(this);
+					const words = d.institution.split(" ");
+					const maxChars = Math.floor(d.r * 0.28);
+					// Break into lines of ~maxChars
+					const lines = [];
+					let line = "";
+					words.forEach(w => {
+						if ((line + " " + w).trim().length <= maxChars || !line) {
+							line = (line + " " + w).trim();
+						} else {
+							lines.push(line);
+							line = w;
+						}
+					});
+					if (line) lines.push(line);
+					const fontSize = d.r > 50 ? 11 : d.r > 30 ? 9.5 : 8.5;
+					const lineH = fontSize * 1.3;
+					const startY = -(lines.length - 1) * lineH / 2;
+					lines.forEach((l, i) => {
+						g.append("text")
+							.attr("text-anchor", "middle")
+							.attr("y", startY + i * lineH)
+							.attr("dy", "0.35em")
+							.style("font-size", fontSize + "px")
+							.style("fill", "#333")
+							.text(l);
+					});
+				});
+
+				nodeG
+					.on("mouseenter", function(ev, d) {
+						const peopleList = d.people.join("<br>");
+						tooltip.html(`<strong>${d.institution}</strong>${peopleList}<br><span style="color:#aaa">${d.papers} shared publication${d.papers > 1 ? "s" : ""}</span>`)
+							.style("opacity", 1);
+					})
+					.on("mousemove", function(ev) {
+						const rect = container.getBoundingClientRect();
+						tooltip
+							.style("left", (ev.clientX - rect.left + 12) + "px")
+							.style("top", (ev.clientY - rect.top - 10) + "px");
+					})
+					.on("mouseleave", function() {
+						tooltip.style("opacity", 0);
+					});
+
+				container.insertAdjacentHTML("beforeend",
+					'<p class="collab-caption">Each bubble is an institution, sized by total shared publications. Hover for the people.</p>'
+				);
+			});
+		})();
+		</script>
+
+
+	</body>
+</html>

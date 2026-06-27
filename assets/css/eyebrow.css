@@ -1,0 +1,13 @@
+/* =========================================================
+   Section eyebrow labels (small caps label above h2 headings,
+   matching the teal accent used in the chord diagram header)
+   ========================================================= */
+.eyebrow {
+	display: block;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 0.72rem;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: #7fc6c8;
+	margin-bottom: 0.6rem;
+}

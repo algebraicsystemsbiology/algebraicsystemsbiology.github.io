@@ -1,0 +1,102 @@
+/* =========================================================
+   How It Connects — chord diagram (scoped, merged from
+   chord-diagram.html into the Our Research page)
+   ========================================================= */
+
+.connects-block {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: 'Georgia', serif;
+	color: #2a2a2a;
+	padding: 4rem 0;
+}
+
+.connects-chart {
+	width: 100%;
+	max-width: 500px;
+	position: relative;
+}
+
+.connects-chart svg {
+	width: 100%;
+	height: auto;
+	overflow: visible;
+	display: block;
+}
+
+.chord-arc {
+	transition: opacity 0.18s ease;
+	stroke: #fff;
+	stroke-width: 1px;
+	cursor: pointer;
+}
+
+.chord-ribbon {
+	transition: opacity 0.18s ease, stroke-width 0.18s ease;
+}
+
+.chord-label {
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 14px;
+	fill: #555;
+	letter-spacing: 0.01em;
+	transition: fill 0.18s ease;
+	pointer-events: none;
+}
+
+.chord-label.is-active {
+	fill: #111;
+	font-weight: 600;
+}
+
+.connects-tooltip {
+	position: fixed;
+	background: rgba(255, 255, 255, 0.97);
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 0.7rem 1rem;
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 0.76rem;
+	color: #333;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.15s;
+	max-width: 250px;
+	line-height: 1.5;
+	z-index: 100;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.connects-tooltip strong {
+	display: block;
+	font-size: 0.82rem;
+	color: #111;
+	margin-bottom: 0.2rem;
+}
+
+.connects-tooltip .sub {
+	color: #7fc6c8;
+	font-size: 0.68rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.connects-caption {
+	padding: 5rem 1rem 0;
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 0.68rem;
+	color: #bbb;
+	text-align: center;
+	letter-spacing: 0.05em;
+	max-width: 36rem;
+}
+
+.connects-state-message {
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 0.85rem;
+	color: #999;
+	padding: 3rem 2rem;
+	text-align: center;
+}
+
