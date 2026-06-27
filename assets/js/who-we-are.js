@@ -1,5 +1,5 @@
 // who-we-are.js
-// Renders both current members (with institution tags) and alumni on who-we-are.html.
+// Renders current members (with institution tags) and alumni on who-we-are.html.
 
 (function () {
 
@@ -143,43 +143,17 @@
     });
   }
 
-  // ── Collapsible: Current Members ──────────────────────────────────
-  // Uses is-collapsed on #members section (matching main.css rule)
+  // ── Collapsible sections — same mechanism as we-connect ───────────
+  // Uses is-hidden on content div + aria-expanded on heading
+  // CSS handles caret rotation via [aria-expanded] attribute selector
 
-  function wireCurrentMembersToggle() {
-    const section = document.getElementById('members');
-    const heading = document.getElementById('members-heading');
-    if (!section || !heading) return;
-
-    function toggle() {
-      const collapsed = section.classList.toggle('is-collapsed');
-      heading.setAttribute('aria-expanded', String(!collapsed));
-    }
-
-    heading.addEventListener('click', toggle);
-    heading.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-    });
-  }
-
-  // ── Collapsible: Alumni ───────────────────────────────────────────
-  // Uses is-hidden on #alumni-content div
-
-  function wireAlumniToggle() {
-    const heading = document.getElementById('alumni-heading');
-    const content = document.getElementById('alumni-content');
-    if (!heading || !content) return;
-
-    function toggle() {
-      const isHidden = content.classList.toggle('is-hidden');
-      heading.setAttribute('aria-expanded', String(!isHidden));
-      const caret = heading.querySelector('.members-caret');
-      if (caret) caret.style.transform = isHidden ? '' : 'rotate(180deg)';
-    }
-
-    heading.addEventListener('click', toggle);
-    heading.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  function wireToggle(headingId, contentId) {
+    const h = document.getElementById(headingId);
+    const c = document.getElementById(contentId);
+    if (!h || !c) return;
+    h.addEventListener('click', () => {
+      const hidden = c.classList.toggle('is-hidden');
+      h.setAttribute('aria-expanded', String(!hidden));
     });
   }
 
@@ -193,8 +167,8 @@
 
       renderCurrentMembers(members);
       renderAlumni(members);
-      wireCurrentMembersToggle();
-      wireAlumniToggle();
+      wireToggle('members-heading', 'members-content');
+      wireToggle('alumni-heading', 'alumni-content');
     } catch (err) {
       console.error(err);
     }

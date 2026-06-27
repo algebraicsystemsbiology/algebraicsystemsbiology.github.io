@@ -87,12 +87,7 @@
 			cursor: pointer;
 			user-select: none;
 		}
-		#alumni-heading .members-caret {
-			display: inline-block;
-			transition: transform 0.2s ease;
-			margin-left: 0.4rem;
-		}
-		.alumni-grid {
+				.alumni-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 			gap: 1.5rem;
@@ -141,18 +136,15 @@
 			font-style: italic;
 		}
 		
-		/* Remove dividing lines between sections */
+		/* Remove template divider lines; add one clean divider above Alumni */
 		#wrapper.divided > * {
 			box-shadow: none !important;
 		}
-		#members + #alumni {
-			border-top: 1px solid rgba(0,0,0,0.1);
-		}
+
 		#alumni + #who-works-on-what {
 			border-top: 1px solid rgba(0,0,0,0.1);
 		}
-		/* Single dividing line only between Alumni and Who Works On What */
-		#alumni + #who-works-on-what {
+		#who-works-on-what {
 			border-top: 1px solid rgba(0,0,0,0.1);
 		}
 
@@ -303,8 +295,25 @@
 			margin-top: 1rem;
 		}
 	
-		/* Make members caret point same direction as alumni */
 			.is-hidden { display: none !important; }
+	
+		/* Collapsible triangles — same as we-connect */
+		.collapsible-heading {
+			cursor: pointer;
+			user-select: none;
+		}
+		.collapsible-heading .members-caret {
+			display: inline-block;
+			transition: transform 0.2s ease;
+			margin-left: 0.4rem;
+		}
+		.collapsible-heading[aria-expanded="true"] .members-caret {
+			transform: rotate(180deg);
+		}
+		.collapsible-heading[aria-expanded="false"] .members-caret {
+			transform: rotate(0deg);
+		}
+		.is-hidden { display: none !important; }
 	</style>
 	</head>
 
@@ -335,13 +344,13 @@
 <!-- Current Members -->
 <section class="wrapper style1 align-center" id="members">
 	<div class="inner" style="padding-top: 0.5rem; padding-bottom: 0; margin-bottom: 0;">
-		<h2 id="members-heading" role="button" tabindex="0" style="cursor:pointer;">
+		<h2 id="members-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="members-content">
 			Current Members
-			<span class="members-caret" aria-hidden="true" style="display:inline-block;transition:transform 0.2s;margin-left:0.4rem;">▾</span>
+			<span class="members-caret" aria-hidden="true">▾</span>
 		</h2>
 		<div id="members-content">
 				<p>The ASB group is led by Professor Heather Harrington, and based at the Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG), Dresden and the Mathematical Institute, University of Oxford.</p>
-			<div id="members-grid" class="items style1 medium onscroll-fade-in"></div>
+			<div id="members-grid" class="items style1 medium"></div>
 		</div>
 	</div>
 </section>
@@ -349,9 +358,9 @@
 <!-- Alumni -->
 <section class="wrapper style1 align-center alumni-section" id="alumni">
 	<div class="inner">
-		<h2 id="alumni-heading" role="button" tabindex="0" style="cursor:pointer;">
+		<h2 id="alumni-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="alumni-content">
 			Alumni
-			<span class="members-caret" aria-hidden="true" style="display:inline-block;transition:transform 0.2s;margin-left:0.4rem;">▾</span>
+			<span class="members-caret" aria-hidden="true">▾</span>
 		</h2>
 		<div id="alumni-content">
 			<div id="alumni-grid" class="alumni-grid"></div>
@@ -397,7 +406,11 @@
 			<li><a href="https://www.linkedin.com/in/heather-harrington-7a814a5/" class="icon brands style2 fa-linkedin-in" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
 			<li><a href="mailto:harringtonoffice@mpi-cbg.de" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
 		</ul>
-		<p>
+		<p style="font-size: 0.8rem; color: #aaa; margin-bottom: 0.4rem;">
+    Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG)<br />
+    Pfotenhauerstraße 108, 01307 Dresden-Altstadt, Germany
+</p>
+<p>
 			&copy; ASB Group.
 			<a href="privacy.html">Privacy Policy</a>.
 			Design: <a href="https://html5up.net">HTML5 UP</a>.
@@ -675,22 +688,8 @@ loadMembers()
 })();
 		</script>
 
-		<script>
-		(function() {
-			function wire(headingId, contentId) {
-				var h = document.getElementById(headingId);
-				var content = document.getElementById(contentId);
-				if (!h || !content) return;
-				h.addEventListener('click', function() {
-					var hidden = content.classList.toggle('is-hidden');
-					var caret = h.querySelector('.members-caret');
-					if (caret) caret.style.transform = hidden ? 'rotate(-90deg)' : 'rotate(0deg)';
-				});
-			}
-			wire('members-heading', 'members-content');
-			wire('alumni-heading', 'alumni-content');
-		})();
-		</script>
+		
+
 
 	</body>
 </html>
