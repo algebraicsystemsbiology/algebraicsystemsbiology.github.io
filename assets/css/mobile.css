@@ -38,6 +38,25 @@
   #who-works-on-what .inner p {
     display: none !important;
   }
+   /* ── Who Works On What — close gap on mobile ─────────────────── */
+  #who-works-on-what .inner {
+    padding-bottom: 0 !important;
+  }
+  #who-works-on-what p {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .network-legend {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  .network-block {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
 
   /* ── Visualisations — scrollable ─────────────────────────────── */
   .network-block,
