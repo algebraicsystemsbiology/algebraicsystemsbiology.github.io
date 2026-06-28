@@ -74,6 +74,18 @@
 	</style>
 </head>
 
+<script>
+// Mobile gallery tap interaction
+if (window.matchMedia('(max-width: 736px)').matches) {
+  document.querySelectorAll('.gallery.style2 article').forEach(function(article) {
+    article.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') return; // let button clicks through
+      article.classList.toggle('is-active');
+    });
+  });
+}
+</script>
+
 	<body class="is-preload">
 
 		<!-- Wrapper -->

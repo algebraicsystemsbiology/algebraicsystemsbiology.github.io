@@ -28,61 +28,83 @@
     display: none !important;
   }
 
-/* Remove gap between legend and network diagram on mobile */
-.network-legend {
+  /* ── Remove gap between legend and network diagram ────────────── */
+  .network-legend {
     margin-bottom: 0 !important;
-}
-
-.network-block {
+  }
+  .network-block {
     margin-top: 0 !important;
-}
-
-#who-works-on-what .inner p {
+  }
+  #who-works-on-what .inner p {
     display: none !important;
-}
+  }
 
-  /* ── Visualisations — make scrollable rather than overflowing ─── */
+  /* ── Visualisations — scrollable ─────────────────────────────── */
   .network-block,
   .connects-block,
   #collab-viz {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
-
   .network-block svg {
     min-width: 600px !important;
   }
-
   #collab-viz svg {
     min-width: 500px !important;
   }
 
-  /* ── Alumni grid — 2 cols on phone ─────────────────────────────── */
+  /* ── Alumni grid — 2 cols on phone ───────────────────────────── */
   .alumni-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.5rem !important;
   }
-}
-/* Gallery captions — always visible on mobile, no dark overlay */
-.gallery.style2 article .caption {
+
+  /* ── Gallery captions — always visible on mobile ─────────────── */
+  .gallery.style2 article .caption {
     opacity: 1 !important;
     transform: none !important;
     background: none !important;
     background-color: transparent !important;
-}
-
-.gallery.style2 article .caption h3 {
+  }
+  .gallery.style2 article .caption h3 {
     font-size: 0.9rem !important;
     color: #ffffff !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
-}
-
-.gallery.style2 article .caption p {
+  }
+  .gallery.style2 article .caption p {
     font-size: 0.75rem !important;
     line-height: 1.4 !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
-}
-
-.gallery.style2 article .caption .button {
+  }
+  .gallery.style2 article .caption .button {
     font-size: 0.7rem !important;
+  }
+
+}
+/* ── Gallery — tap to reveal on mobile ───────────────────────────── */
+.gallery.style2 article .caption {
+  opacity: 0 !important;
+  transform: translateY(1rem) !important;
+}
+.gallery.style2 article .caption h3 {
+  position: absolute !important;
+  bottom: 1rem !important;
+  left: 0 !important;
+  right: 0 !important;
+  text-align: center !important;
+  font-size: 1rem !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+.gallery.style2 article.is-active .caption {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.gallery.style2 article.is-active .caption h3 {
+  position: relative !important;
+  bottom: auto !important;
+  font-size: 0.9rem !important;
 }
