@@ -23,23 +23,14 @@
     ]
   },
   {
-    "id": "college-dinner-2025",
-    "title": "College Dinner",
-    "date": "2025",
+    "id": "college-dinners",
+    "title": "College Dinners",
+    "date": "Oxford",
     "location": "Oxford",
     "note": "Black tie optional. Good arguments mandatory.",
     "photos": [
-      { "file": "2025 College Dinner.jpg", "caption": "Candlelight & mathematics" }
-    ]
-  },
-  {
-    "id": "college-dinner-2026",
-    "title": "College Dinner",
-    "date": "2026",
-    "location": "Oxford",
-    "note": "Sunday best.",
-    "photos": [
-      { "file": "2026 College Dinner.jpeg", "caption": "Candlelight & mathematics" }
+      { "file": "2025 College Dinner.jpg", "caption": "2025" },
+      { "file": "2026 College Dinner.jpeg", "caption": "2026" }
     ]
   },
   {
@@ -59,11 +50,9 @@
     "location": "Oxford",
     "note": "Helping women & gender nonconforming students thrive in mathematical sciences PhD programs.",
     "photos": [
-      { "file": "2022 Edge Oxford.jpg", "caption": "EDGE 2021" },
+      { "file": "2022 Edge Oxford.jpg", "caption": "EDGE 2022" },
       { "file": "2022 Edge Oxford2.jpg", "caption": "Workshop sessions" },
-      { "file": "2022 Edge Oxford3.jpg", "caption": "Andrew Wiles Building" },
-      { "file": "2022 Edge Oxford4.JPG", "caption": "EDGE cohort" },
-      { "file": "2022 Edge Oxford5.jpg", "caption": "EDGE 2022" }
+      { "file": "2022 Edge Oxford3.jpg", "caption": "Andrew Wiles Building" }
     ]
   },
   {
