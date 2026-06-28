@@ -152,7 +152,7 @@
 			background: none;
 		}
 	
-		/* ── Travels scrapbook ─────────────────────────────────────────── */
+		/* ── Adventures scrapbook ─────────────────────────────────────────── */
 
 		#travels { background: #ffffff; position: relative; }
 
@@ -525,8 +525,8 @@
 				<a href="Connections.html">CONNECTIONS</a>
 				<div class="dropdown">
 					<a href="#Collaborators">Collaborators</a>
-					<a href="#Short-Talks">Short Talks</a>
-					<a href="#travels">Travels</a>
+					<a href="#Short-Talks">Engagements</a>
+					<a href="travels.html">Adventures</a>
 				</div>
 			</span>
 			<a href="publications.html">PUBLICATIONS</a>
@@ -552,11 +552,11 @@
 <section class="wrapper style1 align-center" id="Short-Talks" style="border-top: 1px solid rgba(0,0,0,0.1);">
 	<div class="inner">
 		<h2 id="media-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="media-content">
-			Short talks
+			Engagements
 			<span class="members-caret" aria-hidden="true">▾</span>
 		</h2>
 		<div id="media-content">
-			<p>The group's work explained in plain terms. Short talks by group members on the ideas, methods, and questions that drive the research.</p>
+			<p>The group's work explained in plain terms. Engagements by group members on the ideas, methods, and questions that drive the research.</p>
 		</div>
 	</div>
 	<div class="gallery style2 medium onscroll-fade-in">
@@ -649,11 +649,11 @@
 
 
 
-<!-- Travels -->
+<!-- Adventures -->
 <section class="wrapper style1 align-center" id="travels" style="border-top: 1px solid rgba(0,0,0,0.1);">
 	<div class="inner">
 		<h2 id="travels-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="travels-content">
-			Travels
+			Adventures
 			<span class="members-caret" aria-hidden="true">▾</span>
 		</h2>
 		<div id="travels-content" class="collapsible-content">
@@ -1026,7 +1026,7 @@
 				.then(function(r) { return r.ok ? r.json() : []; })
 				.then(renderAlbum)
 				.catch(function(err) {
-					console.error('Travels load error:', err);
+					console.error('Adventures load error:', err);
 					document.getElementById('travels-album').innerHTML =
 						'<div class="album-empty">No travels yet — check back soon!</div>';
 				});
