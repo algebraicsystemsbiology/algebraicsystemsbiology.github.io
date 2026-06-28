@@ -28,6 +28,11 @@
     display: none !important;
   }
 
+  /* ── Remove gap between legend and network diagram on mobile ─── */
+  .network-legend {
+    margin-bottom: 0 !important;
+  }
+
   /* ── Visualisations — make scrollable rather than overflowing ─── */
   .network-block,
   .connects-block,
