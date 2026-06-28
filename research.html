@@ -74,17 +74,6 @@
 	</style>
 </head>
 
-<script>
-// Mobile gallery tap interaction
-if (window.matchMedia('(max-width: 736px)').matches) {
-  document.querySelectorAll('.gallery.style2 article').forEach(function(article) {
-    article.addEventListener('click', function(e) {
-      if (e.target.tagName === 'A') return; // let button clicks through
-      article.classList.toggle('is-active');
-    });
-  });
-}
-</script>
 
 	<body class="is-preload">
 
@@ -459,7 +448,7 @@ if (window.matchMedia('(max-width: 736px)').matches) {
 
 		</div>
 
-		<!-- Scripts -->
+<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/jquery.scrollex.min.js"></script>
 		<script src="assets/js/jquery.scrolly.min.js"></script>
@@ -469,6 +458,15 @@ if (window.matchMedia('(max-width: 736px)').matches) {
 		<script src="assets/js/main.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 		<script src="assets/js/connects.js"></script>
-
+		<script>
+		if (window.matchMedia('(max-width: 736px)').matches) {
+		  document.querySelectorAll('.gallery.style2 article').forEach(function(article) {
+		    article.addEventListener('click', function(e) {
+		      if (e.target.tagName === 'A') return;
+		      article.classList.toggle('is-active');
+		    });
+		  });
+		}
+		</script>
 	</body>
 </html>

@@ -59,52 +59,43 @@
     gap: 0.5rem !important;
   }
 
-  /* ── Gallery captions — always visible on mobile ─────────────── */
+  /* ── Gallery — tap to reveal on mobile ───────────────────────── */
+
+  /* Default: title visible at bottom, caption hidden */
+  .gallery.style2 article {
+    position: relative !important;
+  }
   .gallery.style2 article .caption {
-    opacity: 1 !important;
-    transform: none !important;
-    background: none !important;
-    background-color: transparent !important;
+    opacity: 0 !important;
+    transform: translateY(1rem) !important;
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
   }
   .gallery.style2 article .caption h3 {
-    font-size: 0.9rem !important;
+    position: absolute !important;
+    bottom: 1rem !important;
+    left: 0 !important;
+    right: 0 !important;
+    text-align: center !important;
+    font-size: 1.1rem !important;
     color: #ffffff !important;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
-  }
-  .gallery.style2 article .caption p {
-    font-size: 0.75rem !important;
-    line-height: 1.4 !important;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
-  }
-  .gallery.style2 article .caption .button {
-    font-size: 0.7rem !important;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8) !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none !important;
+    padding: 0 1rem !important;
   }
 
-}
-/* ── Gallery — tap to reveal on mobile ───────────────────────────── */
-.gallery.style2 article .caption {
-  opacity: 0 !important;
-  transform: translateY(1rem) !important;
-}
-.gallery.style2 article .caption h3 {
-  position: absolute !important;
-  bottom: 1rem !important;
-  left: 0 !important;
-  right: 0 !important;
-  text-align: center !important;
-  font-size: 1rem !important;
-  color: #ffffff !important;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.7) !important;
-  opacity: 1 !important;
-  transform: none !important;
-  pointer-events: none !important;
-}
-.gallery.style2 article.is-active .caption {
-  opacity: 1 !important;
-  transform: none !important;
-}
-.gallery.style2 article.is-active .caption h3 {
-  position: relative !important;
-  bottom: auto !important;
-  font-size: 0.9rem !important;
+  /* Tapped: full caption revealed, title shifts into caption */
+  .gallery.style2 article.is-active .caption {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .gallery.style2 article.is-active .caption h3 {
+    position: relative !important;
+    bottom: auto !important;
+    font-size: 0.9rem !important;
+    text-shadow: none !important;
+  }
+
 }
