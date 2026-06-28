@@ -1,0 +1,93 @@
+[
+  {
+    "id": "home",
+    "title": "Where we work",
+    "date": "Dresden & Oxford",
+    "location": "",
+    "note": "Two cities, one group.",
+    "photos": [
+      { "file": "CentreforSystemsBiology.jpg", "caption": "Home →" },
+      { "file": "MPI_CBG-Atrium_1.jpg", "caption": "The atrium at MPI-CBG" },
+      { "file": "Andrew Wiles Building.jpg", "caption": "Also home →" }
+    ]
+  },
+  {
+    "id": "brunow-2025",
+    "title": "Pałac Brunów",
+    "date": "May 2025",
+    "location": "Lower Silesia, Poland",
+    "note": "A palace in the mountains. Mathematics was done.",
+    "photos": [
+      { "file": "2025 Pałac Brunów.jpeg", "caption": "Pałac Brunów" },
+      { "file": "2025 Pałac Brunów2.jpg", "caption": "The whole group" }
+    ]
+  },
+  {
+    "id": "college-dinner-2025",
+    "title": "College Dinner",
+    "date": "2025",
+    "location": "Oxford",
+    "note": "Black tie optional. Good arguments mandatory.",
+    "photos": [
+      { "file": "2025 College Dinner.jpg", "caption": "Candlelight & mathematics" }
+    ]
+  },
+  {
+    "id": "college-dinner-2026",
+    "title": "College Dinner",
+    "date": "2026",
+    "location": "Oxford",
+    "note": "Sunday best.",
+    "photos": [
+      { "file": "2026 College Dinner.jpeg", "caption": "Candlelight & mathematics" }
+    ]
+  },
+  {
+    "id": "japan-2023",
+    "title": "We went to Japan!!!",
+    "date": "August 2023",
+    "location": "Tokyo & Kyoto",
+    "note": "ICIAM 2023, Waseda University. And the Golden Pavilion.",
+    "photos": [
+      { "file": "2023 Japan.jpg", "caption": "Kinkaku-ji, Kyoto" }
+    ]
+  },
+  {
+    "id": "edge-2022",
+    "title": "EDGE Program",
+    "date": "2022",
+    "location": "Oxford",
+    "note": "Helping women & gender nonconforming students thrive in mathematical sciences PhD programs.",
+    "photos": [
+      { "file": "2022 Edge Oxford.jpg", "caption": "EDGE 2021" },
+      { "file": "2022 Edge Oxford2.jpg", "caption": "Workshop sessions" },
+      { "file": "2022 Edge Oxford3.jpg", "caption": "Andrew Wiles Building" },
+      { "file": "2022 Edge Oxford4.JPG", "caption": "EDGE cohort" },
+      { "file": "2022 Edge Oxford5.jpg", "caption": "EDGE 2022" }
+    ]
+  },
+  {
+    "id": "summer-visitors-2022",
+    "title": "Summer Visitors",
+    "date": "Summer 2022",
+    "location": "Oxford",
+    "note": "Welcoming visitors to the Mathematical Institute.",
+    "photos": [
+      { "file": "2022 Summer Students Oxford.jpg", "caption": "Summer 2022" }
+    ]
+  },
+  {
+    "id": "oxford-life",
+    "title": "Group Life",
+    "date": "Oxford",
+    "location": "Various",
+    "note": "Tea, blackboards, college quads, and the occasional celebration.",
+    "photos": [
+      { "file": "2021 Oxford.jpeg", "caption": "Michaelmas 2021" },
+      { "file": "2022 Oxford Tea.jpeg", "caption": "Garden tea" },
+      { "file": "2024 Oxford.jpg", "caption": "Summer dinner 2024" },
+      { "file": "Gillian.jpg", "caption": "At the whiteboard" },
+      { "file": "Otto.jpg", "caption": "Deep in thought" }
+    ]
+  }
+]

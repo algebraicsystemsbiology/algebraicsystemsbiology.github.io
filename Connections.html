@@ -7,6 +7,8 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="stylesheet" href="assets/css/mobile.css" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" />
+
 		
 	<style>
 		/* Dropdown submenus */
@@ -149,7 +151,365 @@
 			color: #1ebdd1;
 			background: none;
 		}
-	</style>
+	
+		/* ── Travels scrapbook ─────────────────────────────────────────── */
+
+		#travels { background: #ffffff; position: relative; }
+
+		.album {
+			position: relative;
+			width: 100%;
+			max-width: 860px;
+			margin: 2rem auto 0;
+			user-select: none;
+		}
+		.album-spread {
+			display: none;
+			position: relative;
+			background: #f2ece0;
+			border-radius: 4px;
+			padding: 2.5rem 2rem 2rem;
+			box-shadow: -4px 0 8px rgba(0,0,0,0.08), 4px 4px 16px rgba(0,0,0,0.12), inset 4px 0 8px rgba(0,0,0,0.04);
+			min-height: 520px;
+			overflow: hidden;
+		}
+		.album-spread.is-active { display: block; }
+		.album-spread::before {
+			content: '';
+			position: absolute;
+			left: 2.8rem; top: 0; bottom: 0;
+			width: 1px;
+			background: linear-gradient(to bottom, transparent 0%, rgba(160,140,110,0.3) 10%, rgba(160,140,110,0.3) 90%, transparent 100%);
+		}
+		.spread-header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			margin-bottom: 1.5rem;
+			padding-left: 1rem;
+		}
+		.spread-title {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 2rem;
+			font-weight: 700;
+			color: #3a3028;
+			line-height: 1.1;
+			margin: 0;
+		}
+		.spread-date {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1rem;
+			color: #9a8878;
+			margin-top: 0.3rem;
+		}
+		.spread-stamp {
+			display: inline-block;
+			border: 2px solid #c4956a;
+			color: #c4956a;
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 0.75rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			padding: 0.3rem 0.6rem;
+			transform: rotate(-8deg);
+			opacity: 0.7;
+			white-space: nowrap;
+			margin-top: 0.5rem;
+			flex-shrink: 0;
+		}
+		.spread-note {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.2rem;
+			color: #5a4a3a;
+			padding-left: 1rem;
+			margin-bottom: 1.5rem;
+			position: relative;
+			line-height: 1.5;
+		}
+		.spread-note::before {
+			content: '→';
+			position: absolute;
+			left: -0.2rem;
+			color: #c4956a;
+		}
+		.spread-photos {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1.2rem;
+			padding-left: 1rem;
+			align-items: flex-start;
+		}
+		.polaroid {
+			background: #fff;
+			padding: 0.6rem 0.6rem 2rem;
+			box-shadow: 2px 3px 10px rgba(0,0,0,0.15);
+			position: relative;
+			flex: 0 0 auto;
+			width: calc(33% - 0.8rem);
+			min-width: 140px;
+			max-width: 220px;
+		}
+		.polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
+		.polaroid:nth-child(even) { transform: rotate(1.8deg); }
+		.polaroid:nth-child(3n)   { transform: rotate(-1deg) translateY(8px); }
+		.polaroid img {
+			width: 100%;
+			aspect-ratio: 1 / 1;
+			object-fit: cover;
+			display: block;
+			background: #e8e0d4;
+		}
+		.polaroid-caption {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 0.9rem;
+			color: #6a5a4a;
+			text-align: center;
+			margin-top: 0.5rem;
+			line-height: 1.2;
+		}
+		.polaroid::before {
+			content: '';
+			position: absolute;
+			top: -8px; left: 50%;
+			transform: translateX(-50%) rotate(-3deg);
+			width: 40px; height: 16px;
+			background: rgba(180,200,220,0.5);
+			border-radius: 1px;
+		}
+		.polaroid:nth-child(even)::before {
+			background: rgba(210,185,155,0.5);
+			transform: translateX(-50%) rotate(4deg);
+		}
+		.polaroid:nth-child(3n)::before {
+			background: rgba(190,210,190,0.45);
+			transform: translateX(-50%) rotate(-1deg);
+		}
+		.album-nav {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1.5rem;
+			margin-top: 1.5rem;
+		}
+		.album-btn {
+			background: none;
+			border: 1px solid rgba(160,140,110,0.4);
+			border-radius: 50%;
+			width: 36px; height: 36px;
+			cursor: pointer;
+			color: #9a8878;
+			font-size: 1rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s ease;
+			padding: 0;
+		}
+		.album-btn:hover { background: rgba(160,140,110,0.1); color: #5a4a3a; border-color: rgba(160,140,110,0.7); }
+		.album-btn:disabled { opacity: 0.3; cursor: default; }
+		.album-counter { font-family: 'Caveat', 'Modern Love', cursive; font-size: 1rem; color: #9a8878; }
+		.album-empty { text-align: center; padding: 3rem 1rem; font-family: 'Caveat', 'Modern Love', cursive; font-size: 1.3rem; color: #9a8878; }
+
+		@media screen and (max-width: 736px) {
+			.album-spread { padding: 1.5rem 1rem; min-height: 400px; }
+			.spread-title { font-size: 1.5rem; }
+			.polaroid { width: calc(50% - 0.6rem); min-width: 100px; }
+			.album-spread::before { left: 1.8rem; }
+		}
+	/* ── Album ──────────────────────────────────────────────────── */
+		#travels-section { padding: 0; }
+
+		.album-wrap {
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 0 2rem 3rem;
+		}
+
+		.album {
+			position: relative;
+			width: 100%;
+			user-select: none;
+		}
+
+		.album-spread {
+			display: none;
+			position: relative;
+			background: #f2ece0;
+			border-radius: 4px;
+			padding: 2.5rem 2rem 2.5rem 3rem;
+			box-shadow: -4px 0 8px rgba(0,0,0,0.08), 4px 4px 16px rgba(0,0,0,0.12), inset 4px 0 8px rgba(0,0,0,0.04);
+			min-height: 500px;
+			overflow: hidden;
+		}
+
+		.album-spread.is-active { display: block; }
+
+		/* Spine line */
+		.album-spread::before {
+			content: '';
+			position: absolute;
+			left: 2.2rem; top: 0; bottom: 0;
+			width: 1px;
+			background: linear-gradient(to bottom, transparent 0%, rgba(160,140,110,0.3) 10%, rgba(160,140,110,0.3) 90%, transparent 100%);
+		}
+
+		.spread-header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			margin-bottom: 1.2rem;
+		}
+
+		.spread-title {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 2.2rem;
+			font-weight: 700;
+			color: #3a3028;
+			line-height: 1.1;
+			margin: 0;
+		}
+
+		.spread-date {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.1rem;
+			color: #9a8878;
+			margin-top: 0.2rem;
+		}
+
+		.spread-stamp {
+			display: inline-block;
+			border: 2px solid #c4956a;
+			color: #c4956a;
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 0.8rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			padding: 0.3rem 0.7rem;
+			transform: rotate(-8deg);
+			opacity: 0.7;
+			white-space: nowrap;
+			margin-top: 0.5rem;
+			flex-shrink: 0;
+		}
+
+		.spread-note {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.25rem;
+			color: #5a4a3a;
+			margin-bottom: 1.5rem;
+			position: relative;
+			padding-left: 0.8rem;
+			line-height: 1.5;
+		}
+
+		.spread-note::before {
+			content: '→';
+			position: absolute;
+			left: -0.6rem;
+			color: #c4956a;
+		}
+
+		.spread-photos {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1.5rem;
+			align-items: flex-start;
+			justify-content: center;
+		}
+
+		.polaroid {
+			background: #fff;
+			padding: 0.6rem 0.6rem 2.2rem;
+			box-shadow: 2px 3px 12px rgba(0,0,0,0.15);
+			position: relative;
+			flex: 0 0 auto;
+			width: calc(33% - 1rem);
+			min-width: 150px;
+			max-width: 240px;
+		}
+
+		.polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
+		.polaroid:nth-child(even) { transform: rotate(1.8deg); }
+		.polaroid:nth-child(3n)   { transform: rotate(-1deg) translateY(10px); }
+
+		.polaroid img {
+			width: 100%;
+			aspect-ratio: 1 / 1;
+			object-fit: cover;
+			display: block;
+			background: #e8e0d4;
+		}
+
+		.polaroid-caption {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 0.95rem;
+			color: #6a5a4a;
+			text-align: center;
+			margin-top: 0.5rem;
+			line-height: 1.2;
+		}
+
+		/* Washi tape */
+		.polaroid::before {
+			content: '';
+			position: absolute;
+			top: -9px; left: 50%;
+			transform: translateX(-50%) rotate(-3deg);
+			width: 44px; height: 18px;
+			background: rgba(180,200,220,0.55);
+			border-radius: 1px;
+		}
+		.polaroid:nth-child(even)::before { background: rgba(210,185,155,0.55); transform: translateX(-50%) rotate(4deg); }
+		.polaroid:nth-child(3n)::before   { background: rgba(190,210,190,0.5); transform: translateX(-50%) rotate(-1deg); }
+
+		/* Navigation */
+		.album-nav {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1.5rem;
+			margin-top: 2rem;
+		}
+
+		.album-btn {
+			background: none;
+			border: 1px solid rgba(160,140,110,0.4);
+			border-radius: 50%;
+			width: 40px; height: 40px;
+			cursor: pointer;
+			color: #9a8878;
+			font-size: 1.1rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s ease;
+			padding: 0;
+		}
+		.album-btn:hover { background: rgba(160,140,110,0.1); color: #5a4a3a; border-color: rgba(160,140,110,0.7); }
+		.album-btn:disabled { opacity: 0.25; cursor: default; }
+
+		.album-counter {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.1rem;
+			color: #9a8878;
+		}
+
+		.album-empty {
+			text-align: center;
+			padding: 4rem 1rem;
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.4rem;
+			color: #9a8878;
+		}
+
+		@media screen and (max-width: 736px) {
+			.album-wrap { padding: 0 1rem 2rem; }
+			.album-spread { padding: 1.5rem 1rem 1.5rem 2rem; min-height: 400px; }
+			.spread-title { font-size: 1.6rem; }
+			.polaroid { width: calc(50% - 0.75rem); min-width: 110px; }
+			.album-spread::before { left: 1.5rem; }
+		}
+			</style>
 	</head>
 
 	<body class="is-preload">
@@ -285,6 +645,32 @@
 </article>
 				</div>
 </section>
+
+
+
+<!-- Travels -->
+<section class="wrapper style1 align-center" id="travels" style="border-top: 1px solid rgba(0,0,0,0.1);">
+	<div class="inner">
+		<h2 id="travels-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="travels-content">
+			Travels
+			<span class="members-caret" aria-hidden="true">▾</span>
+		</h2>
+		<div id="travels-content" class="collapsible-content">
+			<p>Where the group has been — conferences, workshops, retreats, and adventures.</p>
+			<div class="album-wrap">
+				<div class="album" id="travels-album">
+					<div class="album-empty">Loading the album…</div>
+				</div>
+				<div class="album-nav" id="travels-nav" style="display:none;">
+					<button class="album-btn" id="travels-prev" aria-label="Previous">←</button>
+					<span class="album-counter" id="travels-counter"></span>
+					<button class="album-btn" id="travels-next" aria-label="Next">→</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 
 <!-- Footer -->
 	<footer class="wrapper style1 align-center">
@@ -514,5 +900,146 @@
 		</script>
 
 
+		<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			function renderAlbum(trips) {
+				var album = document.getElementById('travels-album');
+				var nav = document.getElementById('travels-nav');
+				var prev = document.getElementById('travels-prev');
+				var next = document.getElementById('travels-next');
+				var counter = document.getElementById('travels-counter');
+				if (!trips || !trips.length) {
+					album.innerHTML = '<div class="album-empty">No travels yet — check back soon!</div>';
+					return;
+				}
+				album.innerHTML = '';
+				trips.forEach(function(trip, i) {
+					var spread = document.createElement('div');
+					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
+					var photosHtml = (trip.photos || []).map(function(p) {
+						return '<div class="polaroid"><img src="images/travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight='120px'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
+					}).join('');
+					spread.innerHTML =
+						'<div class="spread-header"><div><h3 class="spread-title">' + trip.title + '</h3>' +
+						'<p class="spread-date">' + trip.date + (trip.location ? ' · ' + trip.location : '') + '</p></div>' +
+						'<span class="spread-stamp">' + (trip.location || trip.date) + '</span></div>' +
+						(trip.note ? '<p class="spread-note">' + trip.note + '</p>' : '') +
+						'<div class="spread-photos">' + photosHtml + '</div>';
+					album.appendChild(spread);
+				});
+				var current = 0;
+				var spreads = album.querySelectorAll('.album-spread');
+				function show(idx) {
+					spreads.forEach(function(s) { s.classList.remove('is-active'); });
+					spreads[idx].classList.add('is-active');
+					counter.textContent = (idx + 1) + ' / ' + trips.length;
+					prev.disabled = idx === 0;
+					next.disabled = idx === trips.length - 1;
+					current = idx;
+				}
+				nav.style.display = 'flex';
+				prev.addEventListener('click', function() { if (current > 0) show(current - 1); });
+				next.addEventListener('click', function() { if (current < trips.length - 1) show(current + 1); });
+				show(0);
+				var startX = 0;
+				album.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
+				album.addEventListener('touchend', function(e) {
+					var diff = startX - e.changedTouches[0].clientX;
+					if (Math.abs(diff) > 40) {
+						if (diff > 0 && current < trips.length - 1) show(current + 1);
+						if (diff < 0 && current > 0) show(current - 1);
+					}
+				}, { passive: true });
+			}
+			fetch('./data/travels.json', { cache: 'no-store' })
+				.then(function(r) { return r.ok ? r.json() : []; })
+				.then(renderAlbum)
+				.catch(function() {
+					document.getElementById('travels-album').innerHTML =
+						'<div class="album-empty">No travels yet — check back soon!</div>';
+				});
+		});
+		</script>
+
+<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			function renderAlbum(trips) {
+				var album = document.getElementById('travels-album');
+				var nav   = document.getElementById('travels-nav');
+				var prev  = document.getElementById('travels-prev');
+				var next  = document.getElementById('travels-next');
+				var counter = document.getElementById('travels-counter');
+
+				if (!trips || !trips.length) {
+					album.innerHTML = '<div class="album-empty">No travels yet — check back soon!</div>';
+					return;
+				}
+
+				album.innerHTML = '';
+				trips.forEach(function(trip, i) {
+					var spread = document.createElement('div');
+					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
+					var photosHtml = (trip.photos || []).map(function(p) {
+						return '<div class="polaroid"><img src="images/travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight=\'120px\'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
+					}).join('');
+					spread.innerHTML =
+						'<div class="spread-header"><div>' +
+						'<h3 class="spread-title">' + trip.title + '</h3>' +
+						'<p class="spread-date">' + trip.date + (trip.location ? ' · ' + trip.location : '') + '</p>' +
+						'</div><span class="spread-stamp">' + (trip.location || trip.date) + '</span></div>' +
+						(trip.note ? '<p class="spread-note">' + trip.note + '</p>' : '') +
+						'<div class="spread-photos">' + photosHtml + '</div>';
+					album.appendChild(spread);
+				});
+
+				var current = 0;
+				var spreads = album.querySelectorAll('.album-spread');
+
+				function show(idx) {
+					spreads.forEach(function(s) { s.classList.remove('is-active'); });
+					spreads[idx].classList.add('is-active');
+					counter.textContent = (idx + 1) + ' / ' + trips.length;
+					prev.disabled = idx === 0;
+					next.disabled = idx === trips.length - 1;
+					current = idx;
+				}
+
+				nav.style.display = 'flex';
+				prev.addEventListener('click', function() { if (current > 0) show(current - 1); });
+				next.addEventListener('click', function() { if (current < trips.length - 1) show(current + 1); });
+				show(0);
+
+				// Swipe
+				var startX = 0;
+				album.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
+				album.addEventListener('touchend', function(e) {
+					var diff = startX - e.changedTouches[0].clientX;
+					if (Math.abs(diff) > 40) {
+						if (diff > 0 && current < trips.length - 1) show(current + 1);
+						if (diff < 0 && current > 0) show(current - 1);
+					}
+				}, { passive: true });
+			}
+
+			fetch('./data/travels.json', { cache: 'no-store' })
+				.then(function(r) { return r.ok ? r.json() : []; })
+				.then(renderAlbum)
+				.catch(function(err) {
+					console.error('Travels load error:', err);
+					document.getElementById('travels-album').innerHTML =
+						'<div class="album-empty">No travels yet — check back soon!</div>';
+				});
+		
+		// Wire travels collapsible
+		var th = document.getElementById('travels-heading');
+		var tc = document.getElementById('travels-content');
+		if (th && tc) {
+			th.addEventListener('click', function() {
+				var hidden = tc.classList.toggle('is-hidden');
+				th.setAttribute('aria-expanded', String(!hidden));
+			});
+		}
+		});
+		</script>
 	</body>
 </html>

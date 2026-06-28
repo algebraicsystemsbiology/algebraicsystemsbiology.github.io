@@ -27,6 +27,11 @@
   .hero-menu .dropdown {
     display: none !important;
   }
+    /* ── Short Talks gallery — title always visible on mobile ────── */
+  .gallery.style2.medium article .caption {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 
   /* ── Remove gap between legend and network diagram ────────────── */
   .network-legend {
@@ -131,4 +136,15 @@
   .gallery.style2 article .caption h3 {
     text-shadow: 0 1px 6px rgba(0,0,0,0.9),
                  0 0 20px rgba(0,0,0,0.5) !important;
+  }
+    /* ── Collaborator viz — scrollable on mobile ─────────────────── */
+  #collab-viz {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+
+  #collab-viz svg {
+    min-width: 600px !important;
+    display: block !important;
   }
