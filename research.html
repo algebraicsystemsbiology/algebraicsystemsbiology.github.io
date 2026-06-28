@@ -458,12 +458,21 @@
 		<script src="assets/js/main.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 		<script src="assets/js/connects.js"></script>
-		<script>
+	<script>
 		if (window.matchMedia('(max-width: 736px)').matches) {
-		  document.querySelectorAll('.gallery.style2 article').forEach(function(article) {
+		  var articles = document.querySelectorAll('.gallery.style2 article');
+		  articles.forEach(function(article) {
+		    // Prevent image download on tap
+		    var img = article.querySelector('.image a, .image');
+		    if (img) img.addEventListener('click', function(e) { e.preventDefault(); });
+
 		    article.addEventListener('click', function(e) {
-		      if (e.target.tagName === 'A') return;
-		      article.classList.toggle('is-active');
+		      if (e.target.classList.contains('button') || e.target.closest('.button')) return;
+		      var isActive = article.classList.contains('is-active');
+		      // Deactivate all
+		      articles.forEach(function(a) { a.classList.remove('is-active'); });
+		      // Toggle this one
+		      if (!isActive) article.classList.add('is-active');
 		    });
 		  });
 		}

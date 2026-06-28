@@ -103,4 +103,13 @@
     font-size: 0.65rem !important;
     padding: 0.4rem 0.8rem !important;
   }
-  
+    /* Remove details button on mobile */
+  .gallery.style2 article .caption .actions {
+    display: none !important;
+  }
+
+  /* Stronger text shadow so title reads on light backgrounds */
+  .gallery.style2 article .caption h3 {
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9),
+                 0 0 20px rgba(0,0,0,0.5) !important;
+  }
