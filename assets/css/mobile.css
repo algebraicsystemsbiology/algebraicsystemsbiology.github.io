@@ -1,0 +1,52 @@
+/*
+ * mobile.css — ASB Group Website
+ * Only handles our custom hero-menu nav and scrollable visualisations.
+ * Everything else is handled by the HTML5UP template's own responsive CSS.
+ */
+
+/* ── Hero menu — portrait/mobile ─────────────────────────────────── */
+
+@media screen and (orientation: portrait) {
+  .hero-menu {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 0.6rem 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .hero-menu .dropdown {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 736px) {
+  .hero-menu {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+  .hero-menu .dropdown {
+    display: none !important;
+  }
+
+  /* ── Visualisations — make scrollable rather than overflowing ─── */
+  .network-block,
+  .connects-block,
+  #collab-viz {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .network-block svg {
+    min-width: 600px !important;
+  }
+
+  #collab-viz svg {
+    min-width: 500px !important;
+  }
+
+  /* ── Alumni grid — 2 cols on phone ─────────────────────────────── */
+  .alumni-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+}
