@@ -28,10 +28,18 @@
     display: none !important;
   }
 
-  /* ── Remove gap between legend and network diagram on mobile ─── */
-  .network-legend {
+/* Remove gap between legend and network diagram on mobile */
+.network-legend {
     margin-bottom: 0 !important;
-  }
+}
+
+.network-block {
+    margin-top: 0 !important;
+}
+
+#who-works-on-what .inner p {
+    display: none !important;
+}
 
   /* ── Visualisations — make scrollable rather than overflowing ─── */
   .network-block,
@@ -55,7 +63,12 @@
     gap: 0.5rem !important;
   }
 }
-/* Gallery caption text — smaller on mobile */
+/* Gallery captions — always visible on mobile, smaller text */
+.gallery.style2 article .caption {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
 .gallery.style2 article .caption h3 {
     font-size: 0.9rem !important;
 }
@@ -63,8 +76,4 @@
 .gallery.style2 article .caption p {
     font-size: 0.75rem !important;
     line-height: 1.4 !important;
-}
-
-.gallery.style2 article .caption .actions {
-    display: none !important;
 }
