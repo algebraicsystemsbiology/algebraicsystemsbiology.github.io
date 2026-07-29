@@ -1,59 +1,190 @@
-<!DOCTYPE HTML>
-<!--
-	Story by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>ASB-Group-Website</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<link rel="stylesheet" href="assets/css/mobile.css" />
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASB — Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+<link rel="stylesheet" href="assets/css/mobile.css" />
+<style>
+  :root{ --ink:#30363d; --blue:#47D3E5; --pink:#db8992; --shadow:15,18,21; }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:'Source Sans Pro',system-ui,sans-serif;color:var(--ink);background:#fff}
 
-		<!-- Wrapper -->
-		<div id="wrapper" class="divided">
+  /* ---------- scroll stage ---------- */
+  .hero-scroll{height:100vh;position:relative}
+  .hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;--p:0}
+#heroSticky .hero-text h1 .hero-logo{
+  display:block;
+  width:min(860px,72%);
+  height:auto;
+  margin:0;
+  filter:drop-shadow(0 2px 24px rgba(var(--shadow),.6));
+}
+#heroSticky .hero-text h1{margin:0}
+  .hero-bg{position:absolute;inset:0}
+  .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 42%;display:block}
 
-<section class="banner style1 orient-left content-align-left image-position-right fullscreen onload-image-fade-in onload-content-fade-right">
-	<div class="content">
+  /* baseline scrim: always on, just enough to seat the title */
+  .scrim-base{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to top,
+      rgba(var(--shadow),.92) 0%,
+      rgba(var(--shadow),.68) 22%,
+      rgba(var(--shadow),.38) 44%,
+      rgba(var(--shadow),.12) 66%,
+      rgba(var(--shadow),0) 82%);}
 
-		<nav class="hero-menu">
-			<a href="research.html">OUR RESEARCH</a>
-			<a href="who-we-are.html">WHO WE ARE</a>
-			<a href="Connections.html">CONNECTIONS</a>
-			<a href="publications.html">PUBLICATIONS</a>
-		</nav>
+  /* scroll scrim: deepens to cover the bottom half, faces stay clear */
+  .scrim-scroll{position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:linear-gradient(to top,
+      rgba(var(--shadow),.97) 0%,
+      rgba(var(--shadow),.94) 28%,
+      rgba(var(--shadow),.72) 40%,
+      rgba(var(--shadow),.28) 46%,
+      rgba(var(--shadow),0) 51%);}
 
-		<h1>Algebraic Systems Biology</h1>
+  /* ---------- text ---------- */
+  .hero-text{position:absolute;left:0;right:0;bottom:0;z-index:3;
+    padding:0 5vw 2vh;display:flex;flex-direction:column;justify-content:flex-end;
+    max-width:64rem}
+  #heroSticky .hero-text h1{color:#fff;font-weight:300;letter-spacing:-.05em;line-height:1.2;
+    font-size:3.5rem;margin:0;
+    text-shadow:0 2px 24px rgba(var(--shadow),.6)}
+  #heroSticky .hero-text p{color:rgba(255,255,255,.94);font-size:1rem;font-weight:300;
+    line-height:1.65;max-width:46rem;margin:0 0 .95rem;
+    transform:translateY(calc(22px * (1 - var(--p))))}
+  #heroSticky .hero-text p:last-child{margin-bottom:0}
+  #heroSticky .hero-text p:nth-of-type(1){opacity:calc((var(--p) - .04) * 3.6)}
+  #heroSticky .hero-text p:nth-of-type(2){opacity:calc((var(--p) - .18) * 3.6)}
+  #heroSticky .hero-text p:nth-of-type(3){opacity:calc((var(--p) - .32) * 3.6)}
 
-		<p class="major">
-			Science draws on mathematics and provides a playground for mathematicians.
-		</p>
+  /* scroll cue, fades as you go */
+  .cue{position:absolute;bottom:2vh;right:5vw;z-index:3;color:rgba(255,255,255,.7);
+    font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    opacity:calc(1 - var(--p) * 3);display:flex;align-items:center;gap:.6rem}
+  .cue span{display:block;width:1px;height:26px;background:rgba(255,255,255,.5)}
 
-		<p class="major">
-			We develop mathematics for living systems, combining theory, computation, models, and data.
-		</p>
+  /* ---------- spinning-icon reveal menu ---------- */
+  .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem}
+  .nav-toggle{width:68px;height:68px;border:none!important;padding:0;background:transparent!important;cursor:pointer;
+    box-shadow:none!important;border-radius:0;flex:none;
+    display:grid;place-items:center;
+    transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  .nav-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+  .nav.open .nav-toggle{transform:rotate(225deg)}
+  .nav-toggle svg{width:44px;height:44px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  .nav-toggle .b{fill:var(--blue)} .nav-toggle .p{fill:var(--pink)} .nav-toggle .c{fill:#fff}
+  .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:0;
+    min-width:230px;opacity:0;transform:translateY(-8px);
+    pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+  .nav.open .nav-links{opacity:1;transform:none;pointer-events:auto;
+    background:#fff;border-radius:6px;padding:.25rem 1.1rem;
+    box-shadow:0 6px 24px rgba(0,0,0,.22)}
+  .nav-links a{text-decoration:none;color:#30363d;text-transform:uppercase;letter-spacing:.08em;
+    font-size:.82rem;font-weight:600;white-space:nowrap;
+    padding:.7rem 0;border-top:1px solid rgba(0,0,0,.14);
+    opacity:0;transform:translateY(4px);
+    transition:color .2s,opacity .4s,transform .4s}
+  .nav-links a:first-child{border-top:0}
+  .nav.open .nav-links a{opacity:1;transform:none}
+  .nav.open .nav-links a:nth-child(1){transition-delay:.05s}
+  .nav.open .nav-links a:nth-child(2){transition-delay:.11s}
+  .nav.open .nav-links a:nth-child(3){transition-delay:.17s}
+  .nav.open .nav-links a:nth-child(4){transition-delay:.23s}
+  .nav-links a:hover{color:var(--blue)}
 
-		<p class="major">
-			From molecules to tissues, living systems are rich in structure. We use the mathematics of shape, dynamics, and high-dimensional data to find it.
-		</p>	
+  @media (max-width:860px){
+    .nav{top:1.25rem;left:1.25rem}
+    .nav-links{min-width:180px}
+    .nav-links a{font-size:.72rem;letter-spacing:.05em}
+    .hero-text{padding:0 1.5rem 2vh}
+    .cue{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .hero-scroll{height:100vh}
+    .hero-text p{opacity:1!important;transform:none!important}
+    .scrim-scroll{opacity:0!important}
+    .cue{display:none}
+    .nav-toggle,.nav-links,.nav-links a{transition:none!important}
+  }
+</style>
+</head>
+<body>
 
-				</div>
+  <nav class="nav" id="nav" aria-label="Primary">
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle class="c" cx="20" cy="20" r="4.4"/>
+        <circle class="b" cx="20" cy="6" r="3.4"/><circle class="p" cx="20" cy="34" r="3.4"/>
+        <circle class="b" cx="6" cy="20" r="3.4"/><circle class="p" cx="34" cy="20" r="3.4"/>
+        <circle class="b" cx="10" cy="10" r="2.4"/><circle class="p" cx="30" cy="30" r="2.4"/>
+        <circle class="p" cx="30" cy="10" r="2.4"/><circle class="b" cx="10" cy="30" r="2.4"/>
+      </svg>
+    </button>
+<div class="nav-links" id="navLinks">
+  <a href="research.html">RESEARCH</a>
+  <a href="who-we-are.html">PEOPLE</a>
+  <a href="publications.html">PAPERS</a>
+  <a href="Connections.html">ENGAGE</a>
+</div>
+  </nav>
 
-				<div class="image">
-					<img src="images/banner2.jpg" alt="" />
-				</div>
-			</section>
+  <div id="wrapper" class="divided">
 
+  <section class="hero-scroll" id="heroScroll">
+    <div class="hero-sticky" id="heroSticky">
+      <div class="hero-bg">
+        <img alt="Members of the ASB group at a blackboard" src="images/Blackboard.TeamB&W.jpg" />
+      </div>
+      <div class="scrim-base"></div>
+      <div class="scrim-scroll"></div>
 
+      <div class="hero-text">
+       <h1><img class="hero-logo" src="images/Logotransparentbackground.png" alt="Algebraic Systems Biology" /></h1>
+        </div>
 
+      <div class="cue">Scroll <span></span></div>
+    </div>
+  </section>
+
+  <section class="wrapper style1">
+    <div class="inner">
+      <h1>Algebraic Systems Biology</h1>
+      <p class="major">Science draws on mathematics and provides a playground for mathematicians. We develop mathematics for living systems, combining theory, computation, models, and data. From molecules to tissues, living systems are rich in structure. We use the mathematics of shape, dynamics, and high-dimensional data to find it.</p>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var nav=document.getElementById('nav'),btn=document.getElementById('navToggle');
+      function setOpen(o){nav.classList.toggle('open',o);
+        btn.setAttribute('aria-expanded',o?'true':'false');
+        btn.setAttribute('aria-label',o?'Close menu':'Open menu');}
+      btn.addEventListener('click',function(){setOpen(!nav.classList.contains('open'))});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+
+      var stage=document.getElementById('heroScroll'),
+          sticky=document.getElementById('heroSticky'),
+          ticking=false;
+      function update(){
+        var rect=stage.getBoundingClientRect(),
+            travel=stage.offsetHeight-window.innerHeight,
+            p=travel>0 ? Math.min(1,Math.max(0,-rect.top/travel)) : 1;
+        sticky.style.setProperty('--p',p.toFixed(4));
+        ticking=false;
+      }
+      function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update);} }
+      window.addEventListener('scroll',onScroll,{passive:true});
+      window.addEventListener('resize',onScroll);
+      update();
+    })();
+  </script>
 
 					<!-- Get Involved -->
-<section class="wrapper style1 align-center">
 	<section id="contact" class="wrapper style1 align-center">
   <div class="inner">
     <h2>Get Involved</h2>
