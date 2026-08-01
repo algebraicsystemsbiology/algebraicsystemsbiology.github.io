@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ASB — Hero</title>
+<title>ASB - Hero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/css/main.css" />
@@ -15,21 +15,19 @@
   html,body{margin:0}
   body{font-family:'Source Sans Pro',system-ui,sans-serif;color:var(--ink);background:#fff}
 
-  /* ---------- scroll stage ---------- */
   .hero-scroll{height:100vh;position:relative}
   .hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;--p:0}
-#heroSticky .hero-text h1 .hero-logo{
-  display:block;
-  width:min(860px,72%);
-  height:auto;
-  margin:0;
-  filter:drop-shadow(0 2px 24px rgba(var(--shadow),.6));
-}
-#heroSticky .hero-text h1{margin:0}
+  #heroSticky .hero-text h1 .hero-logo{
+    display:block;
+    width:min(860px,72%);
+    height:auto;
+    margin:0;
+    filter:drop-shadow(0 2px 24px rgba(var(--shadow),.6));
+  }
+  #heroSticky .hero-text h1{margin:0}
   .hero-bg{position:absolute;inset:0}
   .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 42%;display:block}
 
-  /* baseline scrim: always on, just enough to seat the title */
   .scrim-base{position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(to top,
       rgba(var(--shadow),.92) 0%,
@@ -38,7 +36,6 @@
       rgba(var(--shadow),.12) 66%,
       rgba(var(--shadow),0) 82%);}
 
-  /* scroll scrim: deepens to cover the bottom half, faces stay clear */
   .scrim-scroll{position:absolute;inset:0;pointer-events:none;opacity:0;
     background:linear-gradient(to top,
       rgba(var(--shadow),.97) 0%,
@@ -47,7 +44,6 @@
       rgba(var(--shadow),.28) 46%,
       rgba(var(--shadow),0) 51%);}
 
-  /* ---------- text ---------- */
   .hero-text{position:absolute;left:0;right:0;bottom:0;z-index:3;
     padding:0 5vw 2vh;display:flex;flex-direction:column;justify-content:flex-end;
     max-width:64rem}
@@ -62,13 +58,11 @@
   #heroSticky .hero-text p:nth-of-type(2){opacity:calc((var(--p) - .18) * 3.6)}
   #heroSticky .hero-text p:nth-of-type(3){opacity:calc((var(--p) - .32) * 3.6)}
 
-  /* scroll cue, fades as you go */
   .cue{position:absolute;bottom:2vh;right:5vw;z-index:3;color:rgba(255,255,255,.7);
     font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
     opacity:calc(1 - var(--p) * 3);display:flex;align-items:center;gap:.6rem}
   .cue span{display:block;width:1px;height:26px;background:rgba(255,255,255,.5)}
 
-  /* ---------- spinning-icon reveal menu ---------- */
   .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem}
   .nav-toggle{width:68px;height:68px;border:none!important;padding:0;background:transparent!important;cursor:pointer;
     box-shadow:none!important;border-radius:0;flex:none;
@@ -97,13 +91,37 @@
   .nav.open .nav-links a:nth-child(4){transition-delay:.23s}
   .nav-links a:hover{color:var(--blue)}
 
+  .themes-shell{
+    width:100vw;
+    margin:0;
+    position:relative;
+    left:50%;
+    transform:translateX(-50%);
+  }
+
+  #themesFrame{
+    width:100%;
+    border:0;
+    display:block;
+    min-height:520px;
+    height: 5px;20px;
+    background:#fff;
+  }
+
   @media (max-width:860px){
     .nav{top:1.25rem;left:1.25rem}
     .nav-links{min-width:180px}
     .nav-links a{font-size:.72rem;letter-spacing:.05em}
     .hero-text{padding:0 1.5rem 2vh}
     .cue{display:none}
+    #themesFrame{min-height:380px;height:380px;}
   }
+
+  @media (max-width:600px){
+    .hero-text{padding:0 1rem 2vh}
+    #themesFrame{min-height:460px;height:460px;}
+  }
+
   @media (prefers-reduced-motion:reduce){
     .hero-scroll{height:100vh}
     .hero-text p{opacity:1!important;transform:none!important}
@@ -125,139 +143,168 @@
         <circle class="p" cx="30" cy="10" r="2.4"/><circle class="b" cx="10" cy="30" r="2.4"/>
       </svg>
     </button>
-<div class="nav-links" id="navLinks">
-  <a href="research.html">RESEARCH</a>
-  <a href="who-we-are.html">PEOPLE</a>
-  <a href="publications.html">PAPERS</a>
-  <a href="Connections.html">ENGAGE</a>
-</div>
+    <div class="nav-links" id="navLinks">
+      <a href="research.html">RESEARCH</a>
+      <a href="people.html">PEOPLE</a>
+      <a href="publications.html">PAPERS</a>
+      <a href="engage.html">ENGAGE</a>
+    </div>
   </nav>
 
   <div id="wrapper" class="divided">
 
-  <section class="hero-scroll" id="heroScroll">
-    <div class="hero-sticky" id="heroSticky">
-      <div class="hero-bg">
-        <img alt="Members of the ASB group at a blackboard" src="images/Blackboard.TeamB&W.jpg" />
-      </div>
-      <div class="scrim-base"></div>
-      <div class="scrim-scroll"></div>
+    <section class="hero-scroll" id="heroScroll">
+      <div class="hero-sticky" id="heroSticky">
+        <div class="hero-bg">
+          <img alt="Members of the ASB group at a blackboard" src="images/Blackboard.TeamB&W.jpg" />
+        </div>
+        <div class="scrim-base"></div>
+        <div class="scrim-scroll"></div>
 
-      <div class="hero-text">
-       <h1><img class="hero-logo" src="images/Logotransparentbackground.png" alt="Algebraic Systems Biology" /></h1>
+        <div class="hero-text">
+          <h1><img class="hero-logo" src="images/Logotransparentbackground.png" alt="Algebraic Systems Biology" /></h1>
         </div>
 
-      <div class="cue">Scroll <span></span></div>
-    </div>
-  </section>
+        <div class="cue">Scroll <span></span></div>
+      </div>
+    </section>
 
-  <section class="wrapper style1">
-    <div class="inner">
-      <h1>Algebraic Systems Biology</h1>
-      <p class="major">Science draws on mathematics and provides a playground for mathematicians. We develop mathematics for living systems, combining theory, computation, models, and data. From molecules to tissues, living systems are rich in structure. We use the mathematics of shape, dynamics, and high-dimensional data to find it.</p>
-    </div>
-  </section>
+    <section class="wrapper style1">
+      <div class="inner">
+        <h1>Algebraic Systems Biology</h1>
 
-  <script>
-    (function(){
-      var nav=document.getElementById('nav'),btn=document.getElementById('navToggle');
-      function setOpen(o){nav.classList.toggle('open',o);
-        btn.setAttribute('aria-expanded',o?'true':'false');
-        btn.setAttribute('aria-label',o?'Close menu':'Open menu');}
-      btn.addEventListener('click',function(){setOpen(!nav.classList.contains('open'))});
-      document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+        <p class="major">
+          Science draws on mathematics and provides a playground for mathematicians.
+          We develop mathematics for living systems, combining theory, computation,
+          models, and data. From molecules to tissues, living systems are rich in
+          structure. We use the mathematics of shape, dynamics, and high-dimensional
+          data to find it. You can see the research themes and how they connect in the diagram below.
+        </p>
+      </div>
 
-      var stage=document.getElementById('heroScroll'),
-          sticky=document.getElementById('heroSticky'),
+      <div class="themes-shell">
+        <iframe
+          id="themesFrame"
+          src="Data Viz/arc-diagram.html"
+          title="How research themes connect"
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
+    <script>
+      (function(){
+        var nav=document.getElementById('nav'),btn=document.getElementById('navToggle');
+        function setOpen(o){nav.classList.toggle('open',o);
+          btn.setAttribute('aria-expanded',o?'true':'false');
+          btn.setAttribute('aria-label',o?'Close menu':'Open menu');}
+        btn.addEventListener('click',function(){setOpen(!nav.classList.contains('open'))});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+
+        var stage=document.getElementById('heroScroll'),
+            sticky=document.getElementById('heroSticky'),
+            ticking=false;
+        function update(){
+          var rect=stage.getBoundingClientRect(),
+              travel=stage.offsetHeight-window.innerHeight,
+              p=travel>0 ? Math.min(1,Math.max(0,-rect.top/travel)) : 1;
+          sticky.style.setProperty('--p',p.toFixed(4));
           ticking=false;
-      function update(){
-        var rect=stage.getBoundingClientRect(),
-            travel=stage.offsetHeight-window.innerHeight,
-            p=travel>0 ? Math.min(1,Math.max(0,-rect.top/travel)) : 1;
-        sticky.style.setProperty('--p',p.toFixed(4));
-        ticking=false;
-      }
-      function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update);} }
-      window.addEventListener('scroll',onScroll,{passive:true});
-      window.addEventListener('resize',onScroll);
-      update();
-    })();
-  </script>
+        }
+        function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update);} }
+        window.addEventListener('scroll',onScroll,{passive:true});
+        window.addEventListener('resize',onScroll);
+        update();
 
-					<!-- Get Involved -->
-	<section id="contact" class="wrapper style1 align-center">
-  <div class="inner">
-    <h2>Get Involved</h2>
-    <h4>The group welcomes collaboration across mathematics, biology, and medicine</h4>
-    <div class="items style1 medium">
+        var frame=document.getElementById('themesFrame');
+        function setFrameHeight(h){
+          if(!h || !isFinite(h)) return;
+          frame.style.height=Math.max(240, Math.ceil(h))+'px';
+        }
 
-      <section>
-        <span class="icon solid style2 major fa-flask"></span>
-        <h3>Collaborate</h3>
-        <p>
-          If you are working on a biological or clinical problem that may be
-          amenable to mathematical analysis — particularly where standard
-          statistical approaches have reached their limits — we would like
-          to hear from you.
-        </p>
-      </section>
+        window.addEventListener('message', function(e){
+          var data=e.data || {};
+          if(data.type !== 'asb-arc-resize') return;
+          if(e.source !== frame.contentWindow) return;
+          setFrameHeight(data.height);
+        });
 
-      <section>
-        <span class="icon solid style2 major fa-graduation-cap"></span>
-        <h3>Join the group</h3>
-        <p>
-          We are always looking for mathematicians, computational scientists,
-          and quantitative biologists who want to work at the boundary between
-          rigorous mathematics and real biological problems. PhD and postdoctoral
-          positions are advertised <a href="https://careers.mpi-cbg.de/">here</a> when available.
-        </p>
-      </section>
+        frame.addEventListener('load', function(){
+          setFrameHeight(frame.getBoundingClientRect().height || 320);
+        });
+      })();
+    </script>
 
-      <section>
-        <span class="icon solid style2 major fa-envelope"></span>
-        <h3>Get in touch</h3>
-        <p>
-          For enquiries about collaboration, visiting, positions, or the group's work,
-          contact us at:<br />
-          <a href="mailto:harringtonoffice@mpi-cbg.de">harringtonoffice@mpi-cbg.de</a>
-        </p>
-      </section>
+    <section id="contact" class="wrapper style1 align-center">
+      <div class="inner">
+        <h2>Get Involved</h2>
+        <h4>The group welcomes collaboration across mathematics, biology, and medicine</h4>
+        <div class="items style1 medium">
 
-    </div>
-  </div>
-</section>
+          <section>
+            <span class="icon solid style2 major fa-flask"></span>
+            <h3>Collaborate</h3>
+            <p>
+              If you are working on a biological or clinical problem that may be
+              amenable to mathematical analysis - particularly where standard
+              statistical approaches have reached their limits - we would like
+              to hear from you.
+            </p>
+          </section>
 
+          <section>
+            <span class="icon solid style2 major fa-graduation-cap"></span>
+            <h3>Join the group</h3>
+            <p>
+              We are always looking for mathematicians, computational scientists,
+              and quantitative biologists who want to work at the boundary between
+              rigorous mathematics and real biological problems. PhD and postdoctoral
+              positions are advertised <a href="https://careers.mpi-cbg.de/">here</a> when available.
+            </p>
+          </section>
 
-			<!-- Footer -->
-	<footer class="wrapper style1 align-center">
-    <div class="inner">
+          <section>
+            <span class="icon solid style2 major fa-envelope"></span>
+            <h3>Get in touch</h3>
+            <p>
+              For enquiries about collaboration, visiting, positions, or the group's work,
+              contact us at:<br />
+              <a href="mailto:harringtonoffice@mpi-cbg.de">harringtonoffice@mpi-cbg.de</a>
+            </p>
+          </section>
+
+        </div>
+      </div>
+    </section>
+
+    <footer class="wrapper style1 align-center">
+      <div class="inner">
         <ul class="icons">
-            <li><a href="https://github.com" class="icon brands style2 fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
-            <li><a href="https://www.mpi-cbg.de/research/researchgroups/currentgroups/heather-harrington/research" class="icon solid style2 fa-globe" target="_blank" rel="noopener"><span class="label">Website</span></a></li>
-            <li><a href="https://www.linkedin.com/in/heather-harrington-7a814a5/" class="icon brands style2 fa-linkedin-in" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
-            <li><a href="mailto:harringtonoffice@mpi-cbg.de" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+          <li><a href="https://github.com" class="icon brands style2 fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+          <li><a href="https://www.mpi-cbg.de/research/researchgroups/currentgroups/heather-harrington/research" class="icon solid style2 fa-globe" target="_blank" rel="noopener"><span class="label">Website</span></a></li>
+          <li><a href="https://www.linkedin.com/in/heather-harrington-7a814a5/" class="icon brands style2 fa-linkedin-in" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+          <li><a href="mailto:harringtonoffice@mpi-cbg.de" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
         </ul>
-<p style="font-size: 0.8rem; color: #aaa; margin-bottom: 0.4rem;">
-    Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG)<br />
-    Pfotenhauerstraße 108, 01307 Dresden-Altstadt, Germany
-</p>
-<p>
-	&copy; ASB Group.
-	<a href="privacy.html">Privacy Policy</a>.
-	Design: <a href="https://html5up.net">HTML5 UP</a>.
-</p>
-    </div>
-</footer>
-		</div>
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 0.4rem;">
+          Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG)<br />
+          Pfotenhauerstraße 108, 01307 Dresden-Altstadt, Germany
+        </p>
+        <p>
+          &copy; ASB Group.
+          <a href="privacy.html">Privacy Policy</a>.
+          Design: <a href="https://html5up.net">HTML5 UP</a>.
+        </p>
+      </div>
+    </footer>
+  </div>
 
-		<!-- Scripts -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/jquery.scrollex.min.js"></script>
+  <script src="assets/js/jquery.scrolly.min.js"></script>
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
 
-	</body>
+</body>
 </html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ASB — Theme connections</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  :root{
+    --ink:#30363d;
+    --muted:#6b7178;
+    --line:#e4e6e9;
+    --bg:#ffffff;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{
+    font-family:"Source Sans Pro",Helvetica,system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  .wrap{
+    max-width:1600px;
+    margin:0 auto;
+    padding:0 1rem 1.25rem;
+  }
+
+  h1{
+    font-weight:300;
+    letter-spacing:-.03em;
+    font-size:1.15rem;
+    margin:0.15rem 0 .18rem;
+  }
+
+  .sub{
+    color:var(--muted);
+    font-size:.95rem;
+    font-weight:300;
+    line-height:1.45;
+    margin:0 0 .22rem;
+    max-width:60rem;
+  }
+
+  #chart{width:100%}
+  svg{
+    width:100%;
+    height:auto;
+    display:block;
+    overflow:visible;
+  }
+
+  .arc{
+    fill:none;
+    transition:stroke-opacity .25s, stroke-width .25s;
+  }
+
+  .seg{cursor:pointer}
+  .seg rect{
+    transition:fill-opacity .25s;
+    stroke:#fff;
+    stroke-width:3;
+  }
+
+  .seg .label{
+    font-size:14px;
+    font-weight:500;
+    fill:var(--ink);
+    pointer-events:none;
+    transition:fill-opacity .25s;
+  }
+
+  .seg .count{
+    font-size:10px;
+    font-weight:400;
+    fill:var(--muted);
+    pointer-events:none;
+    transition:fill-opacity .25s;
+  }
+
+  .faded{opacity:.25}
+
+  .tooltip{
+    position:fixed;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .15s;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    box-shadow:0 6px 24px rgba(15,18,21,.16);
+    padding:.55rem .7rem;
+    font-size:.82rem;
+    line-height:1.4;
+    max-width:16rem;
+    z-index:20;
+  }
+
+  .tooltip strong{
+    display:block;
+    font-weight:600;
+    margin-bottom:.15rem;
+  }
+
+  .tooltip .meta{color:var(--muted)}
+
+  #state-message{
+    color:var(--muted);
+    padding:2rem 0;
+    font-size:.95rem;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .arc,.seg rect,.seg .label,.tooltip{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="chart">
+    <div id="state-message" hidden></div>
+    <svg id="svg" role="img" aria-label="Research themes along a line with arcs showing shared publications"></svg>
+  </div>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const THEME_COLOURS = {
+  "Applied Algebraic Geometry & Tensors":       "#889baa",
+  "Topological Data Analysis":                  "#889baa",
+  "Software & Computational Mathematics":       "#889baa",
+  "Identifiability, Statistics, & AI":          "#968d91",
+  "Dynamical Systems & Mathematical Modelling": "#968d91",
+  "Biological Networks":                        "#968d91",
+  "Morphology & Spatial Biology":               "#968d91",
+  "Omics":                                      "#c8a699",
+  "Oncology":                                   "#c8a699",
+  "Immunology":                                 "#c8a699",
+  "Neuroscience":                               "#c8a699",
+};
+
+const THEMES = Object.keys(THEME_COLOURS);
+
+const SHORT = {
+  "Applied Algebraic Geometry & Tensors":"Alg. Geometry",
+  "Topological Data Analysis":"TDA",
+  "Software & Computational Mathematics":"Software & Comp. Math",
+  "Identifiability, Statistics, & AI":"Stats & AI",
+  "Dynamical Systems & Mathematical Modelling":"Dynamical Sys.",
+  "Biological Networks":"Bio Networks",
+  "Morphology & Spatial Biology":"Morphology",
+  "Omics":"Omics",
+  "Oncology":"Oncology",
+  "Immunology":"Immunology",
+  "Neuroscience":"Neuroscience",
+};
+
+function themeSlug(theme){
+  return String(theme || '')
+    .trim()
+    .toLowerCase()
+    .replace(/&amp;/g,'and')
+    .replace(/&/g,'and')
+    .replace(/\+/g,'plus')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+}
+
+const DATA_URL = './data/publications.json';
+
+const SAMPLE = (() => {
+  const t = THEMES, out = [];
+  const P = (...ks) => out.push({ keywords: ks });
+  const plan = [
+    [0,0,8],[0,2,4],[0,4,3],[2,3,3],[3,4,2],[4,5,4],
+    [1,5,2],[1,4,3],[1,6,2],[5,6,2],[6,7,3],[7,8,4],
+    [8,9,3],[3,7,2],[8,10,2],[9,10,2],[6,8,2],[0,3,2],
+    [2,2,3],[9,9,2],[10,10,1],[1,1,2],
+  ];
+  plan.forEach(([a,b,n]) => {
+    for(let i=0;i<n;i++) P(t[a],t[b]);
+  });
+  return out;
+})();
+
+async function loadPubs(){
+  try{
+    const res = await fetch(DATA_URL, { cache:'no-store' });
+    if(!res.ok) throw new Error(String(res.status));
+    const raw = await res.json();
+    return Object.values(raw);
+  }catch(err){
+    return SAMPLE;
+  }
+}
+
+function build(pubs){
+  const themeIndex = {};
+  THEMES.forEach((t,i) => { themeIndex[t] = i; });
+
+  const n = THEMES.length;
+  const matrix = Array.from({length:n}, () => Array(n).fill(0));
+  const counts = Array(n).fill(0);
+
+  pubs.forEach(p => {
+    const kws = [...new Set((p.keywords || []).filter(k => k in themeIndex))];
+    kws.forEach(k => { counts[themeIndex[k]]++; });
+
+    for(let a=0;a<kws.length;a++){
+      for(let b=a+1;b<kws.length;b++){
+        const i = themeIndex[kws[a]];
+        const j = themeIndex[kws[b]];
+        matrix[i][j]++;
+        matrix[j][i]++;
+      }
+    }
+  });
+
+  const nodes = THEMES
+    .map((theme,i) => ({ theme, index:i, count:counts[i] }))
+    .filter(d => d.count > 0);
+
+  const links = [];
+  for(let i=0;i<n;i++){
+    for(let j=i+1;j<n;j++){
+      if(matrix[i][j] > 0){
+        links.push({ source:i, target:j, weight:matrix[i][j] });
+      }
+    }
+  }
+
+  return { nodes, links };
+}
+
+function render(data){
+  const svg = d3.select('#svg');
+  svg.selectAll('*').remove();
+
+  if(!data.nodes.length){
+    svg.style('display','none');
+    const m = document.getElementById('state-message');
+    m.textContent = 'No publications tagged with themes yet.';
+    m.hidden = false;
+    return;
+  }
+
+  const W = 1600;
+  const margin = { left: 200, right: 200 };
+  const innerW = W - margin.left - margin.right;
+
+  const baseY = 680;
+
+  // dot radius ∝ sqrt(publication count)
+  const rMax = d3.max(data.nodes, d => d.count) || 1;
+  const rScale = d3.scaleSqrt().domain([1, rMax]).range([6, 30]);
+
+  // nodes evenly spaced across the width
+  const nUsed = data.nodes.length;
+  const step = nUsed > 1 ? innerW / (nUsed - 1) : 0;
+  data.nodes.forEach((d, i) => {
+    d.r = rScale(d.count);
+    d.mid = margin.left + i * step;
+    d.x0 = d.mid;
+    d.x1 = d.mid;
+    d.w = Math.max(d.r * 1.4, 14);
+  });
+
+  const posByIndex = new Map(data.nodes.map(d => [d.index, d]));
+  const links = data.links.filter(l => posByIndex.has(l.source) && posByIndex.has(l.target));
+
+  const contentL = data.nodes[0].mid - data.nodes[0].r;
+  const contentR = data.nodes[data.nodes.length - 1].mid + data.nodes[data.nodes.length - 1].r;
+
+  let topY = baseY;
+  links.forEach(l => {
+    const a = posByIndex.get(l.source);
+    const b = posByIndex.get(l.target);
+    const span = Math.abs(a.mid - b.mid);
+    const h = Math.min(baseY - 200, 180 + span * 1.15);
+    topY = Math.min(topY, baseY - h);
+  });
+
+  const padX = 24;
+  const padTop = 4;
+  const padBot = 4;
+
+  const vbX = contentL - padX;
+  const lift = 140;
+  const vbY = topY - padTop + lift;
+  const vbW = (contentR - contentL) + padX * 2;
+  const vbH = (baseY - topY) + padTop + padBot;
+
+  svg.attr('viewBox', `${vbX} ${vbY} ${vbW} ${vbH}`);
+
+  const strands = [];
+  links.forEach(l => {
+    for(let k=0;k<l.weight;k++){
+      strands.push({ source:l.source, target:l.target, k, of:l.weight });
+    }
+  });
+
+  const slotState = new Map(data.nodes.map(d => [d.index, { used:0, total:0 }]));
+  strands.forEach(s => {
+    slotState.get(s.source).total++;
+    slotState.get(s.target).total++;
+  });
+
+  const anchorSpread = 0.78;
+
+  function wrapLabel(text, width) {
+    text.each(function() {
+      const textSel = d3.select(this);
+      const words = textSel.text().split(/\s+/).reverse();
+      let word;
+      let line = [];
+      let lineNumber = 0;
+      const lineHeight = 1.05;
+      const x = textSel.attr('x');
+      const y = textSel.attr('y');
+      const dy = 0;
+
+      let tspan = textSel.text(null)
+        .append('tspan')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('dy', dy + 'em');
+
+      while ((word = words.pop())) {
+        line.push(word);
+        tspan.text(line.join(' '));
+
+        if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = textSel.append('tspan')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('dy', (++lineNumber * lineHeight + dy) + 'em')
+            .text(word);
+        }
+      }
+    });
+  }
+
+  function anchorX(block, state){
+    const n = Math.max(state.total, 1);
+    const usable = block.w * anchorSpread;
+    const x0 = block.mid - usable / 2;
+    const step = n > 1 ? usable / (n - 1) : 0;
+    const x = n > 1 ? x0 + state.used * step : block.mid;
+    state.used++;
+    return x;
+  }
+
+  const arcG = svg.append('g');
+
+  const arcs = arcG.selectAll('path.arc')
+    .data(strands)
+    .join('path')
+    .attr('class', 'arc')
+    .attr('d', s => {
+      const a = posByIndex.get(s.source);
+      const b = posByIndex.get(s.target);
+      const x1 = anchorX(a, slotState.get(s.source));
+      const x2 = anchorX(b, slotState.get(s.target));
+      const mid = (x1 + x2) / 2;
+      const span = Math.abs(x2 - x1);
+      const h = Math.min(baseY - 30, 180 + span * 1.15);
+      return `M${x1},${baseY} Q${mid},${baseY - h} ${x2},${baseY}`;
+    })
+    .attr('stroke', s => THEME_COLOURS[posByIndex.get(s.source).theme] || '#bbb')
+    .attr('stroke-width', 0.8)
+    .attr('stroke-opacity', 0.34);
+
+  const segG = svg.append('g');
+
+  const seg = segG.selectAll('g.seg')
+    .data(data.nodes)
+    .join('g')
+    .attr('class', 'seg');
+
+  seg.append('circle')
+    .attr('cx', d => d.mid)
+    .attr('cy', baseY)
+    .attr('r', d => d.r)
+    .attr('fill', d => THEME_COLOURS[d.theme])
+    .attr('fill-opacity', 0.92)
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 2);
+
+  seg.append('text')
+    .attr('class', 'label')
+    .attr('x', d => d.mid)
+    .attr('y', d => baseY + d.r + 24)
+    .attr('text-anchor', 'middle')
+    .text(d => SHORT[d.theme] || d.theme)
+    .each(function() {
+      wrapLabel(d3.select(this), Math.max(step * 0.9, 90));
+    });
+
+  const tooltip = d3.select('#tooltip');
+  const neighbours = new Map(data.nodes.map(d => [d.index, new Set()]));
+  links.forEach(l => {
+    neighbours.get(l.source).add(l.target);
+    neighbours.get(l.target).add(l.source);
+  });
+
+  seg
+    .on('mouseenter', function(ev, d){
+      const keep = neighbours.get(d.index);
+      seg.classed('faded', n => n.index !== d.index && !keep.has(n.index));
+      arcs
+        .attr('stroke-opacity', s => (s.source === d.index || s.target === d.index) ? 0.78 : 0.06)
+        .attr('stroke-width', s => (s.source === d.index || s.target === d.index) ? 1 : 0.8);
+
+      const conn = keep.size;
+      tooltip.html(
+        `<strong>${d.theme}</strong>` +
+        `<span class="meta">${d.count} publication${d.count === 1 ? '' : 's'} · ${conn} connection${conn === 1 ? '' : 's'}</span>`
+      ).style('opacity', 1);
+    })
+    .on('mousemove', ev => {
+      tooltip
+        .style('left', (ev.clientX + 14) + 'px')
+        .style('top', (ev.clientY + 14) + 'px');
+    })
+    .on('mouseleave', function(){
+      seg.classed('faded', false);
+      arcs.attr('stroke-opacity', 0.34).attr('stroke-width', 0.8);
+      tooltip.style('opacity', 0);
+    })
+}
+
+loadPubs().then(pubs => render(build(pubs)));
+</script>
+</body>
+</html>
