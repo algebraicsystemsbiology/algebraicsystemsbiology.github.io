@@ -76,6 +76,15 @@
     border-bottom:0;
   }
   .wrapper.style1 .inner .major a:hover{ color:var(--blue); text-decoration:none; }
+  /* Tighten the vertical gap between the three theme layers.
+     Theme default is 7rem top / 5rem bottom, which stacks to ~12rem
+     between sections. Reduce to close the white band. */
+  #themes > .inner,
+  #layer2 > .inner,
+  #layer3 > .inner{
+    padding-top:3rem;
+    padding-bottom:2rem;
+  }
 </style>
 </head>
 
@@ -109,7 +118,7 @@
 </section>
 
     <section class="wrapper style1">
-      <div class="inner">
+      <div class="inner" style="padding-bottom: 2rem;">
         <h1>Our Research</h1>
 
         <p class="major">

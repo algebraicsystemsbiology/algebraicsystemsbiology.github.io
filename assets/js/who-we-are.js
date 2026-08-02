@@ -52,9 +52,10 @@
     if (!container) return;
     container.innerHTML = '';
 
+    const surname = m => (m.name_last || (m.name_full || '').split(' ').pop() || '');
     const current = Object.values(members)
       .filter(m => m.temporal_tag === 'Current' && m.name_full)
-      .sort((a, b) => (a.name_full || '').localeCompare(b.name_full || ''));
+      .sort((a, b) => surname(a).localeCompare(surname(b)));
 
     current.forEach(m => {
       const card = document.createElement('section');
