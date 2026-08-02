@@ -66,6 +66,14 @@
     .nav-toggle,.nav-links,.nav-links a{transition:none!important}
   }
 
+  /* Research intro links — aqua, no underline, matching the home page. */
+  .wrapper.style1 .inner .major a{
+    color:var(--blue);
+    font-weight:600;
+    text-decoration:none;
+    border-bottom:0;
+  }
+  .wrapper.style1 .inner .major a:hover{ color:var(--blue); text-decoration:none; }
 </style>
 </head>
 
@@ -91,49 +99,61 @@
       <a href="index.html">HOME</a>
       <a href="research.html">RESEARCH</a>
       <a href="people.html">PEOPLE</a>
-      <a href="publications.html">PAPERS</a>
+      <a href="publications.html">PUBLICATIONS</a>
       <a href="engage.html">ENGAGE</a>
     </div>
   </nav>
 	</div>
 </section>
 
+    <section class="wrapper style1">
+      <div class="inner">
+        <h1>Our Research</h1>
+
+        <p class="major">
+          Mathematics comes first; the complexity of living systems demand methods that can meet real biological data. 
+		  We call this applicable mathematics. And we apply the result to translational questions in medicine
+          and biology that could not be reached otherwise. Each layer below — the
+          mathematics, the methods, the translational questions — holds a set of
+          research themes: the same themes connected on the
+          <a href="index.html">home page</a> and mapped to the people behind them on
+          <a href="people.html">People</a>.
+        </p>
+      </div>
+    </section>
+
 <!-- Layer 1 -->
 <section id="themes" class="wrapper style1 align-center">
 	<div class="inner" style="padding-top: 2rem; padding-bottom: 2rem;">
-		<h2>Creating mathematics for biology</h2>
-		<h3>Mathematics built for the complexity of living systems</h3>
+		<h2>Mathematics built for the complexity of living systems</h2>
 
 		<p>
 			Biology doesn't fit neatly into the mathematics built for physics or engineering.
-			Living systems are nonlinear, high-dimensional, and irreducibly messy. Their data lives on curved surfaces, in tensor structures, in topological shapes, not flat Euclidean space. Here are the tools we use. 
+			Living systems are nonlinear, high-dimensional, and irreducibly messy. Their data lives on curved surfaces, in tensor structures, in topological shapes, not flat Euclidean space.
 		</p>
 	</div>
 
 	<div class="gallery style2 big onscroll-fade-in">
 
-<article>
-	<div class="image">
-		<img src="images/gallery/thumbs/01.jpg" alt="" />
-	</div>
+			<article>
+				<div class="image">
+					<img src="images/gallery/thumbs/01.jpg" alt="" />
+				</div>
 
-	<div class="caption">
-		<h3>Applied Algebraic Geometry &amp; Tensors</h3>
+				<div class="caption">
+					<h3>Applied Algebraic Geometry &amp; Tensors</h3>
 
-		<p>
-			Algebraic geometry works in the higher-dimensional spaces where the real structure lives — and to know, with mathematical certainty, when that structure can be uniquely recovered.
-		</p>
+					<p>
+						Biological data is not two-dimensional. Algebraic geometry gives us the tools to work in the higher-dimensional spaces where the real structure lives — and to know, with mathematical certainty, when that structure can be uniquely recovered.
+					</p>
 
-		<ul class="actions fixed">
-			<li>
-				<a class="button small"
-				   href="publications.html?theme=applied-algebraic-geometry-and-tensors&label=Applied%20Algebraic%20Geometry%20%26%20Tensors">
-					Details
-				</a>
-			</li>
-		</ul>
-	</div>
-</article>
+					<ul class="actions fixed">
+						<li>
+							<a href="publications.html?theme=applied-algebraic-geometry-and-tensors&label=Applied%20Algebraic%20Geometry%20%26%20Tensors" class="button small">Details</a>
+						</li>
+					</ul>
+				</div>
+			</article>
 
 			<article>
 				<div class="image">
@@ -144,58 +164,16 @@
 					<h3>Topological Data Analysis</h3>
 
 					<p>
-						Shape is information. Topology detects and measures geometric structure in biological data — across scales, across noise — features that alone algebra and statistics can't see.
+						Shape is information. Topology lets us detect and measure geometric structure in biological data — across scales, across noise — capturing features that algebra and statistics alone cannot see.
 					</p>
 
 					<ul class="actions fixed">
 						<li>
-					<a href="publications.html?theme=topological-data-analysis&label=Topological Data Analysis"
-  						 class="button small">
- 						 Details
-					</a>
+							<a href="publications.html?theme=topological-data-analysis&label=Topological Data Analysis" class="button small">Details</a>
 						</li>
 					</ul>
 				</div>
 			</article>
-
-			<article>
-				<div class="image">
-					<img src="images/gallery/thumbs/03.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Software &amp; Computational Mathematics</h3>
-
-					<p>
-						This mathematics requires new algorithms. We build computational tools that make theoretical methods usable — by other researchers, in other systems, at scale.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-<a href="publications.html?theme=software-and-computational-mathematics&label=Software & Computational Mathematics"
-   class="button small">
-  Details
-</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-		</div>
-
-</section>
-
-<!-- Layer 2 -->
-<section id="layer2" class="wrapper style1 align-center">
-	<div class="inner">
-		<h2>Bridging precision and complexity</h2>
-		<h3>Where algebraic precision meets biological uncertainty</h3>
-
-		<p>
-			Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks.
-		</p>
-
-		<div class="gallery style2 big onscroll-fade-in">
 
 			<article>
 				<div class="image">
@@ -206,15 +184,12 @@
 					<h3>Identifiability, Statistics &amp; AI</h3>
 
 					<p>
-						What can a model predict? A better question: Can its parameters ever be uniquely determined from data at all? If the answer is no, no amount of computation will produce a trustworthy result.
+						Before asking what a model predicts, we ask a harder question: can its parameters ever be uniquely determined from data at all? If the answer is no, no amount of computation will produce a trustworthy result.
 					</p>
 
 					<ul class="actions fixed">
 						<li>
-<a href="publications.html?theme=identifiability-statistics-and-ai&label=Identifiability, Statistics, & AI"
-   class="button small">
-  Details
-</a>
+							<a href="publications.html?theme=identifiability-statistics-and-ai&label=Identifiability, Statistics, & AI" class="button small">Details</a>
 						</li>
 					</ul>
 				</div>
@@ -229,15 +204,47 @@
 					<h3>Dynamical Systems &amp; Mathematical Modelling</h3>
 
 					<p>
-						Living systems grow, evolve, oscillate, bifurcate, and self-organise, they aren't static — and understanding why requires mathematics that can describe change, stability, and sudden transitions between them.
+						Living systems are not static. They evolve, oscillate, bifurcate, and self-organise — and understanding why requires mathematics that can describe change, stability, and the sudden transitions between them.
 					</p>
 
 					<ul class="actions fixed">
 						<li>
-<a href="publications.html?theme=dynamical-systems-and-mathematical-modelling&label=Dynamical Systems & Mathematical Modeling"
-   class="button small">
-  Details
-</a>
+							<a href="publications.html?theme=dynamical-systems-and-mathematical-modelling&label=Dynamical Systems & Mathematical Modeling" class="button small">Details</a>
+						</li>
+					</ul>
+				</div>
+			</article>
+
+		</div>
+
+</section>
+
+<!-- Layer 2 -->
+<section id="layer2" class="wrapper style1 align-center">
+	<div class="inner">
+		<h2>Where algebraic precision meets biological uncertainty</h2>
+
+		<p>
+			Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks.
+		</p>
+
+	<div class="gallery style2 big onscroll-fade-in">
+
+			<article>
+				<div class="image">
+					<img src="images/gallery/thumbs/03.jpg" alt="" />
+				</div>
+
+				<div class="caption">
+					<h3>Software &amp; Computational Mathematics</h3>
+
+					<p>
+						New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale.
+					</p>
+
+					<ul class="actions fixed">
+						<li>
+							<a href="publications.html?theme=software-and-computational-mathematics&label=Software & Computational Mathematics" class="button small">Details</a>
 						</li>
 					</ul>
 				</div>
@@ -252,15 +259,12 @@
 					<h3>Biological Networks</h3>
 
 					<p>
-					Every cell is governed by networks — of genes, proteins, signals, and feedback loops. This prior knowledge about how a system is wired is too valuable to ignore, and too complex to reason about without algebra and combinatorics.
+						Every cell is governed by networks — of genes, proteins, signals, and feedback loops. This prior knowledge about how a system is wired is too valuable to ignore, and too complex to reason about without algebra and combinatorics.
 					</p>
 
 					<ul class="actions fixed">
 						<li>
-<a href="publications.html?theme=biological-networks&label=Biological Networks"
-   class="button small">
-  Details
-</a>
+							<a href="publications.html?theme=biological-networks&label=Biological Networks" class="button small">Details</a>
 						</li>
 					</ul>
 				</div>
@@ -275,15 +279,12 @@
 					<h3>Morphology &amp; Spatial Biology</h3>
 
 					<p>
-						Geometric and topological methods show spatial organisation in tissues and imaging data that no standard analysis could find — including cell types and structures that were previously invisible. Because where a cell is matters as much as what it is. 
+						Where a cell is matters as much as what it is. Geometric and topological methods reveal spatial organisation in tissues and imaging data that no standard analysis would find — including cell types and structures that were previously invisible.
 					</p>
 
 					<ul class="actions fixed">
 						<li>
-<a href="publications.html?theme=morphology-and-spatial-biology&label=Morphology & Spatial Biology"
-   class="button small">
-  Details
-</a>
+							<a href="publications.html?theme=morphology-and-spatial-biology&label=Morphology & Spatial Biology" class="button small">Details</a>
 						</li>
 					</ul>
 				</div>
@@ -298,10 +299,9 @@
 
 	<div class="inner">
 		<h2>Translational applications</h2>
-		<h3>Answering biomedical questions that could not be answered otherwise</h3>
 
 		<p>
-			The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense.
+			The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense; We are answering biomedical questions that could not be answered otherwise
 		</p>
 	</div>
 

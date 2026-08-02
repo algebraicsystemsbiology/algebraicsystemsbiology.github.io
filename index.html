@@ -122,6 +122,24 @@
     #themesFrame{min-height:460px;height:460px;}
   }
 
+  /* Onward-pointing line under the intro — lighter than .major, signals
+     that the site continues into Research and People. */
+  .intro-onward{
+    font-size:1.05rem;
+    line-height:1.6;
+    color:#5a616b;
+    max-width:46rem;
+    margin:1.25rem auto 0;
+  }
+  .intro-onward a{
+    color:var(--blue);
+    font-weight:600;
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .2s;
+  }
+  .intro-onward a:hover{ border-bottom-color:var(--blue); }
+
   @media (prefers-reduced-motion:reduce){
     .hero-scroll{height:100vh}
     .hero-text p{opacity:1!important;transform:none!important}
@@ -178,7 +196,13 @@
           We develop mathematics for living systems, combining theory, computation,
           models, and data. From molecules to tissues, living systems are rich in
           structure. We use the mathematics of shape, dynamics, and high-dimensional
-          data to find it. You can see the research themes and how they connect in the diagram below.
+          data to find it.
+        </p>
+
+        <p class="intro-onward">
+          Our work spans a set of connected research themes. The diagram below shows
+          how they relate. <a href="research.html">Research</a> explains each one;
+          <a href="people.html">People</a> shows who works on what.
         </p>
       </div>
 
