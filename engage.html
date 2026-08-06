@@ -895,7 +895,7 @@
 					var spread = document.createElement('div');
 					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
 					var photosHtml = (trip.photos || []).map(function(p) {
-						return '<div class="polaroid"><img src="images/travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight='120px'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
+						return '<div class="polaroid"><img src="images/Travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight='120px'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
 					}).join('');
 					spread.innerHTML =
 						'<div class="spread-header"><div><h3 class="spread-title">' + trip.title + '</h3>' +
@@ -958,7 +958,7 @@
 					var spread = document.createElement('div');
 					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
 					var photosHtml = (trip.photos || []).map(function(p) {
-						return '<div class="polaroid"><img src="images/travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight=\'120px\'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
+						return '<div class="polaroid"><img src="images/Travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight=\'120px\'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
 					}).join('');
 					spread.innerHTML =
 						'<div class="spread-header"><div>' +
