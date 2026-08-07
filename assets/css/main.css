@@ -9000,3 +9000,20 @@ input, select, textarea {
 .hero-menu a:hover {
   border-bottom-color: currentColor;
 }
+/* Gallery (style2) — captions are always visible.
+   The template revealed them only on hover, which left the panels as bare
+   background images: unreadable without hovering every tile, and with no
+   hover at all on touch devices. Hover is kept as an enhancement, deepening
+   the overlay. Mobile keeps its own tap-to-reveal behaviour, which lives in
+   mobile.css under max-width 736px and overrides this. */
+	.gallery.style2 article .caption {
+		opacity: 1;
+		-moz-transition: background-color 0.2s ease-in-out;
+		-webkit-transition: background-color 0.2s ease-in-out;
+		-ms-transition: background-color 0.2s ease-in-out;
+		transition: background-color 0.2s ease-in-out;
+	}
+
+	.gallery.style2 article:hover .caption {
+		background-color: rgba(0, 0, 0, 0.7);
+	}
