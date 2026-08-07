@@ -6,7 +6,7 @@ Three repositories, each with one job:
 
 | Repository | Visibility | Holds |
 |---|---|---|
-| **`asb-group-website`** (this one) | public | Pages, styles, scripts, and hand-authored content |
+| **`algebraicsystemsbiology.github.io`** (this one) | public | Pages, styles, scripts, and hand-authored content |
 | **`asb-website-data`** | private | Machine-generated data from Coda: members, publications, member photos |
 | **`asb-group-images`** | private | Cold archive of full-resolution originals and unpublished PDFs |
 
