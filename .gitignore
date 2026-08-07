@@ -1,1 +1,20 @@
 .DS_Store
+
+# Machine-generated website data. It lives in the private asb-website-data
+# repository and is assembled into data/ at deploy time by
+# .github/workflows/deploy.yml.
+#
+# It is kept out of this public repository on purpose: the site displays only
+# current group members, but anything committed here would remain in public
+# git history permanently. Keeping it out means a departed member's photo
+# stops existing publicly when they stop being displayed.
+#
+# For a local preview, fetch the published copies:  ./scripts/fetch-data.sh
+#
+# data/travels.json is hand-authored and IS tracked -- do not add it here.
+/data/group_members.json
+/data/publications.json
+/data/photos/
+
+# Assembled output
+/_site/

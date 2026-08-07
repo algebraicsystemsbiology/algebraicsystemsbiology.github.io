@@ -1,0 +1,105 @@
+name: Deploy site to Pages
+
+# Runs on any push to main, so anyone with write access can deploy without
+# needing Coda credentials or running the sync script locally.
+#
+# repository_dispatch lets asb-website-data trigger a rebuild after a data
+# pull, so new member photos go live without touching this repo.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [data-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue instead of cancelling so a data-triggered
+# build is not dropped by a concurrent content push.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      # Mint a short-lived (~1 hour) installation token instead of holding a
+      # long-lived credential. The GitHub App is org-owned, so this keeps
+      # working when people leave, and is scoped to Contents:read on the single
+      # data repository.
+      - name: Mint a short-lived data-repo token
+        id: data-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.DATA_APP_ID }}
+          private-key: ${{ secrets.DATA_APP_PRIVATE_KEY }}
+          owner: algebraicsystemsbiology
+          repositories: asb-website-data
+
+      # Machine-generated data lives in a private repo so that member photos
+      # do not persist in this repository's public history.
+      - name: Check out generated data
+        uses: actions/checkout@v4
+        with:
+          repository: algebraicsystemsbiology/asb-website-data
+          token: ${{ steps.data-token.outputs.token }}
+          path: .data-src
+          persist-credentials: false
+
+      # Assemble into _site rather than publishing the checkout directly, so
+      # .git, .github and scripts/ can never leak into the deployed artifact.
+      - name: Assemble site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.data-src/' \
+            --exclude '_site/' \
+            --exclude 'scripts/' \
+            --exclude '.gitignore' \
+            ./ _site/
+          mkdir -p _site/data/photos
+          cp .data-src/group_members.json _site/data/
+          cp .data-src/publications.json  _site/data/
+          cp -a .data-src/photos/. _site/data/photos/
+
+      - name: Verify data and site agree
+        run: python3 scripts/check_data.py _site
+
+      - name: Guard against leaked internals
+        run: |
+          set -euo pipefail
+          for p in .git .github .data-src scripts; do
+            if [ -e "_site/$p" ]; then echo "::error::$p leaked into the artifact"; exit 1; fi
+          done
+          if grep -rlE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)' _site/data/*.json >/dev/null 2>&1; then
+            echo "::error::email addresses present in published data"; exit 1
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
