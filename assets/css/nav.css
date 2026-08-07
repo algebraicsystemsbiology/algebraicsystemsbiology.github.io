@@ -1,0 +1,116 @@
+/* nav.css — the dot-burst menu, shared by every page.
+ *
+ * Previously copy-pasted into each page's inline <style>, where it had already
+ * drifted: people/research/engage carried `text-align: left` on .nav-links
+ * while publications/network/privacy did not, so the dropdown was aligned
+ * differently depending on which page you were on. This file is the
+ * left-aligned version, which was the deliberate one.
+ *
+ * index.html's copy was a strict subset -- it lacks .sub links and menu items
+ * 5-8 -- so this superset serves it too; the extra rules match nothing there.
+ *
+ * Depends on --blue and --pink, defined in each page's :root.
+ */
+
+  /* ===== Unified dot-burst menu (shared across all pages) ===== */
+  .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem}
+  .nav-toggle{width:68px;height:68px;border:none!important;padding:0;background:transparent!important;cursor:pointer;
+    box-shadow:none!important;border-radius:0;flex:none;
+    display:grid;place-items:center;
+    transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  .nav-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+  .nav.open .nav-toggle{transform:rotate(225deg)}
+  .nav-toggle svg{width:44px;height:44px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  .nav-toggle .b{fill:var(--blue)} .nav-toggle .p{fill:var(--pink)} .nav-toggle .c{fill:#fff}
+  .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:0;
+    text-align:left;
+    min-width:230px;opacity:0;transform:translateY(-8px);
+    pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+  .nav.open .nav-links{opacity:1;transform:none;pointer-events:auto;
+    background:#fff;border-radius:6px;padding:.25rem 1.1rem;
+    box-shadow:0 6px 24px rgba(0,0,0,.22)}
+  .nav-links a{text-decoration:none;color:#30363d;text-transform:uppercase;letter-spacing:.08em;
+    text-align:left;
+    font-size:.82rem;font-weight:600;white-space:nowrap;
+    padding:.7rem 0;border-top:1px solid rgba(0,0,0,.14);
+    opacity:0;transform:translateY(4px);
+    transition:color .2s,opacity .4s,transform .4s}
+  .nav-links a:first-child{border-top:0}
+  .nav.open .nav-links a{opacity:1;transform:none}
+  .nav.open .nav-links a:nth-child(1){transition-delay:.05s}
+  .nav.open .nav-links a:nth-child(2){transition-delay:.11s}
+  .nav.open .nav-links a:nth-child(3){transition-delay:.17s}
+  .nav.open .nav-links a:nth-child(4){transition-delay:.23s}
+  .nav.open .nav-links a:nth-child(5){transition-delay:.29s}
+  .nav.open .nav-links a:nth-child(6){transition-delay:.35s}
+  .nav.open .nav-links a:nth-child(7){transition-delay:.41s}
+  .nav.open .nav-links a:nth-child(8){transition-delay:.47s}
+  .nav-links a:hover{color:var(--blue)}
+  /* Sub-links inside the panel (submenu items) */
+  .nav-links a.sub{text-transform:none;letter-spacing:.02em;font-size:.74rem;font-weight:400;
+    padding:.45rem 0 .45rem 1.1rem;border-top:1px dotted rgba(0,0,0,.12);color:#5a616b}
+  .nav-links a.sub:hover{color:var(--blue)}
+  @media (max-width:860px){
+    .nav{top:1.25rem;left:1.25rem}
+    .nav-links{min-width:180px}
+    .nav-links a{font-size:.72rem;letter-spacing:.05em}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .nav-toggle,.nav-links,.nav-links a{transition:none!important}
+  }
+
+	/* Site logo — a normal in-flow block at the top of the page, so it
+	   scrolls away with the content. The dot-burst menu stays fixed; the logo
+	   deliberately does not, which is why it lives outside .nav in the markup:
+	   a child of a fixed element cannot scroll independently of it, whatever
+	   position it is given. */
+	.site-logo-bar {
+		text-align: center;
+		padding: 0.6rem 1rem 0;
+		line-height: 0;
+	}
+
+	.site-logo {
+		display: inline-block;
+		line-height: 0;
+	}
+
+	.site-logo img {
+		display: block;
+		width: 440px;
+		max-width: 78vw;
+		height: auto;
+	}
+
+	@media (max-width: 860px) {
+
+		.site-logo-bar { padding: 0.5rem 1rem 0; }
+
+		.site-logo img { width: 300px; }
+
+	}
+
+	@media (max-width: 600px) {
+
+		.site-logo-bar { padding: 0.4rem 1rem 0; }
+
+		.site-logo img { width: 210px; }
+
+	}
+
+	/* The first section on a page sits directly beneath the logo, so it does
+	   not need the 7rem top padding that .wrapper.style1 > .inner uses to
+	   separate sections from one another. Only padding-top is overridden, so
+	   the responsive left/right/bottom values in main.css still apply.
+	   index.html is unaffected: its first child is .hero-scroll, not .wrapper. */
+	#wrapper > .wrapper:first-child > .inner {
+		padding-top: 1.5rem;
+	}
+
+	@media (max-width: 980px) {
+
+		#wrapper > .wrapper:first-child > .inner {
+			padding-top: 1.25rem;
+		}
+
+	}
