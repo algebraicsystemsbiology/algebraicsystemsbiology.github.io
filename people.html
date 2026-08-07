@@ -12,6 +12,62 @@
 
 <style>
 
+		/* The group lead gets a row of her own, above the grid.
+		   Rendering her outside #members-grid rather than as a full-width
+		   flex item keeps that grid's nth-child border rules correct — they
+		   assume a fixed number of cards per row, and differ at each of the
+		   three breakpoints.
+		   The member-card styles in main.css are scoped to #members-grid, so
+		   the ones this card needs are repeated here. */
+		#lead-member:empty {
+			display: none;
+		}
+		#lead-member {
+			display: flex;
+			justify-content: center;
+			padding-bottom: 1.5rem;
+			margin-bottom: 2rem;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+		}
+		#lead-member .member-card {
+			text-align: center;
+			max-width: 34rem;
+		}
+		#lead-member .member-photo {
+			width: 160px;
+			height: 160px;
+			object-fit: cover;
+			border-radius: 50%;
+			display: block;
+			margin: 0 auto 1.25rem auto;
+		}
+		#lead-member .member-role {
+			font-weight: 600;
+			margin-bottom: 0.75rem;
+		}
+		#lead-member .member-bio {
+			max-width: 34rem;
+			margin: 0 auto 1rem auto;
+		}
+		#lead-member .member-links {
+			display: flex;
+			justify-content: center;
+			gap: 0.6rem;
+			flex-wrap: wrap;
+			margin-top: 0.75rem;
+		}
+		#lead-member .member-link {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			font-size: 1.2rem;
+			padding: 0.2rem;
+		}
+		#lead-member .member-link:hover {
+			transform: translateY(-1px);
+		}
+
 		/* Location tag. A member may hold more than one, so these need to sit
 		   side by side without touching. */
 		.member-institution {
@@ -73,22 +129,32 @@
 			color: #aaa;
 			margin-bottom: 0.5rem;
 		}
-		.alumni-card .alumni-now {
-			font-size: 0.78rem;
-			color: #555;
-			margin-top: 0.4rem;
+		/* Website link, shown as the same globe icon the member cards use.
+		   The .member-link rules in main.css are scoped to #members-grid, so
+		   the alumni grid needs its own, slightly smaller to suit the more
+		   compact cards. */
+		#alumni-grid .member-links {
+			display: flex;
+			justify-content: center;
+			margin-top: 0.45rem;
 		}
-		.alumni-card .alumni-now a {
-			color: #1ebdd1;
+		#alumni-grid .member-link {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
 			text-decoration: none;
-			border-bottom: 1px solid rgba(30,189,209,0.3);
+			font-size: 1rem;
+			padding: 0.2rem;
+			/* Matches .alumni-role, so the icon sits with the secondary text
+			   rather than competing with the name. Inheriting would give the
+			   site's black link colour, which is too loud here. */
+			color: #888;
 		}
-		.alumni-card .alumni-now a:hover {
-			border-bottom-color: #1ebdd1;
-		}
-		.alumni-card .alumni-now.placeholder {
-			color: #bbb;
-			font-style: italic;
+		/* Restores the usual hover colour, which the rule above would
+		   otherwise outrank on specificity. */
+		#alumni-grid .member-link:hover {
+			transform: translateY(-1px);
+			color: #47D3E5;
 		}
 		
 		/* Remove template divider lines; add one clean divider above Alumni */
@@ -361,6 +427,7 @@
 		</h2>
 		<div id="members-content">
 				<p style="margin-bottom: 2.5rem;">Algebraic Systems Biology is led by Professor Heather Harrington, and based at the Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG), Dresden and the Mathematical Institute, University of Oxford.</p>
+			<div id="lead-member"></div>
 			<div id="members-grid" class="items style1 medium"></div>
 		</div>
 	</div>

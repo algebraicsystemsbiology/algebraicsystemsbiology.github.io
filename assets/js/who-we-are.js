@@ -25,6 +25,11 @@
     'Oxford': 'oxford',
   };
 
+  // Whoever holds this internal role is shown above the members grid, on a row
+  // of their own. Keyed on the role rather than a name so it follows the post
+  // rather than the person.
+  const LEAD_ROLE = 'Director';
+
   function locationSlug(tag) {
     return LOCATION_CLASSES[tag]
       || String(tag).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -91,12 +96,22 @@
     if (!container) return;
     container.innerHTML = '';
 
+    const lead = document.getElementById('lead-member');
+    if (lead) lead.innerHTML = '';
+
     const surname = m => (m.name_last || (m.name_full || '').split(' ').pop() || '');
-    const current = Object.values(members)
+    const all = Object.values(members)
       .filter(m => m.temporal_tag === 'Current' && m.name_full)
       .sort((a, b) => surname(a).localeCompare(surname(b)));
 
-    current.forEach(m => {
+    // Whoever holds LEAD_ROLE is shown above the grid, on a row of their own.
+    // Keyed on the role rather than a name, so it survives the post changing
+    // hands. If nobody holds it, everyone simply appears in the grid.
+    const isLead = m => (m.internal_roles || []).includes(LEAD_ROLE);
+    const leads = all.filter(isLead);
+    const current = all.filter(m => !isLead(m));
+
+    const buildCard = m => {
       const card = document.createElement('section');
       card.className = 'member-card';
 
@@ -129,8 +144,11 @@
         ${bioText ? `<p class="member-bio">${bioText}</p>` : ''}
       `;
 
-      container.appendChild(card);
-    });
+      return card;
+    };
+
+    if (lead) leads.forEach(m => lead.appendChild(buildCard(m)));
+    current.forEach(m => container.appendChild(buildCard(m)));
   }
 
   // ── Render alumni ─────────────────────────────────────────────────
@@ -160,9 +178,12 @@
       const role = primaryRole(m.internal_roles);
       const dates = m.dates_active || '';
 
+      // Same globe icon the member cards use. Alumni without a website get
+      // nothing at all, rather than greyed-out text promising a link that
+      // does not exist.
       const nowHtml = m.link_website
-        ? `<p class="alumni-now"><a href="${safeUrl(m.link_website)}" target="_blank" rel="noopener">Where they are now →</a></p>`
-        : `<p class="alumni-now placeholder">Where they are now</p>`;
+        ? `<div class="member-links">${iconLink(safeUrl(m.link_website), 'Where they are now', 'fa-globe')}</div>`
+        : '';
 
       card.innerHTML = `
         <h3>${titleText}${m.name_full}</h3>
