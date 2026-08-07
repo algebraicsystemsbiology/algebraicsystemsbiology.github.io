@@ -67,10 +67,18 @@ jobs:
             --exclude 'scripts/' \
             --exclude '.gitignore' \
             ./ _site/
+          # Generated data lives under data/ in asb-website-data, separating it
+          # from that repo's hand-maintained files (README, sync/).
+          for f in data/group_members.json data/publications.json data/photos; do
+            if [ ! -e ".data-src/$f" ]; then
+              echo "::error::expected .data-src/$f in asb-website-data; has its layout changed?"
+              exit 1
+            fi
+          done
           mkdir -p _site/data/photos
-          cp .data-src/group_members.json _site/data/
-          cp .data-src/publications.json  _site/data/
-          cp -a .data-src/photos/. _site/data/photos/
+          cp .data-src/data/group_members.json _site/data/
+          cp .data-src/data/publications.json  _site/data/
+          cp -a .data-src/data/photos/. _site/data/photos/
 
       - name: Verify data and site agree
         run: python3 scripts/check_data.py _site
