@@ -55,8 +55,30 @@ nothing to fetch from. Org members can copy the data directly in that case:
 
 ```sh
 git clone git@github.com:algebraicsystemsbiology/asb-website-data.git /tmp/asb-data
-cp /tmp/asb-data/*.json data/ && cp -a /tmp/asb-data/photos/. data/photos/
+cp /tmp/asb-data/data/*.json data/ && cp -a /tmp/asb-data/data/photos/. data/photos/
 ```
+
+### Symlinking to a local data clone
+
+If you also work on the data — running the sync, or editing it directly —
+symlink instead of copying, so a preview always reflects your latest pull with
+no re-copy step:
+
+```sh
+git clone git@github.com:algebraicsystemsbiology/asb-website-data.git ../asb-website-data
+
+rm -rf data/group_members.json data/publications.json data/photos
+ln -s ../../asb-website-data/data/group_members.json data/group_members.json
+ln -s ../../asb-website-data/data/publications.json  data/publications.json
+ln -s ../../asb-website-data/data/photos             data/photos
+```
+
+The paths are relative to `data/`, so they assume the two repositories sit
+side by side. `python -m http.server` serves through symlinks, and
+`.gitignore` covers both the symlink and the real-directory form, so neither
+can be committed by accident.
+
+`git pull` in the data clone is then enough to refresh a preview.
 
 Then open <http://localhost:8000>. Stop the server with `Ctrl-C`; if port 8000
 is busy, pass a different number.

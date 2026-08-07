@@ -12,9 +12,13 @@
 # For a local preview, fetch the published copies:  ./scripts/fetch-data.sh
 #
 # data/travels.json is hand-authored and IS tracked -- do not add it here.
+# No trailing slash on data/photos: it may be a real directory (after
+# fetch-data.sh) or a symlink into a local clone of asb-website-data, and a
+# trailing slash would only match the directory form, leaving the symlink
+# committable.
 /data/group_members.json
 /data/publications.json
-/data/photos/
+/data/photos
 
 # Assembled output
 /_site/
