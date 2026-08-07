@@ -18,6 +18,14 @@ import urllib.parse
 
 MEMBER_EMAIL_DOMAINS = ("maths.ox", "mpi-cbg", "mpipz", "gmail", "ludwig", "balliol", "stcatz")
 
+# Locations the site knows how to label and colour. An unrecognised value is a
+# data-quality problem at the source, so fail the deploy rather than publish a
+# member card with an unstyled or wrongly-worded tag.
+#
+# Keep in step with LOCATION_LABELS / LOCATION_CLASSES in
+# assets/js/who-we-are.js.
+KNOWN_LOCATIONS = {"CBG Maths", "Oxford"}
+
 
 def fail(problems):
     for p in problems:
@@ -67,6 +75,24 @@ def main():
         if (member.get("photo") or {}).get("filename") and member.get("temporal_tag") == "Past":
             problems.append(f"Past member has a published photo: {member.get('name_full')}")
 
+    # Every member needs a location, and it must be one the site can render.
+    for member in members.values():
+        name = member.get("name_full") or "(unnamed)"
+        raw = member.get("location_tag")
+        tags = raw if isinstance(raw, list) else ([raw] if raw else [])
+        tags = [t for t in tags if t]
+        if not tags:
+            problems.append(f"no location_tag: {name}")
+            continue
+        for tag in tags:
+            if tag not in KNOWN_LOCATIONS:
+                problems.append(
+                    f"unrecognised location_tag {tag!r} for {name} "
+                    f"-- known: {sorted(KNOWN_LOCATIONS)}. Fix it at the source, or add it "
+                    f"to KNOWN_LOCATIONS here and to LOCATION_LABELS/LOCATION_CLASSES in "
+                    f"assets/js/who-we-are.js"
+                )
+
     # Emails must never reach the published site.
     blob = json.dumps(members) + json.dumps(pubs)
     for domain in MEMBER_EMAIL_DOMAINS:
@@ -97,7 +123,8 @@ def main():
     if problems:
         fail(problems)
 
-    print(f"OK  {len(members)} members ({len(referenced)} photos), "
+    locs = sorted({t for m in members.values() for t in (m.get("location_tag") or []) if t})
+    print(f"OK  {len(members)} members ({len(referenced)} photos, locations: {", ".join(locs)}), "
           f"{len(pubs)} publications, "
           f"{sum(len(t.get('photos', [])) for t in travels)} travel photos")
 

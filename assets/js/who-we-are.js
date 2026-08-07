@@ -3,18 +3,57 @@
 
 (function () {
 
-  function institutionFromEmail(email) {
-    if (!email) return null;
-    const domain = (email.split('@')[1] || '').toLowerCase();
-    if (domain.includes('mpi-cbg.de')) return 'mpi';
-    if (domain.includes('ox.ac.uk'))   return 'oxford';
-    return null;
+  // Locations come from each member's location_tag, set explicitly in the
+  // group database. They used to be inferred from the email domain, which
+  // stopped working once emails were removed from the published data — and
+  // was never reliable, since it only recognised two domains and silently
+  // showed nothing for anyone else.
+
+  // Public-facing wording, and the pill colour class, for each known location.
+  //
+  // An unrecognised location is a data-quality problem and is caught by
+  // scripts/check_data.py, which fails the deploy. Keep these tables in step
+  // with KNOWN_LOCATIONS there. Rendering still degrades gracefully rather
+  // than throwing, so a bad tag never blanks the page in a browser.
+  const LOCATION_LABELS = {
+    'CBG Maths': 'MPI Dresden',
+    'Oxford': 'Oxford',
+  };
+
+  const LOCATION_CLASSES = {
+    'CBG Maths': 'mpi',
+    'Oxford': 'oxford',
+  };
+
+  function locationSlug(tag) {
+    return LOCATION_CLASSES[tag]
+      || String(tag).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
 
-  function institutionLabel(code) {
-    if (code === 'mpi')    return 'MPI Dresden';
-    if (code === 'oxford') return 'Oxford';
-    return '';
+  function locationTags(member) {
+    const tags = Array.isArray(member.location_tag)
+      ? member.location_tag
+      : (member.location_tag ? [member.location_tag] : []);
+    return tags
+      .filter(Boolean)
+      .map(tag => {
+        if (!(tag in LOCATION_LABELS)) {
+          console.warn(
+            `who-we-are.js: unrecognised location_tag ${JSON.stringify(tag)} ` +
+            `for ${member.name_full}. Add it to LOCATION_LABELS/LOCATION_CLASSES here ` +
+            `and to KNOWN_LOCATIONS in scripts/check_data.py.`
+          );
+        }
+        const label = LOCATION_LABELS[tag] || tag;
+        return `<span class="member-institution ${locationSlug(tag)}">${escapeHtml(label)}</span>`;
+      })
+      .join('');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
   }
 
   function safeUrl(url) {
@@ -72,17 +111,13 @@
         : '';
       const bioText = truncateWords(m.bio_short || '', 50);
 
-      const inst = institutionFromEmail(m.email);
-      const instTag = inst
-        ? `<span class="member-institution ${inst}">${institutionLabel(inst)}</span>`
-        : '';
+      const instTag = locationTags(m);
 
       const links = [];
       if (m.link_github)         links.push(iconLink(m.link_github, 'GitHub', 'fa-github', true));
       if (m.link_website)        links.push(iconLink(safeUrl(m.link_website), 'Website', 'fa-globe'));
       if (m.link_orcid)          links.push(iconLink(m.link_orcid, 'ORCID', 'fa-id-badge'));
       if (m.link_google_scholar) links.push(iconLink(m.link_google_scholar, 'Google Scholar', 'fa-graduation-cap'));
-      if (m.email)               links.push(iconLink(`mailto:${m.email}`, 'Email', 'fa-envelope'));
 
       card.innerHTML = `
         <img class="member-photo" src="${photoSrc}" alt="${m.name_full}"

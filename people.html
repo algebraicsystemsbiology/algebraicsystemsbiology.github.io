@@ -12,7 +12,8 @@
 
 <style>
 
-		/* Institution tag */
+		/* Location tag. A member may hold more than one, so these need to sit
+		   side by side without touching. */
 		.member-institution {
 			display: inline-block;
 			font-size: 0.65rem;
@@ -22,6 +23,11 @@
 			padding: 0.15rem 0.5rem;
 			border-radius: 999px;
 			margin-top: 0.25rem;
+			background: rgba(0, 0, 0, 0.06);
+			color: #5a616b;
+		}
+		.member-institution + .member-institution {
+			margin-left: 0.3rem;
 		}
 		.member-institution.mpi {
 			background: rgba(30, 189, 209, 0.12);
