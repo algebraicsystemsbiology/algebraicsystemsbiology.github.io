@@ -202,25 +202,26 @@
 						$this.scrollLeft( $this.scrollLeft() + delta );
 
 				})
-				.on('mouseenter', '.forward, .backward', function(event) {
+				.on('click', '.forward, .backward', function(event) {
 
 					var $this = $(this),
 						$inner = $this.siblings('.inner'),
-						direction = ($this.hasClass('forward') ? 1 : -1);
+						direction = ($this.hasClass('forward') ? 1 : -1),
+						box = $inner[0],
+						step = box.clientWidth;
 
-					// Clear move interval.
-						clearInterval(this._gallery_moveIntervalId);
+					event.preventDefault();
 
-					// Start interval.
-						this._gallery_moveIntervalId = setInterval(function() {
-							$inner.scrollLeft( $inner.scrollLeft() + (5 * direction) );
-						}, 10);
-
-				})
-				.on('mouseleave', '.forward, .backward', function(event) {
-
-					// Clear move interval.
-						clearInterval(this._gallery_moveIntervalId);
+					// Scroll a full pane per click. Hovering used to scroll on an
+					// interval, which moved the gallery whenever the pointer merely
+					// crossed an arrow.
+						if (typeof box.scrollBy === 'function')
+							box.scrollBy({
+								left: step * direction,
+								behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+							});
+						else
+							$inner.scrollLeft(box.scrollLeft + (step * direction));
 
 				});
 

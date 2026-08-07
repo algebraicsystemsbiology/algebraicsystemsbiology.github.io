@@ -9003,17 +9003,48 @@ input, select, textarea {
 /* Gallery (style2) — captions are always visible.
    The template revealed them only on hover, which left the panels as bare
    background images: unreadable without hovering every tile, and with no
-   hover at all on touch devices. Hover is kept as an enhancement, deepening
-   the overlay. Mobile keeps its own tap-to-reveal behaviour, which lives in
-   mobile.css under max-width 736px and overrides this. */
+   hover at all on touch devices. Mobile keeps its own tap-to-reveal
+   behaviour, which lives in mobile.css under max-width 736px and overrides
+   this. */
 	.gallery.style2 article .caption {
 		opacity: 1;
-		-moz-transition: background-color 0.2s ease-in-out;
-		-webkit-transition: background-color 0.2s ease-in-out;
-		-ms-transition: background-color 0.2s ease-in-out;
-		transition: background-color 0.2s ease-in-out;
 	}
 
-	.gallery.style2 article:hover .caption {
-		background-color: rgba(0, 0, 0, 0.7);
+/* Gallery (style2, big) — tiles divide the pane exactly.
+   The template gives tiles a fixed 30rem width, which is not a whole fraction
+   of the container, so scrolling by one pane leaves slivers of the next tile
+   at both edges. Sizing each tile as a fraction of the container makes a
+   pane-sized scroll land exactly on a tile boundary every time.
+   max-width is cleared because the template caps tiles at 75vw, which would
+   otherwise override the fraction. */
+	.gallery.style2.big article {
+		width: 50%;
+		max-width: none;
+	}
+
+	@media screen and (max-width: 736px) {
+
+		.gallery.style2.big article {
+			width: 100%;
+		}
+
+	}
+
+/* Gallery arrows — always visible, so the presence of more content is
+   apparent without hovering, and hidden only where there is nothing to
+   scroll to. The template showed them on hover alone and regardless of
+   position, so a gallery offered a left arrow while already at the left edge,
+   and showed both even when every item already fitted.
+   assets/js/gallery-arrows.js sets the state classes. */
+	.gallery.style2 > .forward,
+	.gallery.style2 > .backward {
+		opacity: 1;
+	}
+
+	.gallery.style2.at-start > .backward,
+	.gallery.style2.at-end > .forward,
+	.gallery.style2.no-scroll > .forward,
+	.gallery.style2.no-scroll > .backward {
+		opacity: 0;
+		pointer-events: none;
 	}
