@@ -104,14 +104,29 @@ deploy if anything is wrong.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` runs on pushes to `main`, on manual dispatch,
-and on a `data-updated` repository dispatch that `asb-website-data` can send
-after a sync.
+The site redeploys automatically on either of:
+
+- **a push to `main` here** — content, styling, or markup changes
+- **a push of data to `asb-website-data`** — new members, publications or
+  photos. That repository has a workflow which starts this one, so the live
+  site is never stale relative to the data, no matter how the data got there:
+  the sync script, a hand-edit, or the web UI.
+
+`.github/workflows/deploy.yml` also accepts a manual `workflow_dispatch` and a
+`data-updated` `repository_dispatch`, either of which forces a rebuild without
+changing anything:
+
+```sh
+gh workflow run "Deploy site to Pages" \
+  --repo algebraicsystemsbiology/algebraicsystemsbiology.github.io
+```
 
 Access to the private data repository goes through an **organisation-owned
-GitHub App** with `Contents: read-only`, installed only on `asb-website-data`.
-The workflow mints a fresh installation token on each run, valid for about an
-hour.
+GitHub App**, installed on both repositories, with `Contents: read` (to read
+the data during the build) and `Actions: write` (so the data repo can start
+this workflow). `Actions: write` permits starting and cancelling runs; it does
+not permit modifying code. The workflow mints a fresh installation token on
+each run, valid for about an hour.
 
 It requires two repository secrets:
 
