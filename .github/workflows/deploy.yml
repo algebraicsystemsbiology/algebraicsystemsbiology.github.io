@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out site
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Mint a short-lived (~1 hour) installation token instead of holding a
       # long-lived credential. The GitHub App is org-owned, so this keeps
@@ -46,7 +46,7 @@ jobs:
       # Machine-generated data lives in a private repo so that member photos
       # do not persist in this repository's public history.
       - name: Check out generated data
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: algebraicsystemsbiology/asb-website-data
           token: ${{ steps.data-token.outputs.token }}
