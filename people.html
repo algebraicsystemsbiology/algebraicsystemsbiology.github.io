@@ -46,22 +46,18 @@
 			cursor: pointer;
 			user-select: none;
 		}
-				.alumni-grid {
+				/* Alumni cards carry no photograph, so they are text-only and much
+		   shorter than member cards. Narrower columns keep the list compact
+		   rather than leaving each name adrift in whitespace. */
+		.alumni-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-			gap: 1.5rem;
+			grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+			gap: 1rem;
 			margin-top: 1.5rem;
 		}
 		.alumni-card {
 			text-align: center;
-			padding: 1.25rem 1rem;
-		}
-		.alumni-card img {
-			width: 140px;
-			height: 140px;
-			border-radius: 50%;
-			object-fit: cover;
-			margin-bottom: 0.75rem;
+			padding: 0.85rem 0.75rem;
 		}
 		.alumni-card h3 {
 			font-size: 0.95rem;

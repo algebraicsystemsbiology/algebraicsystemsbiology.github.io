@@ -153,11 +153,9 @@
       const card = document.createElement('div');
       card.className = 'alumni-card';
 
-      const photoFilename = m?.photo?.filename || '';
-      const photoSrc = photoFilename
-        ? `data/photos/${encodeURI(photoFilename)}`
-        : 'images/pic01.jpg';
-
+      // No photograph. Photo consent is collected for current members only, so
+      // every alumni card fell back to the same placeholder image -- thirty
+      // identical silhouettes that carried no information.
       const titleText = m.title ? `${m.title} ` : '';
       const role = primaryRole(m.internal_roles);
       const dates = m.dates_active || '';
@@ -167,8 +165,6 @@
         : `<p class="alumni-now placeholder">Where they are now</p>`;
 
       card.innerHTML = `
-        <img src="${photoSrc}" alt="${m.name_full}"
-             onerror="this.onerror=null;this.src='images/pic01.jpg';">
         <h3>${titleText}${m.name_full}</h3>
         ${role  ? `<p class="alumni-role">${role}</p>`   : ''}
         ${dates ? `<p class="alumni-dates">${dates}</p>` : ''}
