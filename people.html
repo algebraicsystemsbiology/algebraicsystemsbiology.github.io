@@ -225,10 +225,16 @@
 		<p>The same research themes explained on <a href="research.html">Research</a>, here mapped to the people behind them. Hover over a name or theme to trace connections. Click a theme to see its publications.</p>
 
 		<div class="network-shell">
+			<!-- scrolling="no": the frame is grown to its content by the message
+			     handler at the foot of this page, so it has nothing to scroll.
+			     Firefox draws a scrollbar anyway whenever the content is even a
+			     pixel taller than the frame -- while the diagram settles, or
+			     after a resize -- and this is the only thing that stops it. -->
 			<iframe
 				id="networkFrame"
 				src="Data Viz/who-works-on-what.html"
 				title="Who works on what — researchers and research themes"
+				scrolling="no"
 				loading="lazy"></iframe>
 		</div>
 
@@ -294,7 +300,9 @@
 				if (data.type !== 'asb-network-resize') return;
 				if (e.source !== frame.contentWindow) return;
 				var h = Math.ceil(data.height);
-				if (h > 0) frame.style.height = Math.max(240, h) + 'px';
+				// +4: a hair of headroom, so rounding cannot leave the content
+				// a pixel taller than the frame and bring the scrollbar back.
+				if (h > 0) frame.style.height = Math.max(240, h + 4) + 'px';
 			});
 		})();
 	</script>

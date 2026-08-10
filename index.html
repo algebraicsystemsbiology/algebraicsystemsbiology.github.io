@@ -82,9 +82,16 @@
   
   
 
+  /* The diagram section and Get Involved each contribute their full section
+     padding to the gap between them. One of them is enough. */
+  #contact > .inner { padding-top: 2rem; }
+
   .themes-shell{
     width:100vw;
-    margin:0 0 4rem;
+    /* 4rem here, plus the section's own 3rem below it, plus 5rem above Get
+       Involved, left about 200px of nothing between the diagram and the next
+       heading. */
+    margin:0 0 1rem;
     position:relative;
     left:50%;
     transform:translateX(-50%);
@@ -200,7 +207,7 @@
             if (data.type !== 'asb-arc-resize') return;
             if (e.source !== frame.contentWindow) return;
             var h = Math.ceil(data.height);
-            if (h > 0) frame.style.height = Math.max(240, h) + 'px';
+            if (h > 0) frame.style.height = Math.max(240, h + 4) + 'px';
           });
         })();
       </script>

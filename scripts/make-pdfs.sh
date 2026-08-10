@@ -85,6 +85,16 @@ if ! curl -sf -o /dev/null "$BASE/index.html"; then
 	exit 1
 fi
 
+# Reads a PDF's page count and page height in CSS pixels. Kept in a variable
+# so the loop below stays readable.
+PDFSTAT='
+import re, sys
+d = open(sys.argv[1], "rb").read()
+c = re.findall(b"/Type\\s*/Pages.*?/Count\\s+([0-9]+)", d, re.S)
+b = re.findall(b"/MediaBox\\s*\\[([^]]*)]", d)
+print(int(c[0]) if c else 1, round(float(b[0].split()[3]) / 0.75) if b else 0)
+'
+
 mkdir -p "$OUT"
 echo "browser : $CHROME"
 echo "shape   : $MODE"
@@ -127,9 +137,39 @@ for page in "${PAGES[@]}"; do
 
 	rm -rf "$profile"
 
+	# The page height has to be estimated from inside the page, and the print
+	# pass lays out a little taller than that estimate -- enough, on the longest
+	# pages, to spill a second almost-empty sheet. Rather than guess harder, look
+	# at what came out: if it is more than one page, print again with a height
+	# that certainly fits. Counting pages afterwards is the one measurement that
+	# cannot be wrong.
+	retried=""
+	if [ "$MODE" = "screen" ] && [ -s "$target" ]; then
+		read -r pagecount boxheight < <(python3 -c "$PDFSTAT" "$target")
+		# Step up rather than leap. The content is somewhere between the height
+		# that failed and that height times the number of pages it spilled to,
+		# so try modest increases first: a page half a screen too tall is a
+		# band of white the reader scrolls through for no reason.
+		for pct in 105 115 140 200; do
+			[ "${pagecount:-1}" -gt 1 ] || break
+			needed=$(( boxheight * pct / 100 ))
+			profile="$(mktemp -d)"
+			"$CHROME" \
+				--headless --disable-gpu --no-sandbox --hide-scrollbars \
+				--user-data-dir="$profile" --disk-cache-dir=/dev/null \
+				--virtual-time-budget=15000 --run-all-compositor-stages-before-draw \
+				--no-pdf-header-footer --print-to-pdf-no-header \
+				"${extra[@]}" --print-to-pdf="$target" \
+				"$BASE/$page?pdf=screen&height=$needed" >/dev/null 2>&1 || true
+			rm -rf "$profile"
+			read -r pagecount _ < <(python3 -c "$PDFSTAT" "$target")
+			retried="  (fitted at ${needed}px)"
+		done
+	fi
+
 	if [ -s "$target" ]; then
 		size=$(du -h "$target" | cut -f1)
-		printf '  %-22s %s\n' "$name.pdf" "$size"
+		printf '  %-22s %s%s\n' "$name.pdf" "$size" "$retried"
 	else
 		printf '  %-22s FAILED\n' "$name.pdf"
 	fi
