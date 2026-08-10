@@ -233,6 +233,72 @@
 		.album-btn:hover { background: rgba(160,140,110,0.1); color: #5a4a3a; border-color: rgba(160,140,110,0.7); }
 		.album-btn:disabled { opacity: 0.3; cursor: default; }
 		.album-counter { font-family: 'Caveat', 'Modern Love', cursive; font-size: 1rem; color: #9a8878; }
+		/* ── Photo viewer ──────────────────────────────────────────────────
+		   The polaroids are square-cropped thumbnails (object-fit: cover), so
+		   tapping one is the only way to see the whole photograph. It opens in
+		   place -- nothing navigates away. */
+
+		.photo-viewer {
+			position: fixed;
+			top: 0; right: 0; bottom: 0; left: 0;
+			z-index: 200;                       /* the fixed menu sits at 50 */
+			display: none;
+			align-items: center;
+			justify-content: center;
+			padding: 4vmin;
+			background: rgba(22, 20, 18, 0.88);
+			cursor: zoom-out;
+		}
+
+		.photo-viewer.is-open { display: flex; }
+
+		.photo-viewer figure {
+			margin: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.9rem;
+			max-width: 100%;
+		}
+
+		.photo-viewer img {
+			display: block;
+			max-width: 100%;
+			max-height: 78vh;
+			width: auto;
+			height: auto;
+			background: #fff;
+			padding: 0.5rem;
+			box-shadow: 0 12px 44px rgba(0,0,0,0.55);
+		}
+
+		.photo-viewer figcaption {
+			font-family: 'Caveat', 'Modern Love', cursive;
+			font-size: 1.3rem;
+			line-height: 1.3;
+			color: #f4ece2;
+			text-align: center;
+			max-width: 34rem;
+		}
+
+		.photo-viewer-close {
+			position: absolute;
+			top: 1rem; right: 1.25rem;
+			width: 2.6rem; height: 2.6rem;
+			padding: 0;
+			border: 0; border-radius: 50%;
+			background: rgba(255,255,255,0.16);
+			color: #fff;
+			font-size: 1.5rem; line-height: 1;
+			cursor: pointer;
+		}
+
+		.photo-viewer-close:hover,
+		.photo-viewer-close:focus-visible { background: rgba(255,255,255,0.32); }
+
+		/* The pointer is the only hint that a polaroid does anything. */
+		.polaroid img { cursor: zoom-in; }
+
 		.album-empty { text-align: center; padding: 3rem 1rem; font-family: 'Caveat', 'Modern Love', cursive; font-size: 1.3rem; color: #9a8878; }
 
 		@media screen and (max-width: 736px) {
@@ -725,6 +791,104 @@
 						'<div class="album-empty">No travels yet — check back soon!</div>';
 				});
 		});
+		</script>
+
+		<script>
+		// Adventures photo viewer.
+		//
+		// The polaroids are square-cropped thumbnails, so the whole photograph
+		// is only visible enlarged. Opening one must not navigate anywhere: the
+		// album keeps its place, and closing returns you to exactly where you
+		// were.
+		(function () {
+			var album = document.getElementById('travels-album');
+			if (!album) return;
+
+			var viewer, viewerImg, viewerCaption, opener;
+
+			function build() {
+				viewer = document.createElement('div');
+				viewer.className = 'photo-viewer';
+				viewer.setAttribute('role', 'dialog');
+				viewer.setAttribute('aria-modal', 'true');
+				viewer.setAttribute('aria-label', 'Photograph');
+				viewer.innerHTML =
+					'<button type="button" class="photo-viewer-close" aria-label="Close">&times;</button>' +
+					'<figure><img alt=""><figcaption></figcaption></figure>';
+				document.body.appendChild(viewer);
+				viewerImg = viewer.querySelector('img');
+				viewerCaption = viewer.querySelector('figcaption');
+
+				// A click anywhere closes it -- the backdrop, the close button,
+				// or the photograph itself. On a phone the photo fills most of
+				// the screen, so "tap off it" would otherwise mean aiming at a
+				// sliver of margin.
+				viewer.addEventListener('click', close);
+			}
+
+			function open(img) {
+				if (!viewer) build();
+				opener = img;
+
+				var polaroid = img.closest('.polaroid');
+				var caption = polaroid && polaroid.querySelector('.polaroid-caption');
+				var text = (caption ? caption.textContent : img.alt || '').trim();
+
+				viewerImg.src = img.currentSrc || img.src;
+				viewerImg.alt = img.alt || '';
+				viewerCaption.textContent = text;
+				viewerCaption.hidden = !text;
+
+				viewer.classList.add('is-open');
+				// The page behind must not scroll under the viewer.
+				document.body.style.overflow = 'hidden';
+				viewer.querySelector('.photo-viewer-close').focus();
+			}
+
+			function close() {
+				if (!viewer || !viewer.classList.contains('is-open')) return;
+				viewer.classList.remove('is-open');
+				document.body.style.overflow = '';
+				// Drop the source so a large photo is not held decoded while hidden.
+				viewerImg.removeAttribute('src');
+				if (opener && opener.focus) opener.focus();
+				opener = null;
+			}
+
+			// Delegated: the album is built after this runs, and rebuilt whenever
+			// the data reloads.
+			album.addEventListener('click', function (e) {
+				var img = e.target.closest && e.target.closest('.polaroid img');
+				if (!img) return;
+				e.preventDefault();
+				open(img);
+			});
+
+			album.addEventListener('keydown', function (e) {
+				if (e.key !== 'Enter' && e.key !== ' ') return;
+				var img = e.target.closest && e.target.closest('.polaroid img');
+				if (!img) return;
+				e.preventDefault();
+				open(img);
+			});
+
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape') close();
+			});
+
+			// The photos are plain <img>, which nothing can focus. Make each one
+			// reachable as the album fills and every time it is rebuilt.
+			function makeFocusable() {
+				album.querySelectorAll('.polaroid img').forEach(function (img) {
+					if (img.hasAttribute('tabindex')) return;
+					img.setAttribute('tabindex', '0');
+					img.setAttribute('role', 'button');
+					img.setAttribute('aria-label', 'View ' + (img.alt || 'photograph') + ' larger');
+				});
+			}
+			new MutationObserver(makeFocusable).observe(album, { childList: true, subtree: true });
+			makeFocusable();
+		})();
 		</script>
 
 <script>
