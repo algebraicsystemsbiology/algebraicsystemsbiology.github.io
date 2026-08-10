@@ -51,7 +51,12 @@
 
 	
 	
-		/* ── Adventures scrapbook ─────────────────────────────────────────── */
+		/* ── Adventures scrapbook ───────────────────────────────────────────
+		   SUPERSEDED. The "Album" block further down this file re-declares
+		   almost every selector here -- .polaroid, .polaroid img,
+		   .polaroid-caption, .album-spread, .spread-* -- and, coming later,
+		   wins. Editing a rule here changes nothing. The photo-viewer rules
+		   below are the exception: they exist only here. */
 
 		#travels { background: #ffffff; position: relative; }
 
@@ -384,7 +389,10 @@
 
 		.polaroid {
 			background: #fff;
-			padding: 0.6rem 0.6rem 2.2rem;
+			/* A polaroid's lower border is deeper than its sides and the
+			   caption is written on it; 2.2rem left a band of empty card
+			   below the caption instead. */
+			padding: 0.6rem 0.6rem 0.9rem;
 			box-shadow: 2px 3px 12px rgba(0,0,0,0.15);
 			position: relative;
 			flex: 0 0 auto;
@@ -411,6 +419,9 @@
 			color: #6a5a4a;
 			text-align: center;
 			margin-top: 0.5rem;
+			/* It is a <p>, so without this it takes the template's 2rem and
+			   pushes the bottom of the card 32px further down. */
+			margin-bottom: 0;
 			line-height: 1.2;
 		}
 
@@ -687,66 +698,14 @@
 		-->
 
 
-		<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			function renderAlbum(trips) {
-				var album = document.getElementById('travels-album');
-				var nav = document.getElementById('travels-nav');
-				var prev = document.getElementById('travels-prev');
-				var next = document.getElementById('travels-next');
-				var counter = document.getElementById('travels-counter');
-				if (!trips || !trips.length) {
-					album.innerHTML = '<div class="album-empty">No travels yet — check back soon!</div>';
-					return;
-				}
-				album.innerHTML = '';
-				trips.forEach(function(trip, i) {
-					var spread = document.createElement('div');
-					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
-					var photosHtml = (trip.photos || []).map(function(p) {
-						return '<div class="polaroid"><img src="images/Travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight='120px'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
-					}).join('');
-					spread.innerHTML =
-						'<div class="spread-header"><div><h3 class="spread-title">' + trip.title + '</h3>' +
-						'<p class="spread-date">' + trip.date + (trip.location ? ' · ' + trip.location : '') + '</p></div>' +
-						'<span class="spread-stamp">' + (trip.location || trip.date) + '</span></div>' +
-						(trip.note ? '<p class="spread-note">' + trip.note + '</p>' : '') +
-						'<div class="spread-photos">' + photosHtml + '</div>';
-					album.appendChild(spread);
-				});
-				var current = 0;
-				var spreads = album.querySelectorAll('.album-spread');
-				function show(idx) {
-					spreads.forEach(function(s) { s.classList.remove('is-active'); });
-					spreads[idx].classList.add('is-active');
-					counter.textContent = (idx + 1) + ' / ' + trips.length;
-					prev.disabled = idx === 0;
-					next.disabled = idx === trips.length - 1;
-					current = idx;
-				}
-				nav.style.display = 'flex';
-				prev.addEventListener('click', function() { if (current > 0) show(current - 1); });
-				next.addEventListener('click', function() { if (current < trips.length - 1) show(current + 1); });
-				show(0);
-				var startX = 0;
-				album.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
-				album.addEventListener('touchend', function(e) {
-					var diff = startX - e.changedTouches[0].clientX;
-					if (Math.abs(diff) > 40) {
-						if (diff > 0 && current < trips.length - 1) show(current + 1);
-						if (diff < 0 && current > 0) show(current - 1);
-					}
-				}, { passive: true });
-			}
-			fetch('./data/travels.json', { cache: 'no-store' })
-				.then(function(r) { return r.ok ? r.json() : []; })
-				.then(renderAlbum)
-				.catch(function() {
-					document.getElementById('travels-album').innerHTML =
-						'<div class="album-empty">No travels yet — check back soon!</div>';
-				});
-		});
-		</script>
+		<!-- The Adventures album is rendered further down this file. An earlier,
+		     byte-for-byte duplicate of that script sat here and never ran: its
+		     onerror handler was written onerror="this.style.minHeight='120px'"
+		     inside a single-quoted JavaScript string, so the string ended at
+		     120 and the parser hit `120px` -- "identifier starts immediately
+		     after numeric literal". The whole block failed to parse, which is
+		     why the album still worked while the console carried an error on
+		     every load. The surviving copy escapes those quotes. -->
 
 		<script>
 		// Adventures photo viewer.
