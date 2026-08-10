@@ -65,8 +65,8 @@
 	   a child of a fixed element cannot scroll independently of it, whatever
 	   position it is given. */
 	.site-logo-bar {
-		text-align: center;
-		padding: 0.6rem 1rem 0;
+		text-align: right;
+		padding: 0.6rem 2.5rem 0 1rem;
 		line-height: 0;
 	}
 
@@ -80,21 +80,43 @@
 		width: 440px;
 		max-width: 78vw;
 		height: auto;
+		/* The SVG canvas is 16:9, but the artwork occupies only the middle 39%
+		   of its height -- roughly 30% is transparent above and below. Left
+		   alone, a 440px-wide logo is 248px tall to show 96px of artwork, and
+		   the dead band reads as a huge gap above the page heading. Cropping
+		   to the artwork's own ratio removes it. The hero logo on index.html
+		   uses a different selector and is unaffected. */
+		aspect-ratio: 987 / 252;
+		object-fit: cover;
+		object-position: center;
 	}
 
+	/* Smaller and tighter as the viewport narrows: on a phone the logo should
+	   sit unobtrusively in the upper right, not dominate the first screen.
+	   The dot-burst menu is fixed at the upper left, so the two never meet.
+	   The vw cap keeps it modest on very narrow screens regardless of the px
+	   value. */
 	@media (max-width: 860px) {
 
-		.site-logo-bar { padding: 0.5rem 1rem 0; }
+		.site-logo-bar { padding: 0.5rem 1.25rem 0 1rem; }
 
-		.site-logo img { width: 300px; }
+		.site-logo img { width: 260px; max-width: 46vw; }
 
 	}
 
 	@media (max-width: 600px) {
 
-		.site-logo-bar { padding: 0.4rem 1rem 0; }
+		.site-logo-bar { padding: 0.4rem 1rem 0 0.75rem; }
 
-		.site-logo img { width: 210px; }
+		.site-logo img { width: 165px; max-width: 42vw; }
+
+	}
+
+	@media (max-width: 430px) {
+
+		.site-logo-bar { padding: 0.35rem 0.85rem 0 0.75rem; }
+
+		.site-logo img { width: 132px; max-width: 38vw; }
 
 	}
 
@@ -113,4 +135,13 @@
 			padding-top: 1.25rem;
 		}
 
+	}
+
+	/* The footer is a .wrapper.style1 too, so it inherits the 5rem bottom
+	   padding meant to separate stacked sections -- 80px of blank page below
+	   the copyright line, with nothing after it. Only padding-bottom is
+	   overridden, so the responsive left/right values still apply.
+	   network.html has its own footer and is unaffected. */
+	#wrapper > footer.wrapper > .inner {
+		padding-bottom: 1.5rem;
 	}
