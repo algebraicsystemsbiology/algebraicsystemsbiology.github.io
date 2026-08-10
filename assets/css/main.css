@@ -9051,6 +9051,63 @@ input, select, textarea {
 
 	}
 
+/* Gallery (style2) — the Details button sits in the same place on every tile.
+   Two things made it wander. The caption is a vertically-centred column, so
+   with body text of 174 to 315 characters the button landed at a different
+   height in each tile and no two in a row lined up: margin-top:auto pins it to
+   the bottom instead. And ul.actions carries margin-left:-1rem against a
+   1rem left padding on each li -- which spaces a row of buttons evenly, but
+   offsets a lone button from centre. */
+	.gallery.style2 article .caption ul.actions {
+		margin-left: 0;
+		margin-top: auto;
+		-moz-justify-content: center;
+		-webkit-justify-content: center;
+		-ms-justify-content: center;
+		justify-content: center;
+	}
+
+		.gallery.style2 article .caption ul.actions li {
+			padding-left: 0;
+		}
+
+/* Gallery (style2) — the Details outline is a border, not an inset shadow.
+   The template draws it with box-shadow: inset 0 0 0 1px white. A shadow is
+   painted, not laid out, so on a display whose scaling puts the button's edge
+   on a fractional device pixel the hairline antialiases differently from one
+   tile to the next -- which is why the outlines looked mismatched at 100% zoom
+   and matched once zoomed in. A border goes through layout, where the engine
+   rounds to whole device pixels, so it rasterises consistently.
+
+   box-sizing is border-box site-wide, so the border does not change the
+   button's size; line-height is reduced by the 2px the border now occupies to
+   keep the label centred. */
+	.gallery.style2 article .caption .button {
+		box-shadow: none;
+		border: 1px solid #ffffff;
+		line-height: calc(3.325em - 2px);
+	}
+
+		.gallery.style2 article .caption .button:hover,
+		.gallery.style2 article .caption .button:active {
+			box-shadow: none;
+			border-color: #47D3E5;
+		}
+
+/* Gallery (style2, big) — no arrows at all.
+   The research galleries wrap and never scroll, so the arrows have nothing to
+   do. They are absolutely positioned 5rem-wide overlays carrying a
+   rgba(0,0,0,0.25) gradient at z-index 2 -- above the captions at z-index 1 --
+   pinned to the left and right edges of the gallery. Left in place they tint
+   the outer edge of whichever tile sits at each end of a row, which is why the
+   Details button's white outline looked different depending on where its tile
+   was. Hiding them outright, in CSS, does not depend on the scroll-position
+   script noticing there is nothing to scroll. */
+	.gallery.style2.big > .forward,
+	.gallery.style2.big > .backward {
+		display: none;
+	}
+
 /* Gallery arrows — always visible, so the presence of more content is
    apparent without hovering, and hidden only where there is nothing to
    scroll to. The template showed them on hover alone and regardless of
