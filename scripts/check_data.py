@@ -27,6 +27,11 @@ MEMBER_EMAIL_DOMAINS = ("maths.ox", "mpi-cbg", "mpipz", "gmail", "ludwig", "ball
 # assets/js/who-we-are.js.
 KNOWN_LOCATIONS = {"CBG Maths", "Oxford"}
 
+# Finding a paper entered twice is shared with the sync in asb-website-data,
+# which runs the same check at download time. See the header of that file.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from publication_duplicates import duplicate_publications  # noqa: E402
+
 
 def theme_vocabularies(root):
     """Collect the research-theme names from every place they are written.
@@ -205,6 +210,10 @@ def main():
     for domain in MEMBER_EMAIL_DOMAINS:
         if f"@{domain}" in blob:
             problems.append(f"email address for @{domain} present in published data")
+
+    # The same paper entered under two row ids is a different fault: nothing
+    # is dropped, both are published, and the page lists the paper twice.
+    problems.extend(duplicate_publications(pubs))
 
     # Duplicate Coda row ids silently drop a record on json.load.
     for path, label in ((os.path.join(data, "group_members.json"), "group_members"),
