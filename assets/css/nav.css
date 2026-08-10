@@ -204,14 +204,27 @@
 	   below the logo. Only the heading, which is narrow, rises beside it. */
 	@media (min-width: 1440px) {
 
+		/* Level with the menu, which is fixed at the same 2rem offset, and
+		   about as tall as it -- the two read as a pair across the top of the
+		   page rather than as two unrelated marks at different heights. Tight
+		   to the right edge; the menu's 2.5rem inset is not mirrored, because
+		   the menu is a small round glyph and the logo is a wide block. */
 		.site-logo-bar {
 			position: absolute;
-			top: 0;
+			top: 2rem;
 			right: 0;
+			padding: 0 1rem 0 0;
 		}
 
+		.site-logo img {
+			width: 270px;
+		}
+
+		/* The content starts at the top. Only enough padding is left to keep a
+		   full-width line of text clear of the logo's lower edge -- headings
+		   are narrow and sit well inside it. */
 		#wrapper > .wrapper:first-child > .inner {
-			padding-top: 3.5rem;
+			padding-top: 2rem;
 		}
 
 	}
