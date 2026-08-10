@@ -116,6 +116,102 @@ html {
 	text-shadow: none !important;
 }
 
+/* ── Things the page only reveals when you scroll ───────────────────────── */
+
+/* The template holds sections at is-inactive and each gallery photograph at
+   opacity 0 until you scroll to them. Paper does not scroll, so the research
+   tiles printed as flat grey rectangles. */
+.is-inactive,
+[class*="onscroll-"],
+[class*="onload-"] {
+	opacity: 1 !important;
+	transform: none !important;
+}
+
+.gallery article .image img,
+.banner .image img,
+.spotlight .image img {
+	opacity: 1 !important;
+	transform: none !important;
+	transition: none !important;
+}
+
+/* ── The research tiles ─────────────────────────────────────────────────── */
+
+/* On screen a tile is a photograph with its text laid over it, the caption
+   absolutely positioned at height: 100%. On paper the same text needs more
+   lines than the photograph is tall, so it overflowed its tile and printed
+   across the one below -- headings struck through by other headings. And
+   because the tiles are flex items, break-inside could not keep them off a
+   page boundary either: they were sliced through the middle.
+
+   Printed, a tile becomes what it is on paper: a photograph with its text
+   underneath. One per row, so each is wide enough to read and short enough
+   to stay whole. */
+
+.gallery.style2 > .inner {
+	display: block !important;
+	overflow: visible !important;
+}
+
+.gallery.style2 article {
+	display: block !important;
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 0 8mm 0 !important;
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.gallery.style2 article .image img {
+	max-height: 52mm;
+	object-fit: cover;
+	width: 100%;
+}
+
+.gallery.style2 article .caption {
+	position: static !important;
+	height: auto !important;
+	opacity: 1 !important;
+	background: none !important;
+	padding: 3mm 0 0 0 !important;
+	text-align: left !important;
+	color: #30363d !important;
+}
+
+.gallery.style2 article .caption h2,
+.gallery.style2 article .caption h3,
+.gallery.style2 article .caption h4,
+.gallery.style2 article .caption p {
+	color: #30363d !important;
+	text-shadow: none !important;
+}
+
+/* "Details" is a link to a filtered list. There is nothing to click here. */
+.gallery.style2 article .caption .button,
+.gallery.style2 article .caption ul.actions {
+	display: none !important;
+}
+
+/* ── Publications ───────────────────────────────────────────────────────── */
+
+/* The theme filter is a set of buttons. On paper it is a column of dead
+   words costing a fifth of every page's width, so the citations get the
+   whole measure instead. */
+#publications-filter {
+	display: none !important;
+}
+
+.publications-layout {
+	display: block !important;
+}
+
+#publications-list {
+	width: 100% !important;
+	max-width: none !important;
+	flex: none !important;
+}
+
 /* ── Keep things whole across page breaks ───────────────────────────────── */
 
 /* A member sliced through the middle -- photograph on one page, name on the

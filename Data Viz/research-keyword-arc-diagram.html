@@ -226,13 +226,22 @@ function render(data){
   const svg = d3.select('#svg');
   svg.selectAll('*').remove();
 
+  const message = document.getElementById('state-message');
+
   if(!data.nodes.length){
     svg.style('display','none');
-    const m = document.getElementById('state-message');
-    m.textContent = 'No publications tagged with themes yet.';
-    m.hidden = false;
+    message.textContent = 'No publications tagged with themes yet.';
+    message.hidden = false;
     return;
   }
+
+  // Clear the empty state. Without this a single early render with no data --
+  // a resize arriving before the fetch resolves, say -- hid the diagram and
+  // left "No publications tagged with themes yet." on the page permanently,
+  // because every later render only replaced the contents of a hidden svg.
+  svg.style('display', null);
+  message.hidden = true;
+  message.textContent = '';
 
   const W = 1600;
   const margin = { left: 200, right: 200 };
@@ -443,7 +452,13 @@ loadThemes().then(loadPubs).then(pubs => { render(build(pubs)); postHeight(); })
       window.parent.postMessage({ type: 'asb-arc-resize', height: h }, '*');
     }
   };
-  window.addEventListener('resize', function () { render(build(LAST_PUBS)); postHeight(); }, { passive: true });
+  // Re-render on resize, but never with nothing: the publications may not
+  // have arrived yet, and rendering an empty set is what put the page into
+  // its empty state in the first place.
+  window.addEventListener('resize', function () {
+    if (LAST_PUBS.length) render(build(LAST_PUBS));
+    postHeight();
+  }, { passive: true });
   if (window.ResizeObserver) new ResizeObserver(window.postHeight).observe(document.body);
 })();
 </script>
