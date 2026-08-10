@@ -8910,26 +8910,6 @@ input, select, textarea {
 	padding: 0.15rem 0;
 	margin: 0;
 }
-.members-heading {
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.5rem;
-}
-
-.members-caret {
-	display: inline-block;
-	transition: transform 0.2s ease;
-}
-
-#members.is-collapsed .members-caret {
-	transform: rotate(180deg);
-}
-
-#members.is-collapsed #members-content {
-	display: none;
-}
 
 #members {
 	border-bottom: solid 1px rgba(0,0,0,0.12);

@@ -13,17 +13,6 @@
 		
 	<style>
 
-		/* Collapsible sections */
-		.collapsible-heading {
-			cursor: pointer;
-			user-select: none;
-		}
-		.collapsible-heading .members-caret {
-			display: inline-block;
-			transition: transform 0.2s ease;
-			margin-left: 0.4rem;
-		}
-		.collapsible-content.is-hidden { display: none; }
 
 		/* Remove dividing lines */
 		#wrapper.divided > * { box-shadow: none !important; }
@@ -63,18 +52,6 @@
 		/* Hide collapsed content */
 		.is-hidden { display: none !important; }
 
-		/* How We Work — consistent caret direction */
-		.collapsible-heading .members-caret {
-			display: inline-block;
-			transition: transform 0.2s ease;
-			margin-left: 0.4rem;
-		}
-		.collapsible-heading[aria-expanded="true"] .members-caret {
-			transform: rotate(180deg);
-		}
-		.collapsible-heading[aria-expanded="false"] .members-caret {
-			transform: rotate(0deg);
-		}
 	
 	
 		/* ── Adventures scrapbook ─────────────────────────────────────────── */
@@ -549,10 +526,7 @@
      (section: Who We Work With)
 <section class="wrapper style1 align-center" id="Collaborators" style="padding-top: 0; margin-top: -2rem;">
 	<div class="inner">
-		<h2 id="collabs-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="collabs-content">
-			Collaborators
-			<span class="members-caret" aria-hidden="true">▾</span>
-		</h2>
+		<h2 id="collabs-heading">Collaborators</h2>
 		<div id="collabs-content">
 			<p>Researchers and institutions the group has published with — sized by number of shared publications.</p>
 			<div id="collab-viz"></div>
@@ -568,10 +542,7 @@
      and suppresses one on the first child. -->
 <section class="wrapper style1 align-center" id="Short-Talks">
 	<div class="inner">
-		<h2 id="media-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="media-content">
-			Engagements
-			<span class="members-caret" aria-hidden="true">▾</span>
-		</h2>
+		<h2 id="media-heading">Engagements</h2>
 		<div id="media-content">
 			<p>The group's work explained in plain terms. Engagements by group members on the ideas, methods, and questions that drive the research.</p>
 		</div>
@@ -669,11 +640,8 @@
 <!-- Adventures -->
 <section class="wrapper style1 align-center" id="travels" style="border-top: 1px solid rgba(0,0,0,0.1);">
 	<div class="inner">
-		<h2 id="travels-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="travels-content">
-			Adventures
-			<span class="members-caret" aria-hidden="true">▾</span>
-		</h2>
-		<div id="travels-content" class="collapsible-content">
+		<h2 id="travels-heading">Adventures</h2>
+		<div id="travels-content">
 			<p>Where the group has been — conferences, workshops, retreats, and adventures.</p>
 			<div class="album-wrap">
 				<div class="album" id="travels-album">
@@ -706,23 +674,6 @@
 		<script src="assets/js/site-nav.js"></script>
 		<script src="assets/js/site-footer.js"></script>
 		<script src="assets/js/gallery-arrows.js"></script>
-
-		<script>
-		// Collapsible sections
-		(function() {
-		function wireToggle(headingId, contentId) {
-			var h = document.getElementById(headingId);
-			var c = document.getElementById(contentId);
-			if (!h || !c) return;
-			h.addEventListener('click', function() {
-				var hidden = c.classList.toggle('is-hidden');
-				h.setAttribute('aria-expanded', String(!hidden));
-			});
-		}
-			// COLLABORATORS (disabled) wireToggle('collabs-heading', 'collabs-content');
-			wireToggle('media-heading', 'media-content');
-		})();
-		</script>
 
 <!-- COLLABORATORS (disabled) — d3 is used only by the collaborators visualisation
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
@@ -985,16 +936,6 @@
 					document.getElementById('travels-album').innerHTML =
 						'<div class="album-empty">No travels yet — check back soon!</div>';
 				});
-		
-		// Wire travels collapsible
-		var th = document.getElementById('travels-heading');
-		var tc = document.getElementById('travels-content');
-		if (th && tc) {
-			th.addEventListener('click', function() {
-				var hidden = tc.classList.toggle('is-hidden');
-				th.setAttribute('aria-expanded', String(!hidden));
-			});
-		}
 		});
 		</script>
 </body>

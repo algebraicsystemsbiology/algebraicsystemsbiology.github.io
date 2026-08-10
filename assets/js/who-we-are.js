@@ -264,20 +264,6 @@
     });
   }
 
-  // ── Collapsible sections — same mechanism as we-connect ───────────
-  // Uses is-hidden on content div + aria-expanded on heading
-  // CSS handles caret rotation via [aria-expanded] attribute selector
-
-  function wireToggle(headingId, contentId) {
-    const h = document.getElementById(headingId);
-    const c = document.getElementById(contentId);
-    if (!h || !c) return;
-    h.addEventListener('click', () => {
-      const hidden = c.classList.toggle('is-hidden');
-      h.setAttribute('aria-expanded', String(!hidden));
-    });
-  }
-
   // ── Init ──────────────────────────────────────────────────────────
 
   async function init() {
@@ -288,8 +274,6 @@
 
       renderCurrentMembers(members);
       renderAlumni(members);
-      wireToggle('members-heading', 'members-content');
-      wireToggle('alumni-heading', 'alumni-content');
     } catch (err) {
       console.error(err);
     }

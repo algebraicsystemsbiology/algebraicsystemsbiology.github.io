@@ -181,21 +181,6 @@
 			.is-hidden { display: none !important; }
 	
 		/* Collapsible triangles — same as CONNECTIONS */
-		.collapsible-heading {
-			cursor: pointer;
-			user-select: none;
-		}
-		.collapsible-heading .members-caret {
-			display: inline-block;
-			transition: transform 0.2s ease;
-			margin-left: 0.4rem;
-		}
-		.collapsible-heading[aria-expanded="true"] .members-caret {
-			transform: rotate(180deg);
-		}
-		.collapsible-heading[aria-expanded="false"] .members-caret {
-			transform: rotate(0deg);
-		}
 		.is-hidden { display: none !important; }
 	
   :root{ --ink:#30363d; --blue:#47D3E5; --pink:#db8992; }
@@ -255,10 +240,7 @@
 
 <section class="wrapper style1 align-center" id="members">
 	<div class="inner" style="padding-top: 0.5rem; padding-bottom: 0; margin-bottom: 0;">
-		<h2 id="members-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="members-content">
-			Current Members
-			<span class="members-caret" aria-hidden="true">▾</span>
-		</h2>
+		<h2 id="members-heading">Current Members</h2>
 		<div id="members-content">
 				<p style="margin-bottom: 2.5rem;">Algebraic Systems Biology is led by Professor Heather Harrington, and based at the Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG), Dresden and the Mathematical Institute, University of Oxford.</p>
 			<div id="members-grid" class="items style1 medium"></div>
@@ -269,10 +251,7 @@
 <!-- Alumni -->
 <section class="wrapper style1 align-center alumni-section" id="alumni">
 	<div class="inner">
-		<h2 id="alumni-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="alumni-content">
-			Alumni
-			<span class="members-caret" aria-hidden="true">▾</span>
-		</h2>
+		<h2 id="alumni-heading">Alumni</h2>
 		<div id="alumni-content">
 			<div id="alumni-grid" class="alumni-grid"></div>
 		</div>
