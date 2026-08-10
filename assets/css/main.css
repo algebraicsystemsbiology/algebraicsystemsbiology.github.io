@@ -8911,11 +8911,10 @@ input, select, textarea {
 	margin: 0;
 }
 
-/* The rule under Current Members separates it from Alumni; it does not need
-   5rem of padding either side of it as well. */
+/* Alumni draws its own rule above itself, like every other section, so
+   Current Members no longer carries one below. */
 #members {
-	border-bottom: solid 1px rgba(0,0,0,0.12);
-	padding-bottom: 1rem;
+	padding-bottom: 0;
 	margin-bottom: 0;
 }
 
