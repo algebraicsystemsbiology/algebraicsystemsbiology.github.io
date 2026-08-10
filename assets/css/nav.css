@@ -32,23 +32,34 @@
   .nav-links a{text-decoration:none;color:#30363d;text-transform:uppercase;letter-spacing:.08em;
     text-align:left;
     font-size:.82rem;font-weight:600;white-space:nowrap;
-    padding:.7rem 0;border-top:1px solid rgba(0,0,0,.14);
+    padding:.7rem 0;
     opacity:0;transform:translateY(4px);
     transition:color .2s,opacity .4s,transform .4s}
-  .nav-links a:first-child{border-top:0}
+  /* No horizontal rules anywhere in the panel. The entries were separated by
+     hairlines, which since the disclosure was added had been drawn on exactly
+     one entry -- PAPERS, the only page with no sections and so the only link
+     still a direct child of .nav-links. Padding and the indent on sub-items
+     carry the structure; the lines only added noise. */
   .nav.open .nav-links a{opacity:1;transform:none}
-  .nav.open .nav-links a:nth-child(1){transition-delay:.05s}
-  .nav.open .nav-links a:nth-child(2){transition-delay:.11s}
-  .nav.open .nav-links a:nth-child(3){transition-delay:.17s}
-  .nav.open .nav-links a:nth-child(4){transition-delay:.23s}
-  .nav.open .nav-links a:nth-child(5){transition-delay:.29s}
-  .nav.open .nav-links a:nth-child(6){transition-delay:.35s}
-  .nav.open .nav-links a:nth-child(7){transition-delay:.41s}
-  .nav.open .nav-links a:nth-child(8){transition-delay:.47s}
+  /* Stagger by entry, for the same reason: the link inside a .nav-group is
+     always its row's first child, so counting <a> children put every entry
+     with sections on the same delay. Each pair covers both forms an entry can
+     take -- a bare <a>, or a .nav-group holding one. Sub-links inherit their
+     entry's delay, so a group fades in as a unit. */
+  .nav.open #navLinks > :nth-child(1),
+  .nav.open #navLinks > :nth-child(1) a{transition-delay:.05s}
+  .nav.open #navLinks > :nth-child(2),
+  .nav.open #navLinks > :nth-child(2) a{transition-delay:.11s}
+  .nav.open #navLinks > :nth-child(3),
+  .nav.open #navLinks > :nth-child(3) a{transition-delay:.17s}
+  .nav.open #navLinks > :nth-child(4),
+  .nav.open #navLinks > :nth-child(4) a{transition-delay:.23s}
+  .nav.open #navLinks > :nth-child(5),
+  .nav.open #navLinks > :nth-child(5) a{transition-delay:.29s}
   .nav-links a:hover{color:var(--blue)}
   /* Sub-links inside the panel (submenu items) */
   .nav-links a.sub{text-transform:none;letter-spacing:.02em;font-size:.74rem;font-weight:400;
-    padding:.45rem 0 .45rem 1.1rem;border-top:1px dotted rgba(0,0,0,.12);color:#5a616b}
+    padding:.45rem 0 .45rem 1.1rem;color:#5a616b}
   .nav-links a.sub:hover{color:var(--blue)}
   /* Each entry that has sections becomes a disclosure, opened only by its
      toggle button. Neither hover nor focus is a trigger.
