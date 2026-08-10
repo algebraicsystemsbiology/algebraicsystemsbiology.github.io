@@ -805,6 +805,11 @@
 			if (!album) return;
 
 			var viewer, viewerImg, viewerCaption, opener;
+			// The photos the arrow keys move between: the ones on the spread
+			// the open photo came from. Crossing into another trip would
+			// change the album underneath the viewer, which reads as the page
+			// moving on its own.
+			var group = [], groupIndex = 0;
 
 			function build() {
 				viewer = document.createElement('div');
@@ -826,8 +831,7 @@
 				viewer.addEventListener('click', close);
 			}
 
-			function open(img) {
-				if (!viewer) build();
+			function show(img) {
 				opener = img;
 
 				var polaroid = img.closest('.polaroid');
@@ -838,11 +842,27 @@
 				viewerImg.alt = img.alt || '';
 				viewerCaption.textContent = text;
 				viewerCaption.hidden = !text;
+			}
 
+			function open(img) {
+				if (!viewer) build();
+
+				var spread = img.closest('.album-spread') || album;
+				group = Array.prototype.slice.call(spread.querySelectorAll('.polaroid img'));
+				groupIndex = Math.max(0, group.indexOf(img));
+
+				show(img);
 				viewer.classList.add('is-open');
 				// The page behind must not scroll under the viewer.
 				document.body.style.overflow = 'hidden';
 				viewer.querySelector('.photo-viewer-close').focus();
+			}
+
+			// Wraps, so a set of three photos has no dead end in either direction.
+			function step(delta) {
+				if (group.length < 2) return;
+				groupIndex = (groupIndex + delta + group.length) % group.length;
+				show(group[groupIndex]);
 			}
 
 			function close() {
@@ -851,8 +871,11 @@
 				document.body.style.overflow = '';
 				// Drop the source so a large photo is not held decoded while hidden.
 				viewerImg.removeAttribute('src');
+				// Focus goes to the photo last looked at, not the one first
+				// clicked, so arrowing along and closing leaves you where you are.
 				if (opener && opener.focus) opener.focus();
 				opener = null;
+				group = [];
 			}
 
 			// Delegated: the album is built after this runs, and rebuilt whenever
@@ -873,7 +896,10 @@
 			});
 
 			document.addEventListener('keydown', function (e) {
-				if (e.key === 'Escape') close();
+				if (!viewer || !viewer.classList.contains('is-open')) return;
+				if (e.key === 'Escape') { close(); return; }
+				if (e.key === 'ArrowRight') { e.preventDefault(); step(1); return; }
+				if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
 			});
 
 			// The photos are plain <img>, which nothing can focus. Make each one
