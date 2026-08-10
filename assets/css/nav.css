@@ -24,7 +24,7 @@
   .nav-toggle .b{fill:var(--blue)} .nav-toggle .p{fill:var(--pink)} .nav-toggle .c{fill:#fff}
   .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:0;
     text-align:left;
-    min-width:230px;opacity:0;transform:translateY(-8px);
+    width:250px;opacity:0;transform:translateY(-8px);
     pointer-events:none;transition:opacity .4s ease,transform .4s ease}
   .nav.open .nav-links{opacity:1;transform:none;pointer-events:auto;
     background:#fff;border-radius:6px;padding:.25rem 1.1rem;
@@ -50,13 +50,49 @@
   .nav-links a.sub{text-transform:none;letter-spacing:.02em;font-size:.74rem;font-weight:400;
     padding:.45rem 0 .45rem 1.1rem;border-top:1px dotted rgba(0,0,0,.12);color:#5a616b}
   .nav-links a.sub:hover{color:var(--blue)}
+  /* Each entry that has sections becomes a disclosure, opened only by its
+     toggle button. Neither hover nor focus is a trigger.
+
+     Hover was disorienting -- the menu is a small target and panels opened as
+     the pointer crossed them. :focus-within was worse: clicking the toggle
+     focuses it, so the group matched :focus-within and the panel could not be
+     closed again by the very button meant to close it.
+
+     The toggle is a real <button>, so it is already reachable and operable
+     from the keyboard with Enter or Space; it carries aria-expanded and
+     aria-controls. The entry for the current page starts open. */
+  .nav-group{display:block}
+  .nav-row{display:flex;align-items:center;gap:.25rem}
+  .nav-row a{flex:1 1 auto}
+  .nav-sub-toggle{
+    flex:0 0 auto;background:none;border:0;padding:.35rem .2rem;margin:0;
+    cursor:pointer;color:#5a616b;font-size:.7rem;line-height:1;
+    transition:transform .2s ease,color .2s ease}
+  .nav-sub-toggle:hover{color:var(--blue)}
+  /* No focus ring around the caret -- a box drawn round a small glyph is
+     visually noisy. Keyboard focus is still shown, as the same colour change
+     hover uses plus a slight scale, so the indicator is not lost. */
+  .nav-sub-toggle:focus{outline:none}
+  .nav-sub-toggle:focus-visible{outline:none;color:var(--blue);transform:scale(1.25)}
+  .nav-group.is-open .nav-sub-toggle:focus-visible{transform:rotate(180deg) scale(1.25)}
+  .nav-group.is-open .nav-sub-toggle{transform:rotate(180deg)}
+  /* Sub-items stack. They used to be direct children of .nav-links, which is a
+     flex column, so each got its own row for free; inside .nav-sub they are
+     plain inline anchors and would otherwise run side by side. */
+  .nav-sub{display:none;flex-direction:column;align-items:stretch}
+  .nav-group.is-open .nav-sub{display:flex}
+  .nav-sub a{display:block;width:100%}
+
   /* Sub-links take their text from each section's own <h2>, which on Research
      is a full sentence. The top-level entries stay on one line; these wrap
      instead, so a long heading does not stretch the panel across the page. */
-  .nav-links a.sub{white-space:normal;max-width:19rem;line-height:1.35}
+  /* The panel has a fixed width, so opening a group changes only its height.
+     Before this, Research's sentence-length headings widened the whole menu as
+     it expanded, which was disorienting. */
+  .nav-links a.sub{white-space:normal;max-width:100%;line-height:1.3}
   @media (max-width:860px){
     .nav{top:1.25rem;left:1.25rem}
-    .nav-links{min-width:180px}
+    .nav-links{width:200px}
     .nav-links a{font-size:.72rem;letter-spacing:.05em}
   }
   @media (prefers-reduced-motion:reduce){

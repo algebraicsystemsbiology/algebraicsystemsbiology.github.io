@@ -1,0 +1,47 @@
+{
+  "index.html": [
+    {
+      "id": "contact",
+      "label": "Get Involved"
+    }
+  ],
+  "research.html": [
+    {
+      "id": "themes",
+      "label": "Mathematics built for the complexity of living systems"
+    },
+    {
+      "id": "layer2",
+      "label": "Where algebraic precision meets biological uncertainty"
+    },
+    {
+      "id": "layer3",
+      "label": "Translational applications"
+    }
+  ],
+  "people.html": [
+    {
+      "id": "who-works-on-what",
+      "label": "Who Works On What"
+    },
+    {
+      "id": "members",
+      "label": "Current Members"
+    },
+    {
+      "id": "alumni",
+      "label": "Alumni"
+    }
+  ],
+  "publications.html": [],
+  "engage.html": [
+    {
+      "id": "Short-Talks",
+      "label": "Engagements"
+    },
+    {
+      "id": "travels",
+      "label": "Adventures"
+    }
+  ]
+}

@@ -1,16 +1,25 @@
 // site-nav.js
-// Injects the shared dot-burst menu from partials/nav-button.html and wires it up.
+// Builds the dot-burst menu from partials/nav-button.html and
+// partials/nav-sections.json, and wires up its behaviour.
 //
-// The menu was pasted into every page and had already diverged: publications
-// was labelled PAPERS on two pages and PUBLICATIONS on three, and index's copy
-// of the toggle script was missing the click-outside-to-close handler the
-// other five had. One copy removes both classes of drift.
+// The markup and the toggle script used to be pasted into every page and had
+// diverged: publications was labelled PAPERS on two pages and PUBLICATIONS on
+// three, and index's copy of the toggle lacked the click-outside-to-close
+// handler the other five had.
 //
-// Pages keep an empty <nav class="nav" id="nav" aria-label="Primary"></nav>.
+// Sub-items are shown for every page, not only the page you are on. They used
+// to be read from the current document's own sections, which meant they
+// appeared exactly when they were least useful -- you do not need a link to a
+// section of the page you are already reading. nav-sections.json is generated
+// from the pages by scripts/build_nav.py, so the list stays derived rather
+// than typed, and scripts/check_data.py fails the deploy if it goes stale.
 //
-// Sub-links are generated from the page's own sections, so they cannot drift
-// from the page and every page gets them on the same terms -- Research used to
-// have none while Engage did, purely because nobody had written them out.
+// Each entry with sub-items becomes a disclosure, opened only by its toggle
+// button. Neither hover nor focus opens it: hover was disorienting, and
+// :focus-within actively broke the toggle, since clicking it focuses it and
+// the group then stayed open regardless of state. The toggle is a real
+// <button> with aria-expanded, so the keyboard already works. The entry for
+// the current page starts open.
 
 (function () {
 	'use strict';
@@ -21,58 +30,63 @@
 		return file || 'index.html';
 	}
 
-	// Sub-links are generated from the page's own sections rather than listed
-	// by hand, so they cannot fall out of step with the page and every page
-	// gets them on the same terms. A section qualifies if it has an id and an
-	// <h2>; the h2's text becomes the label.
-	//
-	// A section may carry data-nav-label to override the heading text, for a
-	// heading too long or too specific to serve as a menu entry. No page needs
-	// it at present: Research's headings are full sentences and are used as
-	// they are, with .nav-links a.sub allowed to wrap.
-	//
-	// Sections titled by an <h1> are skipped: that is the page's own title, so
-	// a sub-link would just repeat the entry above it.
-	function sectionLinks() {
-		var out = [];
-		var sections = document.querySelectorAll('section[id]');
-		Array.prototype.forEach.call(sections, function (sec) {
-			var override = sec.getAttribute('data-nav-label');
-			var label = override;
-			if (!label) {
-				var h2 = sec.querySelector('h2');
-				if (!h2) return;
-				// Drop the collapsible caret and collapse whitespace.
-				label = h2.textContent.replace(/[\u25be\u25b4\u25bc\u25b2]/g, '').trim();
-				label = label.replace(/\s+/g, ' ');
-			}
-			if (label) out.push({ id: sec.id, label: label });
-		});
-		return out;
-	}
-
-	function addSubLinks(nav) {
-		var links = sectionLinks();
-		if (!links.length) return;
-
-		var anchor = nav.querySelector('#navLinks a[href="' + currentPage() + '"]');
-		if (!anchor) return;
-
-		var frag = document.createDocumentFragment();
-		links.forEach(function (item) {
-			var a = document.createElement('a');
-			a.className = 'sub';
-			a.href = '#' + item.id;
-			a.textContent = item.label;
-			frag.appendChild(a);
-		});
-		anchor.parentNode.insertBefore(frag, anchor.nextSibling);
-	}
-
-	function markCurrent(nav) {
+	function buildGroups(nav, sections) {
 		var here = currentPage();
-		var link = nav.querySelector('#navLinks a[href="' + here + '"]');
-		if (link) link.setAttribute('aria-current', 'page');
+		var links = nav.querySelectorAll('#navLinks > a');
+
+		Array.prototype.forEach.call(links, function (link) {
+			var page = link.getAttribute('href');
+			var items = sections[page] || [];
+			if (link.getAttribute('href') === here) link.setAttribute('aria-current', 'page');
+			if (!items.length) return;
+
+			// Wrap the entry and its sub-items so hover and focus apply to both.
+			var group = document.createElement('div');
+			group.className = 'nav-group';
+			link.parentNode.insertBefore(group, link);
+
+			var row = document.createElement('div');
+			row.className = 'nav-row';
+			group.appendChild(row);
+			row.appendChild(link);
+
+			var listId = 'nav-sub-' + page.replace(/[^a-z0-9]+/gi, '-');
+			var toggle = document.createElement('button');
+			toggle.type = 'button';
+			toggle.className = 'nav-sub-toggle';
+			toggle.setAttribute('aria-controls', listId);
+			toggle.setAttribute('aria-label', 'Show sections of ' + link.textContent.trim());
+			toggle.title = 'Show sections';
+			toggle.innerHTML = '<span aria-hidden="true">▾</span>';
+			row.appendChild(toggle);
+
+			var list = document.createElement('div');
+			list.className = 'nav-sub';
+			list.id = listId;
+			items.forEach(function (item) {
+				var a = document.createElement('a');
+				a.className = 'sub';
+				// Same-page sections stay as bare fragments so the browser does
+				// not reload the document to scroll within it.
+				a.href = (page === here ? '' : page) + '#' + item.id;
+				a.textContent = item.label;
+				list.appendChild(a);
+			});
+			group.appendChild(list);
+
+			var open = page === here;
+			function setOpen(state) {
+				open = state;
+				group.classList.toggle('is-open', state);
+				toggle.setAttribute('aria-expanded', state ? 'true' : 'false');
+			}
+			setOpen(open);
+			toggle.addEventListener('click', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				setOpen(!open);
+			});
+		});
 	}
 
 	function wireToggle(nav) {
@@ -100,20 +114,23 @@
 		var nav = document.getElementById('nav');
 		if (!nav) return;
 
-		fetch('partials/nav-button.html', { cache: 'no-cache' })
-			.then(function (res) {
-				if (!res.ok) throw new Error('HTTP ' + res.status);
-				return res.text();
-			})
-			.then(function (html) {
-				nav.innerHTML = html;
-				addSubLinks(nav);
-				markCurrent(nav);
-				wireToggle(nav);
-			})
-			.catch(function (err) {
-				console.warn('site-nav.js: could not load partials/nav-button.html —', err.message);
-			});
+		Promise.all([
+			fetch('partials/nav-button.html', { cache: 'no-cache' }).then(function (r) {
+				if (!r.ok) throw new Error('nav-button.html: HTTP ' + r.status);
+				return r.text();
+			}),
+			fetch('partials/nav-sections.json', { cache: 'no-cache' })
+				.then(function (r) { return r.ok ? r.json() : {}; })
+				// Sub-items are an enhancement: if the manifest is missing the
+				// menu should still list the pages.
+				.catch(function () { return {}; })
+		]).then(function (results) {
+			nav.innerHTML = results[0];
+			buildGroups(nav, results[1]);
+			wireToggle(nav);
+		}).catch(function (err) {
+			console.warn('site-nav.js: could not build the menu —', err.message);
+		});
 	}
 
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

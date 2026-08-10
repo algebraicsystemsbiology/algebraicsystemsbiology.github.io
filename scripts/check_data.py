@@ -174,6 +174,32 @@ def main():
             for extra in sorted(names - canonical):
                 problems.append(f"theme {extra!r} appears in {source} but is not in research-themes.json")
 
+    # The menu's sub-items are generated from the pages by
+    # scripts/build_nav.py. Verify the committed manifest still matches, so a
+    # renamed or added section cannot leave the menu quietly out of date.
+    nav_manifest = os.path.join(root, "partials", "nav-sections.json")
+    if not os.path.exists(nav_manifest):
+        problems.append("missing partials/nav-sections.json -- run scripts/build_nav.py")
+    else:
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
+        try:
+            import build_nav
+        except ImportError:
+            build_nav = None
+        if build_nav is not None:
+            with open(nav_manifest, encoding="utf-8") as fh:
+                committed = json.load(fh)
+            fresh = build_nav.collect(root)
+            if committed != fresh:
+                for page in sorted(set(committed) | set(fresh)):
+                    was = [i["label"] for i in committed.get(page, [])]
+                    now = [i["label"] for i in fresh.get(page, [])]
+                    if was != now:
+                        problems.append(
+                            f"nav-sections.json is stale for {page}: has {was}, pages have {now} "
+                            f"-- run scripts/build_nav.py"
+                        )
+
     # Emails must never reach the published site.
     blob = json.dumps(members) + json.dumps(pubs)
     for domain in MEMBER_EMAIL_DOMAINS:

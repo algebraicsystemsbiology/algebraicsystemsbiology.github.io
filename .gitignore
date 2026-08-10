@@ -23,3 +23,7 @@
 
 # Assembled output
 /_site/
+
+# scripts/check_data.py imports build_nav, which byte-compiles it
+__pycache__/
+*.pyc
