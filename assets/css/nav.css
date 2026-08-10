@@ -229,10 +229,42 @@
 
 	}
 
-	/* The footer is a .wrapper.style1 too, so it inherits the 5rem bottom
-	   padding meant to separate stacked sections -- 80px of blank page below
-	   the copyright line, with nothing after it. Only padding-bottom is
+	/* The footer is a .wrapper.style1 too, so it inherits the padding meant to
+	   separate stacked sections: 5rem above and 5rem below, the latter leaving
+	   80px of blank page below the copyright line with nothing after it. The
+	   section above it ends with 3rem of its own, so the gap over the footer
+	   came to about 150px on every page. Only the vertical padding is
 	   overridden, so the responsive left/right values still apply. */
 	#wrapper > footer.wrapper > .inner {
+		padding-top: 1.5rem;
 		padding-bottom: 1.5rem;
+	}
+
+	/* The last section before the footer has nothing below it to be separated
+	   from. (:nth-last-child(2) rather than :last-of-type -- the footer is the
+	   last child, and is itself a .wrapper.) */
+	#wrapper > .wrapper:nth-last-child(2) > .inner {
+		padding-bottom: 1.5rem;
+	}
+
+	/* .divided draws a hairline above every section, including the footer, so
+	   each page ended with a rule across it. The footer is already set apart by
+	   being the footer. */
+	#wrapper.divided > footer {
+		box-shadow: none !important;
+	}
+
+	/* A page title is a heading and nothing else, so it needs none of the 3rem
+	   that separates a section of content from the next. Without this the
+	   heading floated over 110px of empty page.
+
+	   (.wrapper.style1 is repeated in these selectors on purpose: the rule
+	   being overridden is `.wrapper.style1 > .inner`, three classes, so two
+	   would lose to it however late they appear.) */
+	.wrapper.style1.page-title > .inner {
+		padding-bottom: 0;
+	}
+
+	.page-title + .wrapper.style1 > .inner {
+		padding-top: 1.5rem;
 	}

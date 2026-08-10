@@ -33,6 +33,13 @@
 				min-width: 0;
 			}
 
+			/* The heading block sits straight above the filter list, with no
+			   section boundary between them, so it does not need the template's
+			   parting space -- that plus the subtitle's reserved line left a wide
+			   band of nothing under the title. */
+			#page-top header { margin-bottom: 0; }
+			#page-top #theme-title { margin-bottom: 0.25rem; }
+
 			/* The theme subtitle is empty until a theme is chosen, but keeps its
 			   line either way -- otherwise picking a theme adds a line and shoves
 			   the filter list and every publication down the page.
