@@ -78,24 +78,7 @@
 	</a>
 </div>
 
-		  <nav class="nav" id="nav" aria-label="Primary">
-    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
-      <svg viewBox="0 0 40 40" aria-hidden="true">
-        <circle class="c" cx="20" cy="20" r="4.4"/>
-        <circle class="b" cx="20" cy="6" r="3.4"/><circle class="p" cx="20" cy="34" r="3.4"/>
-        <circle class="b" cx="6" cy="20" r="3.4"/><circle class="p" cx="34" cy="20" r="3.4"/>
-        <circle class="b" cx="10" cy="10" r="2.4"/><circle class="p" cx="30" cy="30" r="2.4"/>
-        <circle class="p" cx="30" cy="10" r="2.4"/><circle class="b" cx="10" cy="30" r="2.4"/>
-      </svg>
-    </button>
-    <div class="nav-links" id="navLinks">
-      <a href="index.html">HOME</a>
-      <a href="research.html">RESEARCH</a>
-      <a href="people.html">PEOPLE</a>
-      <a href="publications.html">PUBLICATIONS</a>
-      <a href="engage.html">ENGAGE</a>
-    </div>
-  </nav>
+		  <nav class="nav" id="nav" aria-label="Primary"></nav>
 
 		<!-- Wrapper -->
 		<div id="wrapper" class="divided">
@@ -108,7 +91,7 @@
         <p class="major">
         	We’re mathematicians building methods that handle the messiness of real biological data — and using them to open up questions in biology and medicine that were previously out of reach.
 
-        	Each layer — mathematics, methods, translational questions — is organised around a handful of research themes. Follow any theme to work <!-- (the work research link) --> behind it and
+        	Each layer — mathematics, methods, translational questions — is organised around a handful of research themes. Follow any theme to the work <!-- (the work research link) --> behind it and
         	<a href="people.html">the people</a> doing it.
         </p>
       </div>
@@ -406,6 +389,7 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<script src="assets/js/site-nav.js"></script>
 		<script src="assets/js/site-footer.js"></script>
 		<script src="assets/js/gallery-arrows.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
@@ -429,17 +413,5 @@
 		  });
 		}
 		</script>
-	  <script>
-    (function(){
-      var nav=document.getElementById('nav'),btn=document.getElementById('navToggle');
-      if(!nav||!btn)return;
-      function setOpen(o){nav.classList.toggle('open',o);
-        btn.setAttribute('aria-expanded',o?'true':'false');
-        btn.setAttribute('aria-label',o?'Close menu':'Open menu');}
-      btn.addEventListener('click',function(){setOpen(!nav.classList.contains('open'))});
-      document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
-      document.addEventListener('click',function(e){if(!nav.contains(e.target))setOpen(false)});
-    })();
-  </script>
 </body>
 </html>

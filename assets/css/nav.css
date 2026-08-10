@@ -50,6 +50,10 @@
   .nav-links a.sub{text-transform:none;letter-spacing:.02em;font-size:.74rem;font-weight:400;
     padding:.45rem 0 .45rem 1.1rem;border-top:1px dotted rgba(0,0,0,.12);color:#5a616b}
   .nav-links a.sub:hover{color:var(--blue)}
+  /* Sub-links take their text from each section's own <h2>, which on Research
+     is a full sentence. The top-level entries stay on one line; these wrap
+     instead, so a long heading does not stretch the panel across the page. */
+  .nav-links a.sub{white-space:normal;max-width:19rem;line-height:1.35}
   @media (max-width:860px){
     .nav{top:1.25rem;left:1.25rem}
     .nav-links{min-width:180px}

@@ -1,0 +1,29 @@
+<!-- The dot-burst menu, shared by every page.
+     Injected by assets/js/site-nav.js into <nav class="nav" id="nav">.
+     Edit here and it changes everywhere; do not paste it back into pages.
+
+     Page-specific sub-links are not listed here. A page that wants them
+     declares its own, and site-nav.js inserts them under the matching entry:
+
+       <template id="nav-sublinks" data-under="people.html">
+         <a href="#members" class="sub">Current Members</a>
+       </template>
+
+     The link for the current page is marked aria-current="page" at runtime,
+     so it does not need special-casing per page. -->
+<button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+	<svg viewBox="0 0 40 40" aria-hidden="true">
+		<circle class="c" cx="20" cy="20" r="4.4"/>
+		<circle class="b" cx="20" cy="6" r="3.4"/><circle class="p" cx="20" cy="34" r="3.4"/>
+		<circle class="b" cx="6" cy="20" r="3.4"/><circle class="p" cx="34" cy="20" r="3.4"/>
+		<circle class="b" cx="10" cy="10" r="2.4"/><circle class="p" cx="30" cy="30" r="2.4"/>
+		<circle class="p" cx="30" cy="10" r="2.4"/><circle class="b" cx="10" cy="30" r="2.4"/>
+	</svg>
+</button>
+<div class="nav-links" id="navLinks">
+	<a href="index.html">HOME</a>
+	<a href="research.html">RESEARCH</a>
+	<a href="people.html">PEOPLE</a>
+	<a href="publications.html">PAPERS</a>
+	<a href="engage.html">ENGAGE</a>
+</div>
