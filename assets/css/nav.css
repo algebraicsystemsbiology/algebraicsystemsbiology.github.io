@@ -140,8 +140,7 @@
 	/* The footer is a .wrapper.style1 too, so it inherits the 5rem bottom
 	   padding meant to separate stacked sections -- 80px of blank page below
 	   the copyright line, with nothing after it. Only padding-bottom is
-	   overridden, so the responsive left/right values still apply.
-	   network.html has its own footer and is unaffected. */
+	   overridden, so the responsive left/right values still apply. */
 	#wrapper > footer.wrapper > .inner {
 		padding-bottom: 1.5rem;
 	}

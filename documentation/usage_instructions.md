@@ -117,8 +117,8 @@ deploy if anything is wrong.
   cache aggressively. If a CSS or JS edit does not appear, hard-reload
   (`Ctrl-Shift-R`, or `Cmd-Shift-R` on macOS).
 - Pages worth checking after a change: `/`, `people.html`, `research.html`,
-  `publications.html`, `engage.html`, `network.html`, `privacy.html`, and
-  `Data Viz/network.html`.
+  `publications.html`, `engage.html`, `privacy.html`, and the arc diagram
+  embedded on the front page.
 - Filenames are **case-sensitive** on GitHub Pages (and on Linux) but not on
   macOS. A link that works when previewing on a Mac can still 404 once
   published, so match the on-disk capitalisation exactly. `scripts/check_data.py`
