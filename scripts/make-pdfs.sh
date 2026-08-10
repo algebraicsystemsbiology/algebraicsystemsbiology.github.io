@@ -38,6 +38,7 @@ BASE="${BASE:-http://localhost:8000}"
 OUT="pdf"
 WIDTH=1440
 MODE="screen"
+LIMIT=60          # seconds any single render may take
 PAGES=(index.html research.html people.html publications.html engage.html privacy.html)
 
 while [ $# -gt 0 ]; do
@@ -85,6 +86,27 @@ if ! curl -sf -o /dev/null "$BASE/index.html"; then
 	exit 1
 fi
 
+# Run the browser, but never wait on it forever. A page that wedges -- and one
+# did, through a loop in screen-pdf.js -- leaves the browser running with
+# nothing to print, and the script simply stopped. macOS has no timeout(1)
+# unless coreutils is installed, so this is done by hand.
+render() {
+	"$CHROME" "$@" >/dev/null 2>&1 &
+	local pid=$!
+	local waited=0
+	while kill -0 "$pid" 2>/dev/null; do
+		if [ "$waited" -ge "$LIMIT" ]; then
+			kill -9 "$pid" 2>/dev/null || true
+			echo "    (gave up after ${LIMIT}s)" >&2
+			return 1
+		fi
+		sleep 1
+		waited=$(( waited + 1 ))
+	done
+	wait "$pid" 2>/dev/null || true
+	return 0
+}
+
 # Reads a PDF's page count and page height in CSS pixels. Kept in a variable
 # so the loop below stays readable.
 PDFSTAT='
@@ -120,7 +142,7 @@ for page in "${PAGES[@]}"; do
 		extra=(--window-size="$WIDTH,900")
 	fi
 
-	"$CHROME" \
+	render \
 		--headless \
 		--disable-gpu \
 		--no-sandbox \
@@ -133,7 +155,7 @@ for page in "${PAGES[@]}"; do
 		--print-to-pdf-no-header \
 		"${extra[@]}" \
 		--print-to-pdf="$target" \
-		"$url" >/dev/null 2>&1 || true
+		"$url" || true
 
 	rm -rf "$profile"
 
@@ -154,13 +176,13 @@ for page in "${PAGES[@]}"; do
 			[ "${pagecount:-1}" -gt 1 ] || break
 			needed=$(( boxheight * pct / 100 ))
 			profile="$(mktemp -d)"
-			"$CHROME" \
+			render \
 				--headless --disable-gpu --no-sandbox --hide-scrollbars \
 				--user-data-dir="$profile" --disk-cache-dir=/dev/null \
 				--virtual-time-budget=15000 --run-all-compositor-stages-before-draw \
 				--no-pdf-header-footer --print-to-pdf-no-header \
 				"${extra[@]}" --print-to-pdf="$target" \
-				"$BASE/$page?pdf=screen&height=$needed" >/dev/null 2>&1 || true
+				"$BASE/$page?pdf=screen&height=$needed" || true
 			rm -rf "$profile"
 			read -r pagecount _ < <(python3 -c "$PDFSTAT" "$target")
 			retried="  (fitted at ${needed}px)"

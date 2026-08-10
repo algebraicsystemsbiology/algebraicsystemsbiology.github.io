@@ -162,7 +162,11 @@ suggestion for this job — it is archived, and its old WebKit renders neither
 the member grid nor the research tiles correctly.
 
 The `?pdf=screen` route above needs none of this: it works in whatever browser
-you already have, Safari and Firefox included.
+you already have. **From Firefox's print dialogue, open More settings, tick
+"Print backgrounds", and set Scale to 100% rather than "Fit to page width".**
+With those two it produces the same page Chrome does — checked against Firefox
+153, identical page box and rendering. Without "Print backgrounds" the research
+tiles print as flat grey rectangles.
 
 For paper rather than screen:
 
