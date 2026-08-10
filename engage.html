@@ -13,7 +13,6 @@
 		
 	<style>
 
-
 		/* Collab viz — retained deliberately while the Collaborators section is
 		   commented out (see the COLLABORATORS markers in this file), so the
 		   feature styles itself correctly the moment it is re-enabled.
@@ -50,168 +49,26 @@
 		.is-hidden { display: none !important; }
 
 	
-	
-		/* ── Adventures scrapbook ───────────────────────────────────────────
-		   SUPERSEDED. The "Album" block further down this file re-declares
-		   almost every selector here -- .polaroid, .polaroid img,
-		   .polaroid-caption, .album-spread, .spread-* -- and, coming later,
-		   wins. Editing a rule here changes nothing. The photo-viewer rules
-		   below are the exception: they exist only here. */
+		/* ── Adventures: the page's own bits ─────────────────────────────── */
 
 		#travels { background: #ffffff; position: relative; }
 
-		.album {
-			position: relative;
-			width: 100%;
-			max-width: 860px;
-			margin: 2rem auto 0;
-			user-select: none;
-		}
-		.album-spread {
-			display: none;
-			position: relative;
-			background: #f2ece0;
-			border-radius: 4px;
-			padding: 2.5rem 2rem 2rem;
-			box-shadow: -4px 0 8px rgba(0,0,0,0.08), 4px 4px 16px rgba(0,0,0,0.12), inset 4px 0 8px rgba(0,0,0,0.04);
-			min-height: 520px;
-			overflow: hidden;
-		}
-		.album-spread.is-active { display: block; }
-		.album-spread::before {
-			content: '';
-			position: absolute;
-			left: 2.8rem; top: 0; bottom: 0;
-			width: 1px;
-			background: linear-gradient(to bottom, transparent 0%, rgba(160,140,110,0.3) 10%, rgba(160,140,110,0.3) 90%, transparent 100%);
-		}
-		.spread-header {
-			display: flex;
-			align-items: flex-start;
-			justify-content: space-between;
-			margin-bottom: 1.5rem;
-			padding-left: 1rem;
-		}
-		.spread-title {
-			font-family: 'Caveat', 'Modern Love', cursive;
-			font-size: 2rem;
-			font-weight: 700;
-			color: #3a3028;
-			line-height: 1.1;
-			margin: 0;
-		}
-		.spread-date {
-			font-family: 'Caveat', 'Modern Love', cursive;
-			font-size: 1rem;
-			color: #9a8878;
-			margin-top: 0.3rem;
-		}
-		.spread-stamp {
-			display: inline-block;
-			border: 2px solid #c4956a;
-			color: #c4956a;
-			font-family: 'Caveat', 'Modern Love', cursive;
-			font-size: 0.75rem;
-			letter-spacing: 0.12em;
-			text-transform: uppercase;
-			padding: 0.3rem 0.6rem;
-			transform: rotate(-8deg);
-			opacity: 0.7;
-			white-space: nowrap;
-			margin-top: 0.5rem;
-			flex-shrink: 0;
-		}
-		.spread-note {
-			font-family: 'Caveat', 'Modern Love', cursive;
-			font-size: 1.2rem;
-			color: #5a4a3a;
-			padding-left: 1rem;
-			margin-bottom: 1.5rem;
-			position: relative;
-			line-height: 1.5;
-		}
-		.spread-note::before {
-			content: '→';
-			position: absolute;
-			left: -0.2rem;
-			color: #c4956a;
-		}
-		.spread-photos {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 1.2rem;
-			padding-left: 1rem;
-			align-items: flex-start;
-		}
-		.polaroid {
-			background: #fff;
-			padding: 0.6rem 0.6rem 2rem;
-			box-shadow: 2px 3px 10px rgba(0,0,0,0.15);
-			position: relative;
-			flex: 0 0 auto;
-			width: calc(33% - 0.8rem);
-			min-width: 140px;
-			max-width: 220px;
-		}
-		.polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
-		.polaroid:nth-child(even) { transform: rotate(1.8deg); }
-		.polaroid:nth-child(3n)   { transform: rotate(-1deg) translateY(8px); }
-		.polaroid img {
-			width: 100%;
-			aspect-ratio: 1 / 1;
-			object-fit: cover;
-			display: block;
-			background: #e8e0d4;
-		}
-		.polaroid-caption {
-			font-family: 'Caveat', 'Modern Love', cursive;
-			font-size: 0.9rem;
-			color: #6a5a4a;
-			text-align: center;
-			margin-top: 0.5rem;
-			line-height: 1.2;
-		}
-		.polaroid::before {
-			content: '';
-			position: absolute;
-			top: -8px; left: 50%;
-			transform: translateX(-50%) rotate(-3deg);
-			width: 40px; height: 16px;
-			background: rgba(180,200,220,0.5);
-			border-radius: 1px;
-		}
-		.polaroid:nth-child(even)::before {
-			background: rgba(210,185,155,0.5);
-			transform: translateX(-50%) rotate(4deg);
-		}
-		.polaroid:nth-child(3n)::before {
-			background: rgba(190,210,190,0.45);
-			transform: translateX(-50%) rotate(-1deg);
-		}
-		.album-nav {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 1.5rem;
-			margin-top: 1.5rem;
-		}
-		.album-btn {
-			background: none;
-			border: 1px solid rgba(160,140,110,0.4);
-			border-radius: 50%;
-			width: 36px; height: 36px;
-			cursor: pointer;
-			color: #9a8878;
-			font-size: 1rem;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transition: all 0.2s ease;
-			padding: 0;
-		}
-		.album-btn:hover { background: rgba(160,140,110,0.1); color: #5a4a3a; border-color: rgba(160,140,110,0.7); }
-		.album-btn:disabled { opacity: 0.3; cursor: default; }
-		.album-counter { font-family: 'Caveat', 'Modern Love', cursive; font-size: 1rem; color: #9a8878; }
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
 		/* ── Photo viewer ──────────────────────────────────────────────────
 		   The polaroids are square-cropped thumbnails (object-fit: cover), so
 		   tapping one is the only way to see the whole photograph. It opens in
@@ -278,14 +135,7 @@
 		/* The pointer is the only hint that a polaroid does anything. */
 		.polaroid img { cursor: zoom-in; }
 
-		.album-empty { text-align: center; padding: 3rem 1rem; font-family: 'Caveat', 'Modern Love', cursive; font-size: 1.3rem; color: #9a8878; }
-
-		@media screen and (max-width: 736px) {
-			.album-spread { padding: 1.5rem 1rem; min-height: 400px; }
-			.spread-title { font-size: 1.5rem; }
-			.polaroid { width: calc(50% - 0.6rem); min-width: 100px; }
-			.album-spread::before { left: 1.8rem; }
-		}
+		
 	/* ── Album ──────────────────────────────────────────────────── */
 		#travels-section { padding: 0; }
 
@@ -299,6 +149,9 @@
 			position: relative;
 			width: 100%;
 			user-select: none;
+			/* carried over when the duplicate block above was removed */
+			max-width: 860px;
+			margin: 2rem auto 0;
 		}
 
 		.album-spread {
@@ -328,6 +181,7 @@
 			align-items: flex-start;
 			justify-content: space-between;
 			margin-bottom: 1.2rem;
+			padding-left: 1rem;   /* carried over from the duplicate block */
 		}
 
 		.spread-title {
@@ -385,6 +239,7 @@
 			gap: 1.5rem;
 			align-items: flex-start;
 			justify-content: center;
+			padding-left: 1rem;   /* carried over from the duplicate block */
 		}
 
 		.polaroid {
@@ -488,30 +343,21 @@
 			
   :root{ --ink:#30363d; --blue:#47D3E5; --pink:#db8992; }
   /* ===== Unified dot-burst menu (shared across all pages) ===== */
+
   
-  
-  
-  
-  
+
     
+
   
+
   
+
   
+
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   /* Sub-links inside the panel (submenu items) */
-  
-  
-  
+
   
 
 </style>
