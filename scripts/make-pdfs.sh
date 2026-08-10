@@ -38,7 +38,7 @@ BASE="${BASE:-http://localhost:8000}"
 OUT="pdf"
 WIDTH=1440
 MODE="screen"
-LIMIT=60          # seconds any single render may take
+LIMIT=90          # half-second ticks before giving up (~45s)
 PAGES=(index.html research.html people.html publications.html engage.html privacy.html)
 
 while [ $# -gt 0 ]; do
@@ -86,23 +86,53 @@ if ! curl -sf -o /dev/null "$BASE/index.html"; then
 	exit 1
 fi
 
-# Run the browser, but never wait on it forever. A page that wedges -- and one
-# did, through a loop in screen-pdf.js -- leaves the browser running with
-# nothing to print, and the script simply stopped. macOS has no timeout(1)
-# unless coreutils is installed, so this is done by hand.
+# Run the browser and wait for the PDF, not for the browser.
+#
+# Chrome writes the file and then, on macOS at least, can sit there not
+# exiting -- so waiting on the process meant waiting out the whole timeout on
+# every page, even though the work was done in a couple of seconds. Watch the
+# output file instead: once it exists and has stopped growing, the print is
+# finished and the browser can go.
+#
+# LIMIT is the backstop for the case where the file never appears at all.
 render() {
+	local target="$1"; shift
+	rm -f "$target"
+
 	"$CHROME" "$@" >/dev/null 2>&1 &
 	local pid=$!
-	local waited=0
+	local waited=0 last=-1 size=0 steady=0
+
 	while kill -0 "$pid" 2>/dev/null; do
+		if [ -s "$target" ]; then
+			size=$(wc -c < "$target" | tr -d ' ')
+			if [ "$size" = "$last" ]; then
+				steady=$(( steady + 1 ))
+				# Two readings the same, a beat apart: the file is complete.
+				if [ "$steady" -ge 2 ]; then
+					kill "$pid" 2>/dev/null || true
+					sleep 0.2
+					kill -9 "$pid" 2>/dev/null || true
+					wait "$pid" 2>/dev/null || true
+					return 0
+				fi
+			else
+				steady=0
+				last="$size"
+			fi
+		fi
+
 		if [ "$waited" -ge "$LIMIT" ]; then
 			kill -9 "$pid" 2>/dev/null || true
-			echo "    (gave up after ${LIMIT}s)" >&2
+			wait "$pid" 2>/dev/null || true
+			[ -s "$target" ] || echo "    (no output after ${LIMIT}s)" >&2
 			return 1
 		fi
-		sleep 1
+
+		sleep 0.5
 		waited=$(( waited + 1 ))
 	done
+
 	wait "$pid" 2>/dev/null || true
 	return 0
 }
@@ -142,8 +172,10 @@ for page in "${PAGES[@]}"; do
 		extra=(--window-size="$WIDTH,900")
 	fi
 
-	render \
+	render "$target" \
 		--headless \
+		--no-first-run --no-default-browser-check --disable-background-networking \
+		--disable-sync --disable-extensions --disable-component-update --mute-audio \
 		--disable-gpu \
 		--no-sandbox \
 		--hide-scrollbars \
@@ -176,8 +208,10 @@ for page in "${PAGES[@]}"; do
 			[ "${pagecount:-1}" -gt 1 ] || break
 			needed=$(( boxheight * pct / 100 ))
 			profile="$(mktemp -d)"
-			render \
+			render "$target" \
 				--headless --disable-gpu --no-sandbox --hide-scrollbars \
+				--no-first-run --no-default-browser-check --disable-background-networking \
+				--disable-sync --disable-extensions --disable-component-update --mute-audio \
 				--user-data-dir="$profile" --disk-cache-dir=/dev/null \
 				--virtual-time-budget=15000 --run-all-compositor-stages-before-draw \
 				--no-pdf-header-footer --print-to-pdf-no-header \
