@@ -16,13 +16,21 @@
 #     ./scripts/make-pdfs.sh --width 1200       # narrower screen shape
 #     ./scripts/make-pdfs.sh --out ~/Desktop/asb
 #
-# It drives whichever Chrome or Chromium is installed. On a Mac, Chrome is
-# found automatically if you have it; otherwise:  brew install --cask chromium
+# It drives whichever Chromium-family browser is installed -- Chrome, Edge,
+# Brave, Chromium -- and finds the Mac application paths automatically.
 #
-# There is no third-party tool involved and nothing to install beyond a
-# browser. wkhtmltopdf, the usual suggestion, is archived and ships an old
-# WebKit that renders this site wrongly -- the member grid and the research
-# tiles both rely on CSS it does not have.
+# If you have none of them, install Chrome:  brew install --cask google-chrome
+# Not the chromium cask: Homebrew deprecated it because it fails the macOS
+# Gatekeeper check, and disables it on 2026-09-01.
+#
+# Nothing else is needed, and no third-party tool. wkhtmltopdf, the usual
+# suggestion, is archived and ships an old WebKit that renders this site
+# wrongly -- the member grid and the research tiles both rely on CSS it does
+# not have.
+#
+# You do not need this script at all to save one page: open it with
+# ?pdf=screen on the end of the address and print to PDF from the browser you
+# already have, Safari and Firefox included.
 
 set -euo pipefail
 
@@ -48,8 +56,9 @@ done
 CHROME=""
 for candidate in \
 	"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-	"/Applications/Chromium.app/Contents/MacOS/Chromium" \
 	"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" \
+	"/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" \
+	"/Applications/Chromium.app/Contents/MacOS/Chromium" \
 	"$(command -v google-chrome || true)" \
 	"$(command -v chromium || true)" \
 	"$(command -v chromium-browser || true)"
@@ -58,9 +67,15 @@ do
 done
 
 if [ -z "$CHROME" ]; then
-	echo "No Chrome or Chromium found." >&2
-	echo "  macOS:  brew install --cask chromium" >&2
+	echo "No Chromium-family browser found (Chrome, Edge, Brave, Chromium)." >&2
+	echo >&2
+	echo "  macOS:  brew install --cask google-chrome" >&2
+	echo "          not --cask chromium: Homebrew deprecated it for failing the" >&2
+	echo "          macOS Gatekeeper check, and disables it on 2026-09-01." >&2
 	echo "  Linux:  sudo apt install chromium   (or snap install chromium)" >&2
+	echo >&2
+	echo "Or skip this script: open a page with ?pdf=screen on the end of the" >&2
+	echo "address and print to PDF from any browser, Safari and Firefox included." >&2
 	exit 1
 fi
 

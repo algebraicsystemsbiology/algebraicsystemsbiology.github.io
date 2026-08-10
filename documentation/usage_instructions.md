@@ -148,11 +148,21 @@ http://localhost:8000/people.html?pdf=screen
 `assets/js/screen-pdf.js` reads that parameter, takes the print stylesheet out
 of the cascade, and sets a single `@page` the size of the document.
 
-**No third-party tool is needed** — it drives whichever Chrome or Chromium is
-installed, and finds the Mac paths automatically. If there is none:
-`brew install --cask chromium`. Avoid `wkhtmltopdf`, the usual suggestion: it
-is archived, and its old WebKit renders neither the member grid nor the
-research tiles correctly.
+**No third-party tool is needed** — the script drives whichever Chromium-family
+browser is installed (Chrome, Edge, Brave, Chromium) and finds the Mac
+application paths automatically. If you have none of them:
+
+```sh
+brew install --cask google-chrome
+```
+
+Not `--cask chromium`: Homebrew deprecated it for failing the macOS Gatekeeper
+check and disables it on 2026-09-01. Avoid `wkhtmltopdf` too, the usual
+suggestion for this job — it is archived, and its old WebKit renders neither
+the member grid nor the research tiles correctly.
+
+The `?pdf=screen` route above needs none of this: it works in whatever browser
+you already have, Safari and Firefox included.
 
 For paper rather than screen:
 
