@@ -33,6 +33,16 @@
 				min-width: 0;
 			}
 
+			/* The theme subtitle is empty until a theme is chosen, but keeps its
+			   line either way -- otherwise picking a theme adds a line and shoves
+			   the filter list and every publication down the page.
+			   1lh is exactly one line box of this element's own line-height; the
+			   em value above it is the fallback for browsers without lh units. */
+			#theme-title {
+				min-height: 1.7em;
+				min-height: 1lh;
+			}
+
 			/* Make the filter menu vertical */
 			#publications-filter ul.theme-filter-list {
 				list-style: none;
@@ -112,7 +122,11 @@
 				<div class="inner">
 					<header>
 						<h1>Publications and Preprints</h1>
-						<p id="theme-title">All</p>
+						<!-- Filled in by assets/js/publications.js with the name of
+						     the theme being filtered on, and left empty when there
+						     is none. Starts empty so the unfiltered view does not
+						     flash a subtitle before the script runs. -->
+						<p id="theme-title"></p>
 						<p id="theme-editorial" class="publication-editorial" hidden></p>
 					</header>
 

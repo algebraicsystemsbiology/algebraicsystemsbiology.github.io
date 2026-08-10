@@ -9,7 +9,10 @@ let activeTheme = 'All';
 // "modeling") existed only to paper over that drift.
 let THEMES = [];
 
-const ALL = { name: 'All', label: 'All Publications', slug: 'all' };
+// The pseudo-theme the filter list leads with. It carried a label of "All
+// Publications" for the subtitle, which is no longer shown when nothing is
+// filtered on.
+const ALL = { name: 'All', slug: 'all' };
 
 function normalizeText(value) {
   return String(value || '')
@@ -176,7 +179,14 @@ function updateThemeHeader() {
   const config = getThemeConfigByLabel(activeTheme);
 
   if (titleEl) {
-    titleEl.textContent = activeTheme === 'All' ? 'All Publications' : config?.label || activeTheme;
+    // Nothing under the heading when no theme is chosen. The line only ever
+    // said "All", which the heading above it already implies; it is a subtitle
+    // for the filtered views, naming the theme you are looking at.
+    //
+    // Emptied rather than hidden: the line keeps its height either way (see
+    // #theme-title in publications.html), so choosing a theme does not shift
+    // the filter list and the publications below it.
+    titleEl.textContent = activeTheme === 'All' ? '' : config?.label || activeTheme;
   }
 
   if (editorialEl) {
