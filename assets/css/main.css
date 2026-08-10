@@ -8937,8 +8937,18 @@ input, select, textarea {
 	margin-bottom: 2rem;
 }
 
-/* Publications filter dots */
-/* Publications filter dots */
+/* Publications filter dots.
+
+   The dot takes its colour from the theme, set as --theme-dot on the button by
+   assets/js/publications.js out of data/research-themes.json. It used to be
+   painted here instead, by a block of attribute selectors matching theme names
+   written out in full -- a fourth copy of the theme list, which had drifted:
+   it spelled the modelling theme "Modelling" where the data says "Modeling",
+   and had no rule at all for "From Coral to Contagions". Both fell through to
+   the grey default without anything looking broken.
+
+   The fallback stays for the All button, which is not a theme and has no
+   colour. */
 
 .theme-filter::before {
 	content: "";
@@ -8948,30 +8958,7 @@ input, select, textarea {
 	border-radius: 50%;
 	margin-right: 0.65rem;
 	vertical-align: middle;
-	background: #cccccc;
-}
-
-/* Mathematics (1–3) */
-.theme-filter[data-theme="Applied Algebraic Geometry & Tensors"]::before,
-.theme-filter[data-theme="Topological Data Analysis"]::before,
-.theme-filter[data-theme="Software & Computational Mathematics"]::before {
-	background: #849bad;
-}
-
-/* Bridge (4–7) */
-.theme-filter[data-theme="Identifiability, Statistics, & AI"]::before,
-.theme-filter[data-theme="Dynamical Systems & Mathematical Modelling"]::before,
-.theme-filter[data-theme="Biological Networks"]::before,
-.theme-filter[data-theme="Morphology & Spatial Biology"]::before {
-	background: #988d91;
-}
-
-/* Translational (8–11) */
-.theme-filter[data-theme="Omics"]::before,
-.theme-filter[data-theme="Oncology"]::before,
-.theme-filter[data-theme="Immunology"]::before,
-.theme-filter[data-theme="Neuroscience"]::before {
-	background: #cfa597;
+	background: var(--theme-dot, #cccccc);
 }
 
 

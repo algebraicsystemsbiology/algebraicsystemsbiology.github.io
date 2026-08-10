@@ -207,6 +207,41 @@ function setActiveTheme(theme) {
   renderPublications();
 }
 
+// The filter list is built from THEMES rather than written into
+// publications.html. The hand-written copy had drifted from
+// research-themes.json in three ways at once, each of them invisible until you
+// clicked something:
+//
+//   - "From Coral to Contagions" had no button at all, so its 26 publications
+//     could be reached only by url
+//   - the modelling theme was spelled "Modelling" in the page and "Modeling"
+//     in the data, so that button matched none of its 66 publications
+//   - every accent colour differed from the one in research-themes.json that
+//     the network diagram draws the same theme with
+//
+// None of that can recur: adding a theme to research-themes.json adds the
+// button, and there is no second spelling to keep in step.
+function renderThemeFilters() {
+  const list = document.getElementById('theme-filter-list');
+  if (!list) return;
+
+  list.innerHTML = '';
+  [ALL, ...THEMES].forEach(theme => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-filter';
+    button.dataset.theme = theme.name;
+    button.textContent = theme.name;
+    // Only the dot is tinted. The active label keeps the site's link colour:
+    // several theme colours are pale by design, chosen to read as circles on
+    // the network diagram, and would be close to invisible as text.
+    if (theme.colour) button.style.setProperty('--theme-dot', theme.colour);
+    item.appendChild(button);
+    list.appendChild(item);
+  });
+}
+
 function setupThemeFilters() {
   const buttons = document.querySelectorAll('.theme-filter');
 
@@ -281,6 +316,7 @@ function renderPublications() {
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     await Promise.all([loadThemes(), loadPublications()]);
+    renderThemeFilters();
     setupThemeFilters();
 
     const themeFromUrl = getThemeFromUrl();

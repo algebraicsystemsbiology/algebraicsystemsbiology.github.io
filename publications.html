@@ -118,20 +118,13 @@
 
 					<div class="publications-layout">
 						<aside id="publications-filter">
-							<ul class="alt theme-filter-list">
-								<li><button type="button" class="theme-filter is-active" data-theme="All">All</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Applied Algebraic Geometry & Tensors" data-accent="#c7a59e">Applied Algebraic Geometry &amp; Tensors</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Topological Data Analysis" data-accent="#9fa8b5">Topological Data Analysis</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Software & Computational Mathematics" data-accent="#b79b88">Software &amp; Computational Mathematics</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Identifiability, Statistics, & AI" data-accent="#a89db5">Identifiability, Statistics, &amp; AI</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Dynamical Systems & Mathematical Modelling" data-accent="#9fb2a3">Dynamical Systems &amp; Mathematical Modelling</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Biological Networks" data-accent="#b1a38f">Biological Networks</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Morphology & Spatial Biology" data-accent="#c0b0a0">Morphology &amp; Spatial Biology</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Omics" data-accent="#d0b4ac">Omics</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Oncology" data-accent="#c98f86">Oncology</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Immunology" data-accent="#9f8fb2">Immunology</button></li>
-								<li><button type="button" class="theme-filter" data-theme="Neuroscience" data-accent="#7f8290">Neuroscience</button></li>
-							</ul>
+							<!-- Filled by assets/js/publications.js from
+							     data/research-themes.json, the one list of the
+							     research themes. Do not write the buttons here:
+							     the copy that used to live in this file had
+							     drifted from that list in name, colour and
+							     membership. -->
+							<ul class="alt theme-filter-list" id="theme-filter-list"></ul>
 						</aside>
 
 						<div id="publications-list"></div>
