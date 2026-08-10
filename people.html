@@ -13,60 +13,12 @@
 
 <style>
 
-		/* The group lead gets a row of her own, above the grid.
-		   Rendering her outside #members-grid rather than as a full-width
-		   flex item keeps that grid's nth-child border rules correct — they
-		   assume a fixed number of cards per row, and differ at each of the
-		   three breakpoints.
-		   The member-card styles in main.css are scoped to #members-grid, so
-		   the ones this card needs are repeated here. */
-		#lead-member:empty {
-			display: none;
-		}
-		#lead-member {
-			display: flex;
-			justify-content: center;
-			padding-bottom: 1.5rem;
-			margin-bottom: 2rem;
-			border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-		}
-		#lead-member .member-card {
-			text-align: center;
-			max-width: 34rem;
-		}
-		#lead-member .member-photo {
-			width: 160px;
-			height: 160px;
-			object-fit: cover;
-			border-radius: 50%;
-			display: block;
-			margin: 0 auto 1.25rem auto;
-		}
-		#lead-member .member-role {
-			font-weight: 600;
-			margin-bottom: 0.75rem;
-		}
-		#lead-member .member-bio {
-			max-width: 34rem;
-			margin: 0 auto 1rem auto;
-		}
-		#lead-member .member-links {
-			display: flex;
-			justify-content: center;
-			gap: 0.6rem;
-			flex-wrap: wrap;
-			margin-top: 0.75rem;
-		}
-		#lead-member .member-link {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			text-decoration: none;
-			font-size: 1.2rem;
-			padding: 0.2rem;
-		}
-		#lead-member .member-link:hover {
-			transform: translateY(-1px);
+		/* Members shown without a photograph still reserve its space, so their
+		   names line up with everyone else's. #members-grid .member-photo sets
+		   the box; this only makes it invisible. */
+		#members-grid .member-photo-blank {
+			background: none;
+			border: 0;
 		}
 
 		/* Location tag. A member may hold more than one, so these need to sit
@@ -163,10 +115,12 @@
 			box-shadow: none !important;
 		}
 
-		/* Who Works On What now leads the page, so it takes no rule above it;
-		   the sections that follow are separated from what precedes them. */
-		#members,
-		#alumni {
+		/* Who Works On What leads the page, so it takes no rule above it.
+		   #alumni takes none either: the members grid immediately above ends
+		   with its own full-width rule, and a section rule directly beneath
+		   that reads as a doubled line. The Alumni heading and the spacing
+		   mark the transition. */
+		#members {
 			border-top: 1px solid rgba(0,0,0,0.1);
 		}
 
@@ -224,99 +178,6 @@
 			margin-top: 1rem;
 		}
 	
-		/* Who Works On What — network diagram (scoped) */
-		.network-block {
-			width: 100%;
-			max-width: 1400px;
-			margin: 0 auto;
-			position: relative;
-		}
-		.network-block svg {
-			width: 100%;
-			min-height: 860px;
-			height: auto;
-			overflow: visible;
-		}
-		.link {
-			stroke-opacity: 0.28;
-			transition: stroke-opacity 0.2s;
-		}
-		.node circle { cursor: pointer; }
-		.node text {
-			font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
-			font-size: 15px;
-			fill: #555;
-			cursor: pointer;
-			pointer-events: none;
-		}
-		.node.theme text {
-			font-size: 15px;
-			font-weight: 600;
-			fill: #333;
-		}
-		.node.dimmed circle { opacity: 0.1; }
-		.node.dimmed text   { opacity: 0.1; }
-		.link.dimmed        { stroke-opacity: 0.04; }
-		.link.highlighted   { stroke-opacity: 0.8; }
-		.node.highlighted text { fill: #111; font-weight: 600; }
-		#network-tooltip {
-			position: fixed;
-			background: rgba(255,255,255,0.97);
-			border: 1px solid #e0e0e0;
-			border-radius: 6px;
-			padding: 0.7rem 1rem;
-			font-family: 'Helvetica Neue', sans-serif;
-			font-size: 0.76rem;
-			color: #333;
-			pointer-events: none;
-			opacity: 0;
-			transition: opacity 0.15s;
-			max-width: 230px;
-			line-height: 1.5;
-			z-index: 100;
-			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-		}
-		#network-tooltip strong {
-			display: block;
-			font-size: 0.82rem;
-			color: #111;
-			margin-bottom: 0.2rem;
-		}
-		#network-tooltip .sub {
-			color: #7fc6c8;
-			font-size: 0.68rem;
-			text-transform: uppercase;
-			letter-spacing: 0.08em;
-		}
-		#network-tooltip .themes-list {
-			margin-top: 0.35rem;
-			color: #888;
-			font-size: 0.68rem;
-			line-height: 1.6;
-		}
-		.network-legend {
-			display: flex;
-			gap: 1.8rem;
-			justify-content: center;
-			font-family: 'Helvetica Neue', sans-serif;
-			font-size: 0.7rem;
-			letter-spacing: 0.08em;
-			text-transform: uppercase;
-			color: #888;
-			flex-wrap: wrap;
-			margin-bottom: 1rem;
-		}
-		.legend-item { display: flex; align-items: center; gap: 0.45rem; }
-		.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
-		.network-caption {
-			text-align: center;
-			font-family: 'Helvetica Neue', sans-serif;
-			font-size: 0.68rem;
-			color: #bbb;
-			letter-spacing: 0.05em;
-			margin-top: 1rem;
-		}
-	
 			.is-hidden { display: none !important; }
 	
 		/* Collapsible triangles — same as CONNECTIONS */
@@ -338,34 +199,28 @@
 		.is-hidden { display: none !important; }
 	
   :root{ --ink:#30363d; --blue:#47D3E5; --pink:#db8992; }
-  /* ===== Unified dot-burst menu (shared across all pages) ===== */
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* Sub-links inside the panel (submenu items) */
-  
-  
-  
-  
+		/* The Who Works On What diagram lives in Data Viz/who-works-on-what.html
+		   and is embedded here; its own styles travel with it. */
+		.network-shell { width: 100%; margin: 1rem 0 0; }
+		#networkFrame {
+			width: 100%;
+			border: 0;
+			display: block;
+			/* A floor only: the frame reports its real height and the script at
+			   the end of this page grows it to fit, so the diagram never keeps
+			   a scrollbar of its own. Set near the natural height so nothing
+			   scrolls in the moment before the first message arrives. */
+			height: 900px;
+			background: #fff;
+		}
+		@media (max-width: 980px) {
+			#networkFrame { height: 820px; }
+		}
 
-</style>
+		@media (max-width: 736px) {
+			#networkFrame { height: 680px; }
+		}
+	</style>
 	</head>
 
 	<body class="is-preload">
@@ -407,22 +262,14 @@
 		<h2>Who Works On What</h2>
 		<p>The same research themes explained on <a href="research.html">Research</a>, here mapped to the people behind them. Hover a name or theme to trace connections — click a theme to see its publications.</p>
 
-		<div class="network-legend">
-			<div class="legend-item">
-				<div class="legend-dot" style="background:linear-gradient(90deg,#889baa,#c8a794)"></div>
-				<span>Research Theme</span>
-			</div>
-			<div class="legend-item">
-				<div class="legend-dot" style="background:#b0b8be"></div>
-				<span>Researcher</span>
-			</div>
+		<div class="network-shell">
+			<iframe
+				id="networkFrame"
+				src="Data Viz/who-works-on-what.html"
+				title="Who works on what — researchers and research themes"
+				loading="lazy"></iframe>
 		</div>
 
-		<div class="network-block">
-			<svg id="network-svg"></svg>
-			<p id="network-state-message" hidden></p>
-		</div>
-		<p class="network-caption">Hover a node to explore connections · Click to pin</p>
 	</div>
 </section>
 
@@ -434,7 +281,6 @@
 		</h2>
 		<div id="members-content">
 				<p style="margin-bottom: 2.5rem;">Algebraic Systems Biology is led by Professor Heather Harrington, and based at the Max Planck Institute of Molecular Cell Biology and Genetics (MPI-CBG), Dresden and the Mathematical Institute, University of Oxford.</p>
-			<div id="lead-member"></div>
 			<div id="members-grid" class="items style1 medium"></div>
 		</div>
 	</div>
@@ -456,7 +302,6 @@
 
 <!-- Who Works On What -->
 
-<div id="network-tooltip"></div>
 
 
 <!-- Footer -->
@@ -473,265 +318,9 @@
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
 		<script src="assets/js/site-footer.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 		<script src="assets/js/who-we-are.js"></script>
 
 
-		<script>
-(function () {
-
-// Theme colours — matching the site's own gradient exactly
-// (blue-grey → mauve → warm terracotta, as shown in the keyword filter UI)
-const THEME_COLOURS = {
-  "Applied Algebraic Geometry & Tensors":      "#abbbca",
-  "Topological Data Analysis":                 "#8c959f",
-  "Software & Computational Mathematics":      "#929ba2",
-  "Identifiability, Statistics, & AI":         "#948d93",
-  "Dynamical Systems & Mathematical Modeling": "#857b7f",
-  "Biological Networks":                       "#b0b0b2",
-  "Morphology & Spatial Biology":              "#ad9c96",
-  "Omics":                                     "#e0d6d1",
-  "Oncology":                                  "#e1cdc2",
-  "Immunology":                                "#e8d5d0",
-  "Neuroscience":                              "#ead8d4",
-  "Other Applications":                        "#c5c0c2",
-};
-
-// People nodes: single neutral tone, differentiated only by size
-const PERSON_COLOUR = "#b0b8be";
-
-// ── Data loading ─────────────────────────────────────────────────────
-// This is the only part of the page that talks to the data file. Everything
-// below is rendering logic that reacts to whatever it's given — so updating
-// data/group_members.json (adding, removing, or editing a member's keywords)
-// is all that's needed to change what's drawn here. No code changes required.
-
-const DATA_URL = './data/group_members.json';
-
-async function loadMembers() {
-  const res = await fetch(DATA_URL, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`Failed to load ${DATA_URL}: ${res.status}`);
-  const raw = await res.json();
-
-  const knownThemes = new Set(Object.keys(THEME_COLOURS));
-
-  const members = Object.values(raw)
-    .filter(m => m && m.temporal_tag === 'Current' && m.name_full)
-    .map(m => ({
-      id: m.name_full,
-      role: (m.internal_roles && m.internal_roles[0]) || '',
-      keywords: (m.keywords || []).filter(k => knownThemes.has(k))
-    }))
-    .sort((a, b) => a.id.localeCompare(b.id));
-
-  return members;
-}
-
-function showMessage(text) {
-  const el = document.getElementById('network-state-message');
-  el.textContent = text;
-  el.hidden = false;
-  document.getElementById('network-svg').style.display = 'none';
-}
-
-// ── Render ───────────────────────────────────────────────────────────
-
-
-  function wrapLabel(text, maxCharsPerLine = 20) {
-    if (text.length <= maxCharsPerLine) return [text];
-    const words = text.split(' ');
-    let line1 = '', line2 = '';
-    for (const word of words) {
-      if ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1) {
-        line1 = (line1 + ' ' + word).trim();
-      } else {
-        line2 = (line2 + ' ' + word).trim();
-      }
-    }
-    return line2 ? [line1, line2] : [line1];
-  }
-
-  function render(members) {
-  const themes = Object.keys(THEME_COLOURS).filter(
-    t => members.some(m => m.keywords.includes(t))
-  );
-
-  if (!members.length || !themes.length) {
-    showMessage('No current members with tagged research themes yet.');
-    return;
-  }
-
-  const edges = [];
-  members.forEach(m => {
-    m.keywords.forEach(kw => {
-      if (themes.includes(kw)) edges.push({ source: m.id, target: kw });
-    });
-  });
-
-  const width = 1200, height = Math.max(1100, Math.max(members.length, themes.length) * 26);
-  const leftX = 280, rightX = 920;
-  const topPad = 55, bottomPad = 55;
-
-  const svg = d3.select('#network-svg').attr('viewBox', `0 0 ${width} ${height}`);
-  svg.selectAll('*').remove();
-
-  const themeY = d3.scalePoint()
-    .domain(themes)
-    .range([topPad, height - bottomPad])
-    .padding(0.3);
-
-  const memberY = d3.scalePoint()
-    .domain(members.map(m => m.id))
-    .range([topPad, height - bottomPad])
-    .padding(0.2);
-
-  const nodePos = {};
-  themes.forEach(t  => { nodePos[t]    = { x: leftX,  y: themeY(t)    }; });
-  members.forEach(m => { nodePos[m.id] = { x: rightX, y: memberY(m.id) }; });
-
-  const themeDegree  = {};
-  themes.forEach(t  => { themeDegree[t] = members.filter(m => m.keywords.includes(t)).length; });
-  const memberDegree = {};
-  members.forEach(m => { memberDegree[m.id] = m.keywords.length; });
-
-  // Links — coloured by theme
-  const linkSel = svg.append('g').selectAll('path')
-    .data(edges)
-    .join('path')
-    .attr('class', 'link')
-    .attr('d', d => {
-      const s = nodePos[d.source], t = nodePos[d.target];
-      const mx = (s.x + t.x) / 2;
-      return `M${s.x},${s.y} C${mx},${s.y} ${mx},${t.y} ${t.x},${t.y}`;
-    })
-    .attr('fill', 'none')
-    .attr('stroke', d => THEME_COLOURS[d.target] || '#aaa')
-    .attr('stroke-width', 1.4);
-
-  // Theme nodes
-  const themeNodes = svg.append('g').selectAll('g')
-    .data(themes)
-    .join('g')
-    .attr('class', 'node theme')
-    .attr('transform', d => `translate(${leftX},${themeY(d)})`);
-
-  themeNodes.append('circle')
-    .attr('r', d => 7 + Math.sqrt(themeDegree[d]) * 3.5)
-    .attr('fill', d => THEME_COLOURS[d])
-    .attr('fill-opacity', 0.9);
-
-  themeNodes.each(function(d) {
-    const lines = wrapLabel(d);
-    const lineHeight = 26;
-    const startDy = -((lines.length - 1) * lineHeight) / 2;
-    const g = d3.select(this);
-    lines.forEach((line, i) => {
-      g.append('text')
-        .attr('x', -28)
-        .attr('dy', (startDy + i * lineHeight) + 'px')
-        .attr('text-anchor', 'end')
-        .attr('dominant-baseline', 'middle')
-        .text(line);
-    });
-  });
-
-  // Member nodes
-  const memberNodes = svg.append('g').selectAll('g')
-    .data(members)
-    .join('g')
-    .attr('class', 'node member')
-    .attr('transform', d => `translate(${rightX},${memberY(d.id)})`);
-
-  memberNodes.append('circle')
-    .attr('r', d => d.role === 'Director' ? 18 : 7 + Math.sqrt(memberDegree[d.id]) * 3)
-    .attr('fill', PERSON_COLOUR)
-    .attr('fill-opacity', 0.85);
-
-  memberNodes.append('text')
-    .attr('x', 22).attr('dy', '0.35em')
-    .attr('text-anchor', 'start')
-    .text(d => d.id);
-
-  // Interaction
-  const tooltip = d3.select('#network-tooltip');
-  let pinned = null;
-
-  function connectedIds(id) {
-    const s = new Set([id]);
-    edges.forEach(e => {
-      if (e.source === id) s.add(e.target);
-      if (e.target === id) s.add(e.source);
-    });
-    return s;
-  }
-
-  function highlight(id) {
-    const s = connectedIds(id);
-    d3.selectAll('.node')
-      .classed('dimmed',      d => !s.has(d.id || d))
-      .classed('highlighted', d =>  s.has(d.id || d));
-    linkSel
-      .classed('dimmed',      d => d.source !== id && d.target !== id)
-      .classed('highlighted', d => d.source === id || d.target === id);
-  }
-
-  function clear() {
-    d3.selectAll('.node').classed('dimmed', false).classed('highlighted', false);
-    linkSel.classed('dimmed', false).classed('highlighted', false);
-  }
-
-  function tip(event, html) {
-    tooltip.html(html).style('opacity', 1)
-      .style('left', (event.clientX + 14) + 'px')
-      .style('top', (event.clientY - 10) + 'px');
-  }
-
-  function moveTip(event) {
-    tooltip.style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 10) + 'px');
-  }
-
-  themeNodes
-    .on('mouseover', (ev, d) => {
-      if (!pinned) {
-        highlight(d);
-        tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`);
-      }
-    })
-    .on('mousemove', moveTip)
-    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
-    .on('click', (ev, d) => {
-      if (pinned === d) { pinned = null; clear(); tooltip.style('opacity', 0); }
-      else { pinned = d; highlight(d); tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`); }
-    });
-
-  memberNodes
-    .on('mouseover', (ev, d) => {
-      if (!pinned) {
-        highlight(d.id);
-        tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`);
-      }
-    })
-    .on('mousemove', moveTip)
-    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
-    .on('click', (ev, d) => {
-      if (pinned === d.id) { pinned = null; clear(); tooltip.style('opacity', 0); }
-      else { pinned = d.id; highlight(d.id); tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`); }
-    });
-
-  svg.on('click', ev => {
-    if (ev.target === svg.node()) { pinned = null; clear(); tooltip.style('opacity', 0); }
-  });
-}
-
-loadMembers()
-  .then(render)
-  .catch(err => {
-    console.error(err);
-    showMessage('Sorry — the research network could not be loaded.');
-  });
-
-})();
-		</script>
 
 		
 
@@ -748,5 +337,23 @@ loadMembers()
       document.addEventListener('click',function(e){if(!nav.contains(e.target))setOpen(false)});
     })();
   </script>
+
+	<script>
+		// Size the Who Works On What frame to its content. The diagram is taller
+		// than any fixed height worth setting, and a fixed height gives the frame
+		// a scrollbar of its own.
+		(function () {
+			var frame = document.getElementById('networkFrame');
+			if (!frame) return;
+			window.addEventListener('message', function (e) {
+				var data = e.data || {};
+				if (data.type !== 'asb-network-resize') return;
+				if (e.source !== frame.contentWindow) return;
+				var h = Math.ceil(data.height);
+				if (h > 0) frame.style.height = Math.max(240, h) + 'px';
+			});
+		})();
+	</script>
+
 </body>
 </html>

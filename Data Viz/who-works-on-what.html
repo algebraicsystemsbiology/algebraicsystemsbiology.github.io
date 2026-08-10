@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Who Works On What | Algebraic Systems Biology</title>
+
+<!--
+  Standalone network of researchers and the themes they work on, embedded in
+  an iframe by people.html. It lived inline in that page; extracting it keeps
+  the visualisation's markup, styles and 250 lines of D3 in one place, beside
+  the other diagram in this folder.
+
+  The data path is relative to this file, so it reaches up out of "Data Viz".
+-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+    color: #30363d;
+  }
+
+  .frame-inner {
+    padding: 0 1rem 1rem;
+    text-align: center;
+  }
+
+.network-block {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+.network-block svg {
+  width: 100%;
+  min-height: 860px;
+  height: auto;
+  overflow: visible;
+}
+.link {
+  stroke-opacity: 0.28;
+  transition: stroke-opacity 0.2s;
+}
+.node circle {
+  cursor: pointer;
+}
+.node text {
+  font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  fill: #555;
+  cursor: pointer;
+  pointer-events: none;
+}
+.node.theme text {
+  font-size: 15px;
+  font-weight: 600;
+  fill: #333;
+}
+.node.dimmed circle {
+  opacity: 0.1;
+}
+.node.dimmed text {
+  opacity: 0.1;
+}
+.link.dimmed {
+  stroke-opacity: 0.04;
+}
+.link.highlighted {
+  stroke-opacity: 0.8;
+}
+.node.highlighted text {
+  fill: #111;
+  font-weight: 600;
+}
+#network-tooltip {
+  position: fixed;
+  background: rgba(255,255,255,0.97);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 0.76rem;
+  color: #333;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  max-width: 230px;
+  line-height: 1.5;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+#network-tooltip strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #111;
+  margin-bottom: 0.2rem;
+}
+#network-tooltip .sub {
+  color: #7fc6c8;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+#network-tooltip .themes-list {
+  margin-top: 0.35rem;
+  color: #888;
+  font-size: 0.68rem;
+  line-height: 1.6;
+}
+.network-legend {
+  display: flex;
+  gap: 1.8rem;
+  justify-content: center;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.network-caption {
+  text-align: center;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 0.68rem;
+  color: #bbb;
+  letter-spacing: 0.05em;
+  margin-top: 1rem;
+}
+</style>
+</head>
+<body>
+
+  <div class="frame-inner">
+    <div class="network-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:linear-gradient(90deg,#889baa,#c8a794)"></div>
+        <span>Research Theme</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#b0b8be"></div>
+        <span>Researcher</span>
+      </div>
+    </div>
+
+    <div class="network-block">
+      <svg id="network-svg"></svg>
+      <p id="network-state-message" hidden></p>
+    </div>
+
+    <p class="network-caption">Hover a node to explore connections &middot; Click to pin</p>
+  </div>
+
+  <div id="network-tooltip"></div>
+
+<script>
+(function () {
+
+// Theme colours — matching the site's own gradient exactly
+// (blue-grey → mauve → warm terracotta, as shown in the keyword filter UI)
+const THEME_COLOURS = {
+  "Applied Algebraic Geometry & Tensors":      "#abbbca",
+  "Topological Data Analysis":                 "#8c959f",
+  "Software & Computational Mathematics":      "#929ba2",
+  "Identifiability, Statistics, & AI":         "#948d93",
+  "Dynamical Systems & Mathematical Modeling": "#857b7f",
+  "Biological Networks":                       "#b0b0b2",
+  "Morphology & Spatial Biology":              "#ad9c96",
+  "Omics":                                     "#e0d6d1",
+  "Oncology":                                  "#e1cdc2",
+  "Immunology":                                "#e8d5d0",
+  "Neuroscience":                              "#ead8d4",
+  "Other Applications":                        "#c5c0c2",
+};
+
+// People nodes: single neutral tone, differentiated only by size
+const PERSON_COLOUR = "#b0b8be";
+
+// ── Data loading ─────────────────────────────────────────────────────
+// This is the only part of the page that talks to the data file. Everything
+// below is rendering logic that reacts to whatever it's given — so updating
+// ../data/group_members.json (adding, removing, or editing a member's keywords)
+// is all that's needed to change what's drawn here. No code changes required.
+
+const DATA_URL = '../data/group_members.json';
+
+async function loadMembers() {
+  const res = await fetch(DATA_URL, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Failed to load ${DATA_URL}: ${res.status}`);
+  const raw = await res.json();
+
+  const knownThemes = new Set(Object.keys(THEME_COLOURS));
+
+  const members = Object.values(raw)
+    .filter(m => m && m.temporal_tag === 'Current' && m.name_full)
+    .map(m => ({
+      id: m.name_full,
+      role: (m.internal_roles && m.internal_roles[0]) || '',
+      keywords: (m.keywords || []).filter(k => knownThemes.has(k))
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  return members;
+}
+
+function showMessage(text) {
+  const el = document.getElementById('network-state-message');
+  el.textContent = text;
+  el.hidden = false;
+  document.getElementById('network-svg').style.display = 'none';
+}
+
+// ── Render ───────────────────────────────────────────────────────────
+
+
+  function wrapLabel(text, maxCharsPerLine = 20) {
+    if (text.length <= maxCharsPerLine) return [text];
+    const words = text.split(' ');
+    let line1 = '', line2 = '';
+    for (const word of words) {
+      if ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1) {
+        line1 = (line1 + ' ' + word).trim();
+      } else {
+        line2 = (line2 + ' ' + word).trim();
+      }
+    }
+    return line2 ? [line1, line2] : [line1];
+  }
+
+  function render(members) {
+  const themes = Object.keys(THEME_COLOURS).filter(
+    t => members.some(m => m.keywords.includes(t))
+  );
+
+  if (!members.length || !themes.length) {
+    showMessage('No current members with tagged research themes yet.');
+    return;
+  }
+
+  const edges = [];
+  members.forEach(m => {
+    m.keywords.forEach(kw => {
+      if (themes.includes(kw)) edges.push({ source: m.id, target: kw });
+    });
+  });
+
+  const width = 1200, height = Math.max(1100, Math.max(members.length, themes.length) * 26);
+  const leftX = 280, rightX = 920;
+  const topPad = 55, bottomPad = 55;
+
+  const svg = d3.select('#network-svg').attr('viewBox', `0 0 ${width} ${height}`);
+  svg.selectAll('*').remove();
+
+  const themeY = d3.scalePoint()
+    .domain(themes)
+    .range([topPad, height - bottomPad])
+    .padding(0.3);
+
+  const memberY = d3.scalePoint()
+    .domain(members.map(m => m.id))
+    .range([topPad, height - bottomPad])
+    .padding(0.2);
+
+  const nodePos = {};
+  themes.forEach(t  => { nodePos[t]    = { x: leftX,  y: themeY(t)    }; });
+  members.forEach(m => { nodePos[m.id] = { x: rightX, y: memberY(m.id) }; });
+
+  const themeDegree  = {};
+  themes.forEach(t  => { themeDegree[t] = members.filter(m => m.keywords.includes(t)).length; });
+  const memberDegree = {};
+  members.forEach(m => { memberDegree[m.id] = m.keywords.length; });
+
+  // Links — coloured by theme
+  const linkSel = svg.append('g').selectAll('path')
+    .data(edges)
+    .join('path')
+    .attr('class', 'link')
+    .attr('d', d => {
+      const s = nodePos[d.source], t = nodePos[d.target];
+      const mx = (s.x + t.x) / 2;
+      return `M${s.x},${s.y} C${mx},${s.y} ${mx},${t.y} ${t.x},${t.y}`;
+    })
+    .attr('fill', 'none')
+    .attr('stroke', d => THEME_COLOURS[d.target] || '#aaa')
+    .attr('stroke-width', 1.4);
+
+  // Theme nodes
+  const themeNodes = svg.append('g').selectAll('g')
+    .data(themes)
+    .join('g')
+    .attr('class', 'node theme')
+    .attr('transform', d => `translate(${leftX},${themeY(d)})`);
+
+  themeNodes.append('circle')
+    .attr('r', d => 7 + Math.sqrt(themeDegree[d]) * 3.5)
+    .attr('fill', d => THEME_COLOURS[d])
+    .attr('fill-opacity', 0.9);
+
+  themeNodes.each(function(d) {
+    const lines = wrapLabel(d);
+    const lineHeight = 26;
+    const startDy = -((lines.length - 1) * lineHeight) / 2;
+    const g = d3.select(this);
+    lines.forEach((line, i) => {
+      g.append('text')
+        .attr('x', -28)
+        .attr('dy', (startDy + i * lineHeight) + 'px')
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'middle')
+        .text(line);
+    });
+  });
+
+  // Member nodes
+  const memberNodes = svg.append('g').selectAll('g')
+    .data(members)
+    .join('g')
+    .attr('class', 'node member')
+    .attr('transform', d => `translate(${rightX},${memberY(d.id)})`);
+
+  memberNodes.append('circle')
+    .attr('r', d => d.role === 'Director' ? 18 : 7 + Math.sqrt(memberDegree[d.id]) * 3)
+    .attr('fill', PERSON_COLOUR)
+    .attr('fill-opacity', 0.85);
+
+  memberNodes.append('text')
+    .attr('x', 22).attr('dy', '0.35em')
+    .attr('text-anchor', 'start')
+    .text(d => d.id);
+
+  // Interaction
+  const tooltip = d3.select('#network-tooltip');
+  let pinned = null;
+
+  function connectedIds(id) {
+    const s = new Set([id]);
+    edges.forEach(e => {
+      if (e.source === id) s.add(e.target);
+      if (e.target === id) s.add(e.source);
+    });
+    return s;
+  }
+
+  function highlight(id) {
+    const s = connectedIds(id);
+    d3.selectAll('.node')
+      .classed('dimmed',      d => !s.has(d.id || d))
+      .classed('highlighted', d =>  s.has(d.id || d));
+    linkSel
+      .classed('dimmed',      d => d.source !== id && d.target !== id)
+      .classed('highlighted', d => d.source === id || d.target === id);
+  }
+
+  function clear() {
+    d3.selectAll('.node').classed('dimmed', false).classed('highlighted', false);
+    linkSel.classed('dimmed', false).classed('highlighted', false);
+  }
+
+  function tip(event, html) {
+    tooltip.html(html).style('opacity', 1)
+      .style('left', (event.clientX + 14) + 'px')
+      .style('top', (event.clientY - 10) + 'px');
+  }
+
+  function moveTip(event) {
+    tooltip.style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 10) + 'px');
+  }
+
+  themeNodes
+    .on('mouseover', (ev, d) => {
+      if (!pinned) {
+        highlight(d);
+        tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`);
+      }
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
+    .on('click', (ev, d) => {
+      if (pinned === d) { pinned = null; clear(); tooltip.style('opacity', 0); }
+      else { pinned = d; highlight(d); tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`); }
+    });
+
+  memberNodes
+    .on('mouseover', (ev, d) => {
+      if (!pinned) {
+        highlight(d.id);
+        tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`);
+      }
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
+    .on('click', (ev, d) => {
+      if (pinned === d.id) { pinned = null; clear(); tooltip.style('opacity', 0); }
+      else { pinned = d.id; highlight(d.id); tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`); }
+    });
+
+  svg.on('click', ev => {
+    if (ev.target === svg.node()) { pinned = null; clear(); tooltip.style('opacity', 0); }
+  });
+}
+
+loadMembers()
+  .then(render)
+  .catch(err => {
+    console.error(err);
+    showMessage('Sorry — the research network could not be loaded.');
+  });
+
+})();
+</script>
+
+<script>
+  // Report our height so the embedding page can size the iframe to fit.
+  // Without this the frame keeps a fixed height and the diagram, which is
+  // taller than any sensible fixed value, gets its own scrollbar.
+  (function () {
+    var last = 0;
+
+    function postHeight() {
+      var h = Math.ceil(document.documentElement.scrollHeight);
+      if (!h || Math.abs(h - last) < 2) return;
+      last = h;
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'asb-network-resize', height: h }, '*');
+      }
+    }
+
+    window.addEventListener('load', postHeight);
+    window.addEventListener('resize', postHeight, { passive: true });
+
+    // The SVG is built asynchronously after the data loads, so watch for it.
+    if (window.ResizeObserver) {
+      new ResizeObserver(postHeight).observe(document.body);
+    } else {
+      setInterval(postHeight, 500);
+    }
+  })();
+</script>
+</body>
+</html>

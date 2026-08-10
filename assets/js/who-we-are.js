@@ -25,10 +25,39 @@
     'Oxford': 'oxford',
   };
 
-  // Whoever holds this internal role is shown above the members grid, on a row
-  // of their own. Keyed on the role rather than a name so it follows the post
-  // rather than the person.
-  const LEAD_ROLE = 'Director';
+  // ─────────────────────────────────────────────────────────────────
+  //  To change the order people appear in, reorder this list. Nothing
+  //  else needs editing. To change who is shown without a photograph,
+  //  edit ROLES_WITHOUT_PHOTO just below.
+  // ─────────────────────────────────────────────────────────────────
+  //
+  // Current members are grouped by role in this order, then alphabetically by
+  // surname within each group. Keyed on the role rather than on a name, so the
+  // Director sorts first without being special-cased as a person. A role not
+  // listed here sorts after all the listed ones, so nobody disappears if the
+  // group database gains a role this file has not seen.
+  const ROLE_ORDER = [
+    'Director',
+    'PhD Student',
+    'Postdoc',
+    'Research Fellow',
+    'Staff Scientist',
+    'Research Manager',
+    'Intern',
+  ];
+
+  // Interns are listed without a photograph.
+  const ROLES_WITHOUT_PHOTO = ['Intern'];
+
+  function roleRank(member) {
+    const roles = member.internal_roles || [];
+    let best = ROLE_ORDER.length;
+    for (const r of roles) {
+      const i = ROLE_ORDER.indexOf(r);
+      if (i !== -1 && i < best) best = i;
+    }
+    return best;
+  }
 
   function locationSlug(tag) {
     return LOCATION_CLASSES[tag]
@@ -96,25 +125,17 @@
     if (!container) return;
     container.innerHTML = '';
 
-    const lead = document.getElementById('lead-member');
-    if (lead) lead.innerHTML = '';
-
     const surname = m => (m.name_last || (m.name_full || '').split(' ').pop() || '');
-    const all = Object.values(members)
+    const current = Object.values(members)
       .filter(m => m.temporal_tag === 'Current' && m.name_full)
-      .sort((a, b) => surname(a).localeCompare(surname(b)));
-
-    // Whoever holds LEAD_ROLE is shown above the grid, on a row of their own.
-    // Keyed on the role rather than a name, so it survives the post changing
-    // hands. If nobody holds it, everyone simply appears in the grid.
-    const isLead = m => (m.internal_roles || []).includes(LEAD_ROLE);
-    const leads = all.filter(isLead);
-    const current = all.filter(m => !isLead(m));
+      .sort((a, b) => roleRank(a) - roleRank(b) || surname(a).localeCompare(surname(b)));
 
     const buildCard = m => {
       const card = document.createElement('section');
       card.className = 'member-card';
 
+      const roles = m.internal_roles || [];
+      const showPhoto = !roles.some(r => ROLES_WITHOUT_PHOTO.includes(r));
       const photoFilename = m?.photo?.filename || '';
       const photoSrc = photoFilename
         ? `data/photos/${encodeURI(photoFilename)}`
@@ -135,8 +156,10 @@
       if (m.link_google_scholar) links.push(iconLink(m.link_google_scholar, 'Google Scholar', 'fa-graduation-cap'));
 
       card.innerHTML = `
-        <img class="member-photo" src="${photoSrc}" alt="${m.name_full}"
-             onerror="this.onerror=null;this.src='images/pic01.jpg';">
+        ${showPhoto
+          ? `<img class="member-photo" src="${photoSrc}" alt="${m.name_full}"
+             onerror="this.onerror=null;this.src='images/pic01.jpg';">`
+          : '<div class="member-photo member-photo-blank" aria-hidden="true"></div>'}
         <h3>${titleText}${m.name_full}</h3>
         ${roleText ? `<p class="member-role">${roleText}</p>` : ''}
         ${instTag}
@@ -147,8 +170,53 @@
       return card;
     };
 
-    if (lead) leads.forEach(m => lead.appendChild(buildCard(m)));
     current.forEach(m => container.appendChild(buildCard(m)));
+
+    padFinalRow(container);
+    window.addEventListener('resize', () => padFinalRow(container), { passive: true });
+  }
+
+  // The grid draws its horizontal rules as a border-top on each card, so a
+  // final row that is not full leaves a rule spanning only part of the width.
+  // Filling the row with empty cards restores it.
+  //
+  // The number of cards per row changes with the viewport (the template sets
+  // 3, then 2, then 1), so it is measured from the rendered layout rather than
+  // assumed, and remeasured on resize.
+  function padFinalRow(container) {
+    Array.prototype.slice.call(container.querySelectorAll('.is-filler'))
+      .forEach(node => node.remove());
+
+    const cards = Array.prototype.slice.call(container.children);
+    if (cards.length < 2) return;
+
+    const firstTop = cards[0].offsetTop;
+    const lastTop = cards[cards.length - 1].offsetTop;
+    if (lastTop === firstTop) return;            // single row: nothing to pad
+
+    const perRow = cards.filter(c => c.offsetTop === firstTop).length;
+    const inLastRow = cards.filter(c => c.offsetTop === lastTop).length;
+    const missing = (perRow - inLastRow) % perRow;
+    if (!missing) return;
+
+    // A single trailing card is centred; anything else stays left-aligned, so
+    // two of three sit in the first two columns.
+    const before = (inLastRow === 1 && perRow >= 3) ? Math.floor((perRow - 1) / 2) : 0;
+    const firstOfLastRow = cards[cards.length - inLastRow];
+
+    const makeFiller = () => {
+      const filler = document.createElement('section');
+      filler.className = 'member-card is-filler';
+      filler.setAttribute('aria-hidden', 'true');
+      return filler;
+    };
+
+    for (let i = 0; i < before; i++) {
+      container.insertBefore(makeFiller(), firstOfLastRow);
+    }
+    for (let i = 0; i < missing - before; i++) {
+      container.appendChild(makeFiller());
+    }
   }
 
   // ── Render alumni ─────────────────────────────────────────────────
