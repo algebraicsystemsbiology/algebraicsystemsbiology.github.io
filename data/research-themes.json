@@ -2,61 +2,73 @@
   {
     "name": "Applied Algebraic Geometry & Tensors",
     "slug": "applied-algebraic-geometry-and-tensors",
-    "colour": "#abbbca"
+    "colour": "#abbbca",
+    "short": "Alg. Geometry"
   },
   {
     "name": "Topological Data Analysis",
     "slug": "topological-data-analysis",
-    "colour": "#8c959f"
+    "colour": "#8c959f",
+    "short": "TDA"
   },
   {
     "name": "Software & Computational Mathematics",
     "slug": "software-and-computational-mathematics",
-    "colour": "#929ba2"
+    "colour": "#929ba2",
+    "short": "Software & Comp. Math"
   },
   {
     "name": "Identifiability, Statistics, & AI",
     "slug": "identifiability-statistics-and-ai",
-    "colour": "#948d93"
+    "colour": "#948d93",
+    "short": "Stats & AI"
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
-    "colour": "#857b7f"
+    "colour": "#857b7f",
+    "short": "Dynamical Sys."
   },
   {
     "name": "Biological Networks",
     "slug": "biological-networks",
-    "colour": "#b0b0b2"
+    "colour": "#b0b0b2",
+    "short": "Bio Networks"
   },
   {
     "name": "Morphology & Spatial Biology",
     "slug": "morphology-and-spatial-biology",
-    "colour": "#ad9c96"
+    "colour": "#ad9c96",
+    "short": "Morphology"
   },
   {
     "name": "Omics",
     "slug": "omics",
-    "colour": "#e0d6d1"
+    "colour": "#e0d6d1",
+    "short": "Omics"
   },
   {
     "name": "Oncology",
     "slug": "oncology",
-    "colour": "#e1cdc2"
+    "colour": "#e1cdc2",
+    "short": "Oncology"
   },
   {
     "name": "Immunology",
     "slug": "immunology",
-    "colour": "#e8d5d0"
+    "colour": "#e8d5d0",
+    "short": "Immunology"
   },
   {
     "name": "Neuroscience",
     "slug": "neuroscience",
-    "colour": "#ead8d4"
+    "colour": "#ead8d4",
+    "short": "Neuroscience"
   },
   {
     "name": "From Coral to Contagions",
     "slug": "from-coral-to-contagions",
-    "colour": "#c5c0c2"
+    "colour": "#c5c0c2",
+    "short": "Coral to Contagions"
   }
 ]

@@ -127,50 +127,34 @@
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-const THEME_COLOURS = {
-  "Applied Algebraic Geometry & Tensors":       "#889baa",
-  "Topological Data Analysis":                  "#889baa",
-  "Software & Computational Mathematics":       "#889baa",
-  "Identifiability, Statistics, & AI":          "#968d91",
-  "Dynamical Systems & Mathematical Modelling": "#968d91",
-  "Biological Networks":                        "#968d91",
-  "Morphology & Spatial Biology":               "#968d91",
-  "Omics":                                      "#c8a699",
-  "Oncology":                                   "#c8a699",
-  "Immunology":                                 "#c8a699",
-  "Neuroscience":                               "#c8a699",
-};
+// The themes, their colours and their abbreviated labels all come from
+// data/research-themes.json. This file used to carry its own copy, three ways
+// out of step with it: it spelled the modelling theme "Modelling" where the
+// data says "Modeling", so that theme drew no arcs at all; it had no entry for
+// "From Coral to Contagions", leaving 26 publications out; and it grouped the
+// twelve colours down to three by layer.
+let THEMES = [];
+let THEME_COLOURS = {};
+let SHORT = {};
 
-const THEMES = Object.keys(THEME_COLOURS);
+// Relative to this file, which sits in "Data Viz/" -- the data is a directory
+// up. Written as './data/...' this diagram fetched a 404 and fell back to the
+// invented SAMPLE below, so the front page drew a made-up set of connections
+// that looked entirely plausible.
+const THEMES_URL = '../data/research-themes.json';
 
-const SHORT = {
-  "Applied Algebraic Geometry & Tensors":"Alg. Geometry",
-  "Topological Data Analysis":"TDA",
-  "Software & Computational Mathematics":"Software & Comp. Math",
-  "Identifiability, Statistics, & AI":"Stats & AI",
-  "Dynamical Systems & Mathematical Modelling":"Dynamical Sys.",
-  "Biological Networks":"Bio Networks",
-  "Morphology & Spatial Biology":"Morphology",
-  "Omics":"Omics",
-  "Oncology":"Oncology",
-  "Immunology":"Immunology",
-  "Neuroscience":"Neuroscience",
-};
-
-function themeSlug(theme){
-  return String(theme || '')
-    .trim()
-    .toLowerCase()
-    .replace(/&amp;/g,'and')
-    .replace(/&/g,'and')
-    .replace(/\+/g,'plus')
-    .replace(/[^a-z0-9]+/g,'-')
-    .replace(/^-+|-+$/g,'');
+async function loadThemes(){
+  const res = await fetch(THEMES_URL, { cache:'no-cache' });
+  if(!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
+  const themes = await res.json();
+  THEMES = themes.map(t => t.name);
+  THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
+  SHORT = Object.fromEntries(themes.map(t => [t.name, t.short || t.name]));
 }
 
-const DATA_URL = './data/publications.json';
+const DATA_URL = '../data/publications.json';
 
-const SAMPLE = (() => {
+function sample(){
   const t = THEMES, out = [];
   const P = (...ks) => out.push({ keywords: ks });
   const plan = [
@@ -183,7 +167,7 @@ const SAMPLE = (() => {
     for(let i=0;i<n;i++) P(t[a],t[b]);
   });
   return out;
-})();
+}
 
 async function loadPubs(){
   try{
@@ -192,7 +176,7 @@ async function loadPubs(){
     const raw = await res.json();
     return Object.values(raw);
   }catch(err){
-    return SAMPLE;
+    return sample();
   }
 }
 
@@ -434,7 +418,7 @@ function render(data){
     })
 }
 
-loadPubs().then(pubs => render(build(pubs)));
+loadThemes().then(loadPubs).then(pubs => render(build(pubs)));
 </script>
 </body>
 </html>

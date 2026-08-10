@@ -3,23 +3,25 @@
 // window or collide with anything else running on the page.
 (function () {
 
-  // Same theme colours used across the site — blue-grey through to warm terracotta.
-  const THEME_COLOURS = {
-  "Applied Algebraic Geometry & Tensors":      "#abbbca",
-  "Topological Data Analysis":                 "#8c959f",
-  "Software & Computational Mathematics":      "#929ba2",
-  "Identifiability, Statistics, & AI":         "#948d93",
-  "Dynamical Systems & Mathematical Modeling": "#857b7f",
-  "Biological Networks":                       "#b0b0b2",
-  "Morphology & Spatial Biology":              "#ad9c96",
-  "Omics":                                     "#e0d6d1",
-  "Oncology":                                  "#e1cdc2",
-  "Immunology":                                "#e8d5d0",
-  "Neuroscience":                              "#ead8d4",
-  "Other Applications":                        "#c5c0c2",
-};
+  // The themes, their colours and their url slugs all come from
+  // data/research-themes.json. This file used to carry its own copy, which had
+  // gone wrong quietly: its last entry was "Other Applications", a name no
+  // publication is tagged with, while the 26 publications tagged "From Coral
+  // to Contagions" matched nothing and were left out of the diagram entirely.
+  let THEMES = [];
+  let THEME_COLOURS = {};
+  let THEME_SLUGS = {};
 
-  const THEMES = Object.keys(THEME_COLOURS);
+  const THEMES_URL = './data/research-themes.json';
+
+  async function loadThemes() {
+    const res = await fetch(THEMES_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
+    const themes = await res.json();
+    THEMES = themes.map(t => t.name);
+    THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
+    THEME_SLUGS = Object.fromEntries(themes.map(t => [t.name, t.slug]));
+  }
 
   // ── Data loading ─────────────────────────────────────────────────────
   // The only place this script touches data. The co-occurrence matrix below
@@ -28,13 +30,6 @@
   // automatically — no code changes required.
 
   const DATA_URL = './data/publications.json';
-
-  function themeSlug(theme) {
-    return String(theme || '')
-      .trim().toLowerCase()
-      .replace(/&amp;/g, 'and').replace(/&/g, 'and').replace(/\+/g, 'plus')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  }
 
   async function loadConnections() {
     const res = await fetch(DATA_URL, { cache: 'no-store' });
@@ -283,7 +278,10 @@
       .on('mousemove', moveTip)
       .on('mouseleave', () => { setHighlight(null); hideTip(); })
       .on('click', (ev, g) => {
-        const slug = themeSlug(g.theme);
+        // The slug is written in research-themes.json rather than derived
+        // from the name, so this link cannot drift from the one the
+        // research page's tiles use.
+        const slug = THEME_SLUGS[g.theme] || '';
         window.location.href = `publications.html?theme=${encodeURIComponent(slug)}&label=${encodeURIComponent(g.theme)}`;
       });
 
@@ -308,7 +306,8 @@
     const root = document.querySelector('.connects-block');
     if (!root) return;
 
-    loadConnections()
+    loadThemes()
+      .then(loadConnections)
       .then(data => render(root, data))
       .catch(err => {
         console.error(err);

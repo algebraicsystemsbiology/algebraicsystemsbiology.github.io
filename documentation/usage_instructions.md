@@ -126,6 +126,49 @@ The menu markup itself is `partials/nav-button.html`, shared by every page —
 add a *page* to the menu there, not in `build_nav.py`'s `PAGES` list alone
 (which sets the order sections are collected in).
 
+### The research themes live in one file
+
+`data/research-themes.json` is the list of the twelve research themes. It is
+hand-maintained and tracked in this repository (unlike the generated data), and
+each entry carries four things:
+
+```json
+{ "name":   "Topological Data Analysis",
+  "slug":   "topological-data-analysis",
+  "colour": "#8c959f",
+  "short":  "TDA" }
+```
+
+`name` must match the keyword exactly as it is spelled in Coda, since that is
+what the publication and member records are tagged with. `slug` is written out
+rather than derived from the name, so `publications.html?theme=…` links cannot
+drift from it. `colour` is the theme's colour everywhere it is drawn, and
+`short` is the abbreviated label the arc diagram uses.
+
+Everything reads from that file at runtime:
+
+| Reads it | For |
+|---|---|
+| `assets/js/publications.js` | the filter list on Publications, and `?theme=` links |
+| `assets/js/connects.js` | the chord diagram's segments and colours — but see below |
+| `Data Viz/research-keyword-arc-diagram.html` | the front page's arc diagram |
+| `Data Viz/who-works-on-what.html` | theme colours on the People diagram |
+
+`connects.js` currently draws nothing: `research.html` loads it, and
+`connects.css`, but contains no `.connects-block` element for it to render
+into, so `init()` returns immediately. Either restore the markup or drop the
+two `<script>`/`<link>` lines — the script itself works.
+
+The exception is `research.html`, whose tiles are hand-written prose and cannot
+be generated. `scripts/check_data.py` compares its tile headings and filter
+links against the file, and compares both against the keywords in the member
+and publication data, so a theme renamed in Coda fails the deploy rather than
+quietly emptying a filter.
+
+**To add or rename a theme:** edit `research-themes.json`, add a tile to
+`research.html`, and make sure the name matches Coda exactly. Nothing else
+needs touching.
+
 ### Checking the data is consistent
 
 ```sh
