@@ -13,6 +13,7 @@ rather than shipping blank member cards.
 
 import json
 import os
+import re
 import sys
 import urllib.parse
 
@@ -25,6 +26,51 @@ MEMBER_EMAIL_DOMAINS = ("maths.ox", "mpi-cbg", "mpipz", "gmail", "ludwig", "ball
 # Keep in step with LOCATION_LABELS / LOCATION_CLASSES in
 # assets/js/who-we-are.js.
 KNOWN_LOCATIONS = {"CBG Maths", "Oxford"}
+
+
+def theme_vocabularies(root):
+    """Collect the research-theme names from every place they are written.
+
+    data/research-themes.json is the canonical list. The names also appear in
+    the member and publication keywords, which come from the group database,
+    and twice on the research page -- as a tile heading, and as the label in
+    the link to the publications filter. Those are written by hand and can
+    drift, so they are compared here.
+
+    The network diagram and publications.js are not checked: they read
+    research-themes.json at runtime rather than holding their own copies.
+    """
+    import html as _html
+    import urllib.parse as _url
+
+    vocab = {}
+
+    def norm(x):
+        return " ".join(_html.unescape(x).split())
+
+    with open(os.path.join(root, "data", "group_members.json"), encoding="utf-8") as fh:
+        vocab["member keywords"] = {
+            norm(k) for r in json.load(fh).values() for k in (r.get("keywords") or [])
+        }
+
+    with open(os.path.join(root, "data", "publications.json"), encoding="utf-8") as fh:
+        vocab["publication keywords"] = {
+            norm(k) for p in json.load(fh).values() for k in (p.get("keywords") or [])
+        }
+
+    research = os.path.join(root, "research.html")
+    if os.path.exists(research):
+        with open(research, encoding="utf-8") as fh:
+            text = fh.read()
+        vocab["research tile headings"] = {
+            norm(re.sub(r"<[^>]+>", "", t)) for t in re.findall(r"<h3>(.*?)</h3>", text, re.S)
+        }
+        vocab["research filter labels"] = {
+            norm(_url.unquote(m.group(1)))
+            for m in re.finditer(r"publications\.html\?theme=[^&\"]*&(?:amp;)?label=([^\"]+)", text)
+        }
+
+    return vocab
 
 
 def fail(problems):
@@ -92,6 +138,41 @@ def main():
                     f"to KNOWN_LOCATIONS here and to LOCATION_LABELS/LOCATION_CLASSES in "
                     f"assets/js/who-we-are.js"
                 )
+
+
+    # Theme names must agree everywhere they are written, against the single
+    # list in data/themes.json.
+    themes_path = os.path.join(data, "research-themes.json")
+    if not os.path.exists(themes_path):
+        problems.append("missing data/research-themes.json")
+    else:
+        with open(themes_path, encoding="utf-8") as fh:
+            themes = json.load(fh)
+        canonical = {t["name"] for t in themes}
+        slugs = [t["slug"] for t in themes]
+        if len(set(slugs)) != len(slugs):
+            problems.append("research-themes.json has duplicate slugs")
+        for t in themes:
+            if not t.get("colour", "").startswith("#"):
+                problems.append(f"theme {t['name']!r} has no colour in research-themes.json")
+
+        research = os.path.join(root, "research.html")
+        if os.path.exists(research):
+            with open(research, encoding="utf-8") as fh:
+                text = fh.read()
+            linked = {urllib.parse.unquote(m.group(1))
+                      for m in re.finditer(r"publications\.html\?theme=([^&\"]*)", text)}
+            known = {t["slug"] for t in themes}
+            for bad in sorted(linked - known):
+                problems.append(
+                    f"research.html links ?theme={bad!r}, which is not a slug in research-themes.json"
+                )
+
+        for source, names in sorted(theme_vocabularies(root).items()):
+            for missing in sorted(canonical - names):
+                problems.append(f"theme {missing!r} is in research-themes.json but missing from {source}")
+            for extra in sorted(names - canonical):
+                problems.append(f"theme {extra!r} appears in {source} but is not in research-themes.json")
 
     # Emails must never reach the published site.
     blob = json.dumps(members) + json.dumps(pubs)

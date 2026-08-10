@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Applied Algebraic Geometry & Tensors",
+    "slug": "applied-algebraic-geometry-and-tensors",
+    "colour": "#abbbca"
+  },
+  {
+    "name": "Topological Data Analysis",
+    "slug": "topological-data-analysis",
+    "colour": "#8c959f"
+  },
+  {
+    "name": "Software & Computational Mathematics",
+    "slug": "software-and-computational-mathematics",
+    "colour": "#929ba2"
+  },
+  {
+    "name": "Identifiability, Statistics, & AI",
+    "slug": "identifiability-statistics-and-ai",
+    "colour": "#948d93"
+  },
+  {
+    "name": "Dynamical Systems & Mathematical Modeling",
+    "slug": "dynamical-systems-and-mathematical-modelling",
+    "colour": "#857b7f"
+  },
+  {
+    "name": "Biological Networks",
+    "slug": "biological-networks",
+    "colour": "#b0b0b2"
+  },
+  {
+    "name": "Morphology & Spatial Biology",
+    "slug": "morphology-and-spatial-biology",
+    "colour": "#ad9c96"
+  },
+  {
+    "name": "Omics",
+    "slug": "omics",
+    "colour": "#e0d6d1"
+  },
+  {
+    "name": "Oncology",
+    "slug": "oncology",
+    "colour": "#e1cdc2"
+  },
+  {
+    "name": "Immunology",
+    "slug": "immunology",
+    "colour": "#e8d5d0"
+  },
+  {
+    "name": "Neuroscience",
+    "slug": "neuroscience",
+    "colour": "#ead8d4"
+  },
+  {
+    "name": "From Coral to Contagions",
+    "slug": "from-coral-to-contagions",
+    "colour": "#c5c0c2"
+  }
+]

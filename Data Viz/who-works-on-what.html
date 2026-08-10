@@ -172,20 +172,18 @@
 
 // Theme colours — matching the site's own gradient exactly
 // (blue-grey → mauve → warm terracotta, as shown in the keyword filter UI)
-const THEME_COLOURS = {
-  "Applied Algebraic Geometry & Tensors":      "#abbbca",
-  "Topological Data Analysis":                 "#8c959f",
-  "Software & Computational Mathematics":      "#929ba2",
-  "Identifiability, Statistics, & AI":         "#948d93",
-  "Dynamical Systems & Mathematical Modeling": "#857b7f",
-  "Biological Networks":                       "#b0b0b2",
-  "Morphology & Spatial Biology":              "#ad9c96",
-  "Omics":                                     "#e0d6d1",
-  "Oncology":                                  "#e1cdc2",
-  "Immunology":                                "#e8d5d0",
-  "Neuroscience":                              "#ead8d4",
-  "From Coral to Contagions":                  "#c5c0c2",
-};
+// Theme colours come from data/research-themes.json, the one place the themes
+// are written. They used to be hardcoded here, and the copy had already drifted
+// from the data: one theme was keyed "Other Applications" when the data called
+// it "From Coral to Contagions", so its nodes had no colour at all.
+let THEME_COLOURS = {};
+
+async function loadThemeColours() {
+  const res = await fetch('../data/research-themes.json', { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
+  const themes = await res.json();
+  THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
+}
 
 // People nodes: single neutral tone, differentiated only by size
 const PERSON_COLOUR = "#b0b8be";
@@ -199,6 +197,7 @@ const PERSON_COLOUR = "#b0b8be";
 const DATA_URL = '../data/group_members.json';
 
 async function loadMembers() {
+  await loadThemeColours();
   const res = await fetch(DATA_URL, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load ${DATA_URL}: ${res.status}`);
   const raw = await res.json();

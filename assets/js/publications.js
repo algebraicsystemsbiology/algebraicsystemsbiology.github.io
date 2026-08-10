@@ -1,56 +1,15 @@
 let allPublications = [];
 let activeTheme = 'All';
 
-const THEME_CONFIG = {
-  All: {
-    label: 'All Publications',
-    editorial: ''
-  },
-  'Applied Algebraic Geometry & Tensors': {
-    label: 'Applied Algebraic Geometry & Tensors',
-    editorial: ''
-  },
-  'Topological Data Analysis': {
-    label: 'Topological Data Analysis',
-    editorial: ''
-  },
-  'Software & Computational Mathematics': {
-    label: 'Software & Computational Mathematics',
-    editorial: ''
-  },
-  'Identifiability, Statistics, & AI': {
-    label: 'Identifiability, Statistics, & AI',
-    editorial: ''
-  },
-  'Dynamical Systems & Mathematical Modeling': {
-    label: 'Dynamical Systems & Mathematical Modeling',
-    editorial: ''
-  },
-  'Biological Networks': {
-    label: 'Biological Networks',
-    editorial: ''
-  },
-  'Morphology & Spatial Biology': {
-    label: 'Morphology & Spatial Biology',
-    editorial: ''
-  },
-  'Omics': {
-    label: 'Omics',
-    editorial: ''
-  },
-  'Oncology': {
-    label: 'Oncology',
-    editorial: ''
-  },
-  'Immunology': {
-    label: 'Immunology',
-    editorial: ''
-  },
-  'Neuroscience': {
-    label: 'Neuroscience',
-    editorial: ''
-  }
-};
+// The research themes -- their canonical names and url slugs -- come from
+// data/research-themes.json, the one place they are written. They used to be
+// hardcoded here as THEME_CONFIG as well as in the research page's tiles and
+// the network diagram's colour map, and those copies had drifted. The spelling
+// patch that used to sit in normalizeText ("mathematical modelling" ->
+// "modeling") existed only to paper over that drift.
+let THEMES = [];
+
+const ALL = { name: 'All', label: 'All Publications', slug: 'all' };
 
 function normalizeText(value) {
   return String(value || '')
@@ -58,47 +17,41 @@ function normalizeText(value) {
     .replace(/&amp;/g, 'and')
     .replace(/&/g, 'and')
     .replace(/\+/g, 'plus')
-    .replace(/mathematical\s+modelling/g, 'mathematical modeling')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim()
     .replace(/\s+/g, ' ');
 }
 
-function slugifyTheme(theme) {
-  return String(theme || '')
-    .trim()
-    .toLowerCase()
-    .replace(/&amp;/g, 'and')
-    .replace(/&/g, 'and')
-    .replace(/\+/g, 'plus')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+async function loadThemes() {
+  const res = await fetch('./data/research-themes.json', { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
+  THEMES = await res.json();
 }
 
 function getThemeConfigByLabel(label) {
-  if (label === 'All') return THEME_CONFIG.All;
-
-  return Object.values(THEME_CONFIG).find(config => config.label === label) || null;
+  if (label === 'All') return ALL;
+  return THEMES.find(t => t.name === label) || null;
 }
 
 function getThemeFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const themeSlug = params.get('theme') || '';
-  const labelParam = params.get('label') || '';
+  const slug = params.get('theme') || '';
+  const label = params.get('label') || '';
 
-  if (themeSlug) {
-    const match = Object.entries(THEME_CONFIG).find(([, config]) => slugifyTheme(config.label) === themeSlug);
-    if (match) {
-      return match[1];
-    }
+  // The slug is the reliable key: it is stored explicitly in
+  // research-themes.json rather than derived from the name, so the two cannot
+  // drift apart.
+  if (slug) {
+    const bySlug = THEMES.find(t => t.slug === slug);
+    if (bySlug) return bySlug;
   }
 
-  if (labelParam) {
-    const normalizedLabel = normalizeText(labelParam);
-    const match = Object.values(THEME_CONFIG).find(config => normalizeText(config.label) === normalizedLabel);
-    if (match) {
-      return match;
-    }
+  // A label is matched loosely, so an older link whose punctuation differs
+  // still lands on the right theme.
+  if (label) {
+    const wanted = normalizeText(label);
+    const byLabel = THEMES.find(t => normalizeText(t.name) === wanted);
+    if (byLabel) return byLabel;
   }
 
   return null;
@@ -314,12 +267,12 @@ function renderPublications() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await loadPublications();
+    await Promise.all([loadThemes(), loadPublications()]);
     setupThemeFilters();
 
     const themeFromUrl = getThemeFromUrl();
     if (themeFromUrl) {
-      activeTheme = themeFromUrl.label;
+      activeTheme = themeFromUrl.name || themeFromUrl.label;
     }
 
     setActiveTheme(activeTheme);
