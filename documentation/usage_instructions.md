@@ -97,17 +97,74 @@ ruby -run -e httpd . -p 8000   # Ruby
 php -S localhost:8000          # PHP
 ```
 
+### Regenerating the menu after editing a page
+
+```sh
+python3 scripts/build_nav.py
+```
+
+The dot-burst menu lists each page's sections beneath its entry, and does so
+from *every* page rather than only the page you are on — you rarely need a link
+to a section of the page you are already reading. That means the menu has to
+know about sections on pages it is not currently displaying, so the list cannot
+come from the current document.
+
+Rather than typing that list out, `build_nav.py` derives it from the pages
+themselves: any `<section>` with an `id` and an `<h2>` becomes a sub-item,
+labelled with that heading. A heading that reads badly in a menu can be
+overridden with `data-nav-label` on the section. Commented-out sections are
+ignored, exactly as a browser ignores them. The result is written to
+`partials/nav-sections.json`, which is committed, and read at runtime by
+`assets/js/site-nav.js`.
+
+**Run it after adding, removing or retitling a section**, and commit the
+regenerated file with the page. Forgetting cannot ship: `check_data.py` rebuilds
+the list from the pages, compares it with the committed one, and fails the
+deploy on any difference, naming the page and both versions of its list.
+
+The menu markup itself is `partials/nav-button.html`, shared by every page —
+add a *page* to the menu there, not in `build_nav.py`'s `PAGES` list alone
+(which sets the order sections are collected in).
+
 ### Checking the data is consistent
 
 ```sh
 python3 scripts/check_data.py .
 ```
 
-Verifies that every referenced photo exists (case-sensitively), that no photo
-is orphaned, that no Past member has a published photo, that no email
-addresses have crept into the published JSON, and that every travel photo
-resolves. CI runs the same check against the assembled site and fails the
-deploy if anything is wrong.
+Run against the repository root when previewing; CI runs the same check against
+the assembled `_site/` and fails the deploy if anything is wrong. It verifies:
+
+- every referenced member photo exists, **case-sensitively**, and no photo is
+  orphaned
+- no Past member has a published photo
+- every member's `location_tag` is one the site knows how to render
+- no email addresses have crept into the published JSON
+- no publication is present twice — see below
+- every travel photo resolves
+- the twelve research themes agree everywhere they are written, against
+  `data/research-themes.json`
+- `partials/nav-sections.json` still matches the pages
+
+### Publications entered twice
+
+`scripts/publication_duplicates.py` finds a paper that reached the data more
+than once. It compares five things independently — bibtex citation key,
+normalised title, publication or arXiv link, DOI, and arXiv id — because no
+single one of them catches every case: two copies can share a citation key yet
+link to different sites, or carry different citation keys because one was
+generated from an arXiv posting and the other from the journal version.
+
+It runs as part of `check_data.py`, and standalone:
+
+```sh
+python3 scripts/publication_duplicates.py data/publications.json
+```
+
+A copy also runs in the sync in `asb-website-data`, so the problem surfaces at
+download time, in front of whoever can merge the Coda rows — rather than at
+deploy time, in front of whoever next pushes to this repository. **Duplicates
+must be fixed at the source**; there is nothing to change in this repository.
 
 ### Notes
 
