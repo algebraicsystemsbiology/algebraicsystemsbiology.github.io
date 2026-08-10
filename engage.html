@@ -496,7 +496,11 @@
 -->
 
 <!-- How We Engage -->
-<section class="wrapper style1 align-center" id="Short-Talks" style="border-top: 1px solid rgba(0,0,0,0.1);">
+<!-- No border-top here: it separated this section from Collaborators above it,
+     and with that section disabled it drew a hairline across the very top of
+     the page. #wrapper.divided draws the separators between sections anyway,
+     and suppresses one on the first child. -->
+<section class="wrapper style1 align-center" id="Short-Talks">
 	<div class="inner">
 		<h2 id="media-heading" class="collapsible-heading" role="button" tabindex="0" aria-expanded="true" aria-controls="media-content">
 			Engagements

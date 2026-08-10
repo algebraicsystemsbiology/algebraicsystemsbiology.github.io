@@ -188,6 +188,34 @@
 
 	}
 
+	/* Once the page is wide enough that the logo and the fixed menu both sit
+	   in the margins, beside the content rather than over it, the logo no
+	   longer needs a row of its own. Taking it out of flow lets the page
+	   heading start at the top, level with the logo, instead of below a band
+	   of empty space about 150px deep.
+
+	   1440px is where that becomes true. The content column is 64rem wide and
+	   centred, so the margins grow only as fast as the viewport: below 1440
+	   the menu overlaps the column's left edge and a centred heading reaches
+	   under the logo, and the stacked layout reads better there anyway. Above
+	   it the heading clears the logo by some 70px.
+
+	   The padding that replaces the logo's row is what keeps full-width text
+	   below the logo. Only the heading, which is narrow, rises beside it. */
+	@media (min-width: 1440px) {
+
+		.site-logo-bar {
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+
+		#wrapper > .wrapper:first-child > .inner {
+			padding-top: 3.5rem;
+		}
+
+	}
+
 	/* The footer is a .wrapper.style1 too, so it inherits the 5rem bottom
 	   padding meant to separate stacked sections -- 80px of blank page below
 	   the copyright line, with nothing after it. Only padding-bottom is
