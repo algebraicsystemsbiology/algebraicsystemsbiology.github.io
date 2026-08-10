@@ -146,8 +146,21 @@ function getCitationLine(pub) {
   return parts.length ? `${parts.join(', ')}.` : '';
 }
 
-function getPrimaryLink(pub) {
-  return pub.link_publication || pub.link_arxiv || '';
+// Each label says what the reader will land on, and the field it came from is
+// what knows that: link_publication points at the published version,
+// link_arxiv at a preprint. The host is not consulted -- the 21 links in that
+// field today are arXiv, bioRxiv and HAL, one of them via a doi.org DOI that
+// resolves to bioRxiv, and a host list would need editing every time someone
+// posts to a server we have not seen.
+//
+// Both are offered when both exist, published version first: the preprint is
+// worth keeping alongside it, being the copy a reader without a subscription
+// can actually open.
+function getLinks(pub) {
+  const links = [];
+  if (pub.link_publication) links.push({ href: pub.link_publication, label: 'Full article' });
+  if (pub.link_arxiv) links.push({ href: pub.link_arxiv, label: 'Preprint' });
+  return links;
 }
 
 function themeMatchesPublication(pub, theme) {
@@ -235,7 +248,7 @@ function renderPublications() {
       .forEach(pub => {
         const authors = getAuthorsFromBibtex(pub);
         const citationLine = getCitationLine(pub);
-        const primaryLink = getPrimaryLink(pub);
+        const links = getLinks(pub);
 
         const card = document.createElement('section');
         card.className = 'publication-entry';
@@ -248,9 +261,9 @@ function renderPublications() {
             ${citationLine ? `<span class="publication-meta">${citationLine}</span>` : ''}
           </p>
           <div class="publication-links">
-            ${primaryLink ? `
-              <a href="${primaryLink}" target="_blank" rel="noopener noreferrer">Full article</a>
-            ` : ''}
+            ${links.map(link => `
+              <a href="${link.href}" target="_blank" rel="noopener noreferrer">${link.label}</a>
+            `).join('')}
             ${pub.bibtex ? `
               <details class="publication-bibtex">
                 <summary>BibTeX</summary>
