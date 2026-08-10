@@ -169,14 +169,18 @@ function sample(){
   return out;
 }
 
+let LAST_PUBS = [];
+
 async function loadPubs(){
   try{
     const res = await fetch(DATA_URL, { cache:'no-store' });
     if(!res.ok) throw new Error(String(res.status));
     const raw = await res.json();
-    return Object.values(raw);
+    LAST_PUBS = Object.values(raw);
+    return LAST_PUBS;
   }catch(err){
-    return sample();
+    LAST_PUBS = sample();
+    return LAST_PUBS;
   }
 }
 
@@ -418,7 +422,30 @@ function render(data){
     })
 }
 
-loadThemes().then(loadPubs).then(pubs => render(build(pubs)));
+loadThemes().then(loadPubs).then(pubs => { render(build(pubs)); postHeight(); });
+
+// Report our height so the embedding page can size the frame to fit, the same
+// way Data Viz/who-works-on-what.html does. Without it the frame keeps a fixed
+// height: too small and the diagram is clipped or scrolls, too large and it
+// floats in a band of white -- which is what made it look tiny in print.
+//
+// html and body are height:100%;overflow:hidden here, so scrollHeight reports
+// the frame's own height and tells us nothing. The content box does.
+(function () {
+  var last = 0;
+  window.postHeight = function () {
+    var wrap = document.querySelector('.wrap');
+    if (!wrap) return;
+    var h = Math.ceil(wrap.getBoundingClientRect().height + 4);
+    if (!h || Math.abs(h - last) < 2) return;
+    last = h;
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'asb-arc-resize', height: h }, '*');
+    }
+  };
+  window.addEventListener('resize', function () { render(build(LAST_PUBS)); postHeight(); }, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(window.postHeight).observe(document.body);
+})();
 </script>
 </body>
 </html>

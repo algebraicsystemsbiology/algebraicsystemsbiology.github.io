@@ -126,6 +126,47 @@ The menu markup itself is `partials/nav-button.html`, shared by every page —
 add a *page* to the menu there, not in `build_nav.py`'s `PAGES` list alone
 (which sets the order sections are collected in).
 
+### Sending the site to someone who cannot visit it
+
+```sh
+python3 -m http.server 8000     # in one terminal
+./scripts/make-pdfs.sh          # in another
+```
+
+That writes one PDF per page into `pdf/`. Each is a **single page as tall as
+the document**, rendered at 1440px wide with the ordinary screen styles —
+nothing is sliced into sheets, the reader just scrolls. It is the site as it
+looks, in a file you can attach to an email.
+
+To do the same by hand in any browser, on any machine, add `?pdf=screen` to
+the address and print to PDF:
+
+```
+http://localhost:8000/people.html?pdf=screen
+```
+
+`assets/js/screen-pdf.js` reads that parameter, takes the print stylesheet out
+of the cascade, and sets a single `@page` the size of the document.
+
+**No third-party tool is needed** — it drives whichever Chrome or Chromium is
+installed, and finds the Mac paths automatically. If there is none:
+`brew install --cask chromium`. Avoid `wkhtmltopdf`, the usual suggestion: it
+is archived, and its old WebKit renders neither the member grid nor the
+research tiles correctly.
+
+For paper rather than screen:
+
+```sh
+./scripts/make-pdfs.sh --print
+```
+
+which gives A4 through `assets/css/print.css` — 13 sheets for People rather
+than the 46 the page produced before that stylesheet existed. It drops the
+root font size from the template's 18pt to 11pt, lays the front page's hero
+down flat (a photograph with the logo beneath it, rather than the near-black
+rectangle the scroll-driven version printed as), and keeps member cards,
+publications and photographs whole across page breaks.
+
 ### The research themes live in one file
 
 `data/research-themes.json` is the list of the twelve research themes. It is

@@ -1,0 +1,217 @@
+/* print.css — how the site prints, and how it becomes a PDF.
+ *
+ * The site had no print styles at all, which is where its three worst printed
+ * faults came from: the front page's hero came out as a black rectangle, group
+ * members were sliced in half across page breaks, and the themes diagram sat
+ * tiny in a band of white.
+ *
+ * Loaded with media="print", so none of this touches the screen.
+ *
+ * scripts/make-pdfs.sh renders the pages through this stylesheet.
+ */
+
+@page {
+	size: A4 portrait;
+	/* The layout is wide; narrow margins buy the diagrams and the member grid
+	   real width back. */
+	margin: 12mm 10mm;
+}
+
+/* Backgrounds are dropped when printing unless a page asks for them. Almost
+   everything that carries meaning here is a background: the research tiles'
+   photographs, the theme dots beside the publication filters, the album's
+   paper. Ask for them once, at the root. */
+* {
+	-webkit-print-color-adjust: exact !important;
+	print-color-adjust: exact !important;
+}
+
+body {
+	background: #ffffff;
+}
+
+/* The template sizes everything in rem off an 18pt root -- a deliberate,
+   generous scale for a screen viewed at arm's length. On paper it reads as
+   large-print and costs sheets: People ran to 46 of them. 11pt is a normal
+   document size, and every margin, padding and heading follows it down. */
+html {
+	font-size: 11pt !important;
+}
+
+/* ── Chrome that means nothing on paper ─────────────────────────────────── */
+
+.nav,
+.cue,
+.gallery .forward,
+.gallery .backward,
+.album-nav,
+.photo-viewer,
+.nav-sub-toggle {
+	display: none !important;
+}
+
+/* ── The front page's hero ──────────────────────────────────────────────── */
+
+/* On screen this is a scroll-driven piece: a full-viewport sticky stage, the
+   photograph beneath two dark gradient scrims whose opacity follows scroll
+   position. Printed, the scroll position is whatever it happened to be, and
+   100vh means one whole page -- so the page came out as a near-black
+   rectangle with the photograph lost behind the scrims.
+
+   On paper it becomes what it is: a photograph with the logo under it. */
+
+.hero-scroll {
+	height: auto !important;
+}
+
+.hero-sticky {
+	position: static !important;
+	height: auto !important;
+	overflow: visible !important;
+}
+
+.hero-bg {
+	position: static !important;
+}
+
+.hero-bg img {
+	width: 100%;
+	height: auto !important;
+	/* Small enough that the photograph and the logo beneath it stay on the
+	   same sheet, with the opening paragraph after them. */
+	max-height: 72mm;
+	object-fit: cover;
+}
+
+.hero-scroll {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+/* The scrims exist to hold white text over the photograph. Nothing is over it
+   here, so they would only darken it. */
+.scrim-base,
+.scrim-scroll {
+	display: none !important;
+}
+
+.hero-text {
+	position: static !important;
+	padding: 6mm 0 0 0 !important;
+	text-align: center;
+}
+
+#heroSticky .hero-text h1 .hero-logo {
+	width: 70mm;
+	/* index.html's own <style> comes after this file and sets margin: 0, so
+	   the centring has to insist. */
+	margin: 0 auto !important;
+	/* The drop shadow was for legibility against the photograph. */
+	filter: none !important;
+}
+
+.hero-text p,
+.hero-text .hero-menu {
+	color: #30363d !important;
+	text-shadow: none !important;
+}
+
+/* ── Keep things whole across page breaks ───────────────────────────────── */
+
+/* A member sliced through the middle -- photograph on one page, name on the
+   next -- was the loudest complaint about the printed People page. */
+#members-grid .member-card,
+#alumni-grid > *,
+.publication-entry,
+.polaroid,
+.album-spread,
+.gallery article,
+figure,
+tr {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+/* A heading stranded at the foot of a page reads as a mistake. */
+h1, h2, h3, h4 {
+	break-after: avoid;
+	page-break-after: avoid;
+}
+
+h1, h2, h3, h4, p, li {
+	orphans: 3;
+	widows: 3;
+}
+
+/* The year headings on Publications are the natural chapter breaks. */
+.publication-year-group {
+	break-before: auto;
+	margin-top: 8mm;
+}
+
+/* ── Diagrams ───────────────────────────────────────────────────────────── */
+
+/* Both are iframes sized to their content by postMessage. Anything that
+   clipped or scrolled them on screen would crop them on paper. */
+#themesFrame,
+#network-frame,
+iframe {
+	overflow: visible !important;
+	break-inside: avoid;
+	page-break-inside: avoid;
+	max-width: 100%;
+}
+
+/* The shell is 100vw wide on screen, pulled out of the content column by a
+   translate. On paper the page is the column, and the translate pushes it off
+   the sheet. */
+.themes-shell {
+	width: 100% !important;
+	left: auto !important;
+	transform: none !important;
+	margin: 4mm 0 !important;
+}
+
+/* ── Spacing ────────────────────────────────────────────────────────────── */
+
+/* The generous vertical rhythm is a screen luxury; on paper it just costs
+   sheets. */
+.wrapper.style1 > .inner {
+	padding-top: 6mm !important;
+	padding-bottom: 6mm !important;
+}
+
+#wrapper > footer.wrapper > .inner {
+	padding-top: 4mm !important;
+}
+
+/* The logo is a fixed 270px block at the top right of every page on screen.
+   Printed it would land on top of the first line of text, since print has no
+   viewport to be positioned against. */
+.site-logo-bar {
+	position: static !important;
+	padding: 0 0 4mm 0 !important;
+	text-align: right;
+}
+
+.site-logo img {
+	width: 45mm !important;
+}
+
+/* ── Links ──────────────────────────────────────────────────────────────── */
+
+/* Spelling out each link's address after it is the usual advice for print,
+   and it is wrong here. The member cards' links are icons -- a globe, an
+   ORCID mark -- so every card gained three wrapped URLs, grew taller than a
+   sheet, and started being cut in half again: the very fault this stylesheet
+   exists to fix. The addresses are of no use on paper anyway. */
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.publication-links a,
+.member-link {
+	color: #30363d !important;
+}

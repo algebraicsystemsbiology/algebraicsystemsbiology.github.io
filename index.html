@@ -10,6 +10,7 @@
 <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 <link rel="stylesheet" href="assets/css/mobile.css" />
 		<link rel="stylesheet" href="assets/css/nav.css" />
+		<link rel="stylesheet" href="assets/css/print.css" media="print" />
 <style>
   :root{ --ink:#30363d; --blue:#47D3E5; --pink:#db8992; --shadow:15,18,21; }
   *{box-sizing:border-box}
@@ -177,13 +178,32 @@
       </div>
 
       <div class="themes-shell">
+        <!-- scrolling="no": the frame is sized to its content by the message
+             below, so it should never need a scrollbar, and Firefox will
+             otherwise show one while the diagram is still settling. -->
         <iframe
           id="themesFrame"
           src="Data Viz/research-keyword-arc-diagram.html"
           title="How research themes connect"
+          scrolling="no"
           loading="lazy">
         </iframe>
       </div>
+      <script>
+        // Size the frame to the diagram, rather than the diagram to a fixed
+        // frame. The same handling as the People page's network diagram.
+        (function () {
+          var frame = document.getElementById('themesFrame');
+          if (!frame) return;
+          window.addEventListener('message', function (e) {
+            var data = e.data || {};
+            if (data.type !== 'asb-arc-resize') return;
+            if (e.source !== frame.contentWindow) return;
+            var h = Math.ceil(data.height);
+            if (h > 0) frame.style.height = Math.max(240, h) + 'px';
+          });
+        })();
+      </script>
     </section>
 
     <script>
@@ -277,5 +297,6 @@
   <script src="assets/js/site-nav.js"></script>
   <script src="assets/js/site-footer.js"></script>
 
+		<script src="assets/js/screen-pdf.js"></script>
 </body>
 </html>
