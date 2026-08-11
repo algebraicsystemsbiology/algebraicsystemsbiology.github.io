@@ -1,0 +1,10 @@
+# Everything here is meant to be found. The one thing worth keeping out of an
+# index is the site's own machinery: the diagrams are pages in their own right
+# but are only ever embedded, and would otherwise turn up in search results as
+# a bare chart with no explanation around it.
+
+User-agent: *
+Allow: /
+Disallow: /Data%20Viz/
+
+Sitemap: https://algebraicsystemsbiology.github.io/sitemap.xml
