@@ -183,19 +183,26 @@
 	   sized to the same height: 118px of a 987:252 logo is 30px tall, which is
 	   the menu glyph. The two read as a pair rather than as two unrelated
 	   marks of different weights. */
+	/* The right inset is 0, not 0.6rem, and the image is pulled a little
+	   further still. The artwork does not reach the edge of its own svg: the
+	   aspect-ratio crop above takes the transparent bands off the top and
+	   bottom but leaves a few pixels at the sides, so padding alone left the
+	   barcode sitting 19px from the screen edge while the menu glyph opposite
+	   sat at 8. The negative margin is measuring the difference, not guessing
+	   at it. */
 	@media (max-width: 600px) {
 
-		.site-logo-bar { padding: 0.6rem 0.6rem 0 0.5rem; }
+		.site-logo-bar { padding: 0.6rem 0 0 0.5rem; }
 
-		.site-logo img { width: 118px; max-width: 40vw; }
+		.site-logo img { width: 118px; max-width: 40vw; margin-right: -4px; }
 
 	}
 
 	@media (max-width: 430px) {
 
-		.site-logo-bar { padding: 0.5rem 0.5rem 0 0.5rem; }
+		.site-logo-bar { padding: 0.5rem 0 0 0.5rem; }
 
-		.site-logo img { width: 102px; max-width: 38vw; }
+		.site-logo img { width: 102px; max-width: 38vw; margin-right: -4px; }
 
 	}
 
