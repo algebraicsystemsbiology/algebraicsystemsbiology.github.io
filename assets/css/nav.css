@@ -110,11 +110,20 @@
     .nav-links a.sub{font-size:.78rem}
   }
 
-  /* On a 320px screen a 68px button is a fifth of the width. */
+  /* Small screens: the menu button and the logo are a pair, tucked into the
+     two top corners, and sized to match each other. The button's glyph is
+     30px; the logo is set to the width that makes it the same height, since
+     its artwork is 987:252. */
   @media (max-width:600px){
-    .nav-toggle{width:48px;height:48px}
-    .nav-toggle svg{width:34px;height:34px}
-    .nav{gap:.6rem}
+    .nav{top:.6rem;left:.6rem;gap:.5rem}
+    .nav-toggle{width:34px;height:34px}
+    .nav-toggle svg{width:30px;height:30px}
+  }
+
+  @media (max-width:430px){
+    .nav{top:.5rem;left:.5rem}
+    .nav-toggle{width:30px;height:30px}
+    .nav-toggle svg{width:26px;height:26px}
   }
 
   /* The caret was a 12px-wide target: too small to hit, and the only way to
@@ -170,19 +179,23 @@
 
 	}
 
+	/* Tucked into the opposite corner from the menu, at the same inset, and
+	   sized to the same height: 118px of a 987:252 logo is 30px tall, which is
+	   the menu glyph. The two read as a pair rather than as two unrelated
+	   marks of different weights. */
 	@media (max-width: 600px) {
 
-		.site-logo-bar { padding: 0.4rem 1rem 0 0.75rem; }
+		.site-logo-bar { padding: 0.6rem 0.6rem 0 0.5rem; }
 
-		.site-logo img { width: 165px; max-width: 42vw; }
+		.site-logo img { width: 118px; max-width: 40vw; }
 
 	}
 
 	@media (max-width: 430px) {
 
-		.site-logo-bar { padding: 0.35rem 0.85rem 0 0.75rem; }
+		.site-logo-bar { padding: 0.5rem 0.5rem 0 0.5rem; }
 
-		.site-logo img { width: 132px; max-width: 38vw; }
+		.site-logo img { width: 102px; max-width: 38vw; }
 
 	}
 

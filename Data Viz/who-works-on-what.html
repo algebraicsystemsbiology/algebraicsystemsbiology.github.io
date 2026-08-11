@@ -42,28 +42,31 @@
   overflow: visible;
 }
 
-/* On a phone the diagram cannot be made to fit. Its viewBox is 1200 wide and
-   about 1456 tall -- two columns of names with arcs between them -- so at
-   320px the drawing computes to some 350px tall, while min-height held the
-   box at 860. The result was a small diagram floating in 250px of blank above
-   it and 250px below.
+/* On a phone the whole diagram goes on the screen, small but complete.
+   Sideways scrolling was worse than small: you cannot see a connection when
+   its two ends are never on screen together, which is the only thing this
+   diagram is for.
 
-   Rather than shrink it to illegibility, give it a width it can be read at
-   and let the reader swipe. 700px keeps the proportions of the desktop
-   drawing; the box then matches what is drawn in it, and the blank goes. */
+   Its viewBox is 1200 wide and about 1456 tall, so width: 100% with height:
+   auto gives the full drawing at whatever the screen allows. min-height must
+   go, or the box stays 860 tall and the drawing floats in the middle of it. */
 @media (max-width: 900px) {
+  .frame-inner {
+    /* Almost no side padding: every pixel of width is a pixel of diagram. */
+    padding: 0 0.25rem 0.5rem;
+  }
   .network-block {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
   .network-block svg {
-    min-width: 700px;
     min-height: 0;
+    min-width: 0;
   }
-  .network-caption::after {
-    content: " · swipe sideways to see it all";
+  .network-caption {
+    font-size: 0.7rem;
   }
 }
+
 .link {
   stroke-opacity: 0.28;
   transition: stroke-opacity 0.2s;
@@ -185,7 +188,7 @@
       <p id="network-state-message" hidden></p>
     </div>
 
-    <p class="network-caption">Hover a node to explore connections &middot; Click to pin</p>
+    <p class="network-caption">Touch or hover a name to trace its connections</p>
   </div>
 
   <div id="network-tooltip"></div>
