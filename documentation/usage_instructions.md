@@ -179,10 +179,15 @@ python3 -m http.server 8000     # in one terminal
 ./scripts/make-pdfs.sh          # in another
 ```
 
-That writes one PDF per page into `pdf/`. Each is a **single page as tall as
-the document**, rendered at 1440px wide with the ordinary screen styles —
-nothing is sliced into sheets, the reader just scrolls. It is the site as it
-looks, in a file you can attach to an email.
+That writes **both shapes**, one PDF per page in each:
+
+| | |
+|---|---|
+| `pdf/screen/` | A **single page as tall as the document**, 1440px wide, ordinary screen styles. Nothing is sliced; the reader scrolls. This is the set to send when you want somebody to *see the website*. |
+| `pdf/print/` | A4, paginated, through `assets/css/print.css`. Research tiles reflow to photo-above-text, the publications filter goes, type comes down to 11pt. This is the set for somebody who will actually put it on paper. |
+
+`--screen` or `--print` limits it to one. Both together take about twenty
+seconds.
 
 To do the same by hand in any browser, on any machine, add `?pdf=screen` to
 the address and print to PDF:
@@ -214,18 +219,12 @@ With those two it produces the same page Chrome does — checked against Firefox
 153, identical page box and rendering. Without "Print backgrounds" the research
 tiles print as flat grey rectangles.
 
-For paper rather than screen:
-
-```sh
-./scripts/make-pdfs.sh --print
-```
-
-which gives A4 through `assets/css/print.css` — 13 sheets for People rather
-than the 46 the page produced before that stylesheet existed. It drops the
-root font size from the template's 18pt to 11pt, lays the front page's hero
-down flat (a photograph with the logo beneath it, rather than the near-black
-rectangle the scroll-driven version printed as), and keeps member cards,
-publications and photographs whole across page breaks.
+The A4 set is worth a word on its own. It drops the root font size from the
+template's 18pt to 11pt — 18pt is a screen size, and on paper it read as
+large-print and cost sheets. It lays the front page's hero down flat: a
+photograph with the logo beneath it, rather than the near-black rectangle the
+scroll-driven version printed as. And it keeps member cards, publications,
+photographs and research tiles whole across page breaks.
 
 ### The research themes live in one file
 

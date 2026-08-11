@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 # make-pdfs.sh — save the site as PDFs, for sending to somebody who cannot
-# visit it. Two shapes, because they answer different questions:
+# visit it. Both shapes, because they answer different questions:
 #
-#   screen  (default)  one tall page per html page, exactly as it looks in a
-#                      browser. Nothing is sliced; the reader scrolls. This is
-#                      the one to send when you want somebody to *see the
-#                      website*.
-#   print              A4, paginated, through assets/css/print.css. This is the
-#                      one to send when somebody will actually print it.
+#   pdf/screen/   one tall page per html page, exactly as it looks in a
+#                 browser. Nothing is sliced; the reader scrolls. This is the
+#                 one to send when you want somebody to *see the website*.
+#   pdf/print/    A4, paginated, through assets/css/print.css. This is the one
+#                 to send when somebody will actually print it -- the research
+#                 tiles reflow, the publications filter goes, the type comes
+#                 down to 11pt.
 #
 # Usage, with the preview server already running (python3 -m http.server 8000):
 #
-#     ./scripts/make-pdfs.sh                    # screen shape, into pdf/
-#     ./scripts/make-pdfs.sh --print            # A4 pages instead
+#     ./scripts/make-pdfs.sh                    # both sets, into pdf/
+#     ./scripts/make-pdfs.sh --screen           # only the screen shape
+#     ./scripts/make-pdfs.sh --print            # only the A4 shape
 #     ./scripts/make-pdfs.sh --width 1200       # narrower screen shape
 #     ./scripts/make-pdfs.sh --out ~/Desktop/asb
 #
@@ -37,15 +39,15 @@ set -euo pipefail
 BASE="${BASE:-http://localhost:8000}"
 OUT="pdf"
 WIDTH=1440
-MODE="screen"
+MODES=(screen print)   # both unless asked for one
 LIMIT=90          # half-second ticks before giving up (~45s)
 # Directory urls; the name after the slash is what each PDF is called.
 PAGES=("" research people publications engage privacy)
 
 while [ $# -gt 0 ]; do
 	case "$1" in
-		--print)  MODE="print"; shift ;;
-		--screen) MODE="screen"; shift ;;
+		--print)  MODES=(print); shift ;;
+		--screen) MODES=(screen); shift ;;
 		--width)  WIDTH="$2"; shift 2 ;;
 		--out)    OUT="$2"; shift 2 ;;
 		--base)   BASE="$2"; shift 2 ;;
@@ -148,29 +150,33 @@ b = re.findall(b"/MediaBox\\s*\\[([^]]*)]", d)
 print(int(c[0]) if c else 1, round(float(b[0].split()[3]) / 0.75) if b else 0)
 '
 
-mkdir -p "$OUT"
 echo "browser : $CHROME"
-echo "shape   : $MODE"
 echo "output  : $OUT/"
 echo
 
+for MODE in "${MODES[@]}"; do
+
+dest="$OUT/$MODE"
+mkdir -p "$dest"
+if [ "$MODE" = "screen" ]; then
+	echo "$dest/  — one tall page each, as it looks on screen"
+else
+	echo "$dest/  — A4, paginated for paper"
+fi
+
 for page in "${PAGES[@]}"; do
 	name="${page:-index}"
-	target="$OUT/$name.pdf"
+	target="$dest/$name.pdf"
 	# A fresh profile each time: a stale disk cache is the classic reason a
 	# just-edited stylesheet does not show up in the output.
 	profile="$(mktemp -d)"
 
 	if [ "$MODE" = "screen" ]; then
-		url="$BASE/$page/?pdf=screen"
 		# assets/js/screen-pdf.js sets an @page as tall as the document, so
 		# --print-to-pdf emits a single page rather than a stack of sheets.
-		# The window width is what the layout is built against, so it is also
-		# the page width.
-		extra=(--window-size="$WIDTH,900")
+		url="$BASE/$page/?pdf=screen"
 	else
 		url="$BASE/$page/"
-		extra=(--window-size="$WIDTH,900")
 	fi
 
 	render "$target" \
@@ -186,18 +192,18 @@ for page in "${PAGES[@]}"; do
 		--run-all-compositor-stages-before-draw \
 		--no-pdf-header-footer \
 		--print-to-pdf-no-header \
-		"${extra[@]}" \
+		--window-size="$WIDTH,900" \
 		--print-to-pdf="$target" \
 		"$url" || true
 
 	rm -rf "$profile"
 
-	# The page height has to be estimated from inside the page, and the print
-	# pass lays out a little taller than that estimate -- enough, on the longest
-	# pages, to spill a second almost-empty sheet. Rather than guess harder, look
-	# at what came out: if it is more than one page, print again with a height
-	# that certainly fits. Counting pages afterwards is the one measurement that
-	# cannot be wrong.
+	# Screen shape only: the page height has to be estimated from inside the
+	# page, and the print pass lays out a little taller than that estimate --
+	# enough, on the longest pages, to spill a second almost-empty sheet.
+	# Rather than guess harder, look at what came out: if it is more than one
+	# page, print again with a height that certainly fits. Counting pages
+	# afterwards is the one measurement that cannot be wrong.
 	retried=""
 	if [ "$MODE" = "screen" ] && [ -s "$target" ]; then
 		read -r pagecount boxheight < <(python3 -c "$PDFSTAT" "$target")
@@ -216,7 +222,7 @@ for page in "${PAGES[@]}"; do
 				--user-data-dir="$profile" --disk-cache-dir=/dev/null \
 				--virtual-time-budget=15000 --run-all-compositor-stages-before-draw \
 				--no-pdf-header-footer --print-to-pdf-no-header \
-				"${extra[@]}" --print-to-pdf="$target" \
+				--window-size="$WIDTH,900" --print-to-pdf="$target" \
 				"$BASE/$page/?pdf=screen&height=$needed" || true
 			rm -rf "$profile"
 			read -r pagecount _ < <(python3 -c "$PDFSTAT" "$target")
@@ -226,16 +232,19 @@ for page in "${PAGES[@]}"; do
 
 	if [ -s "$target" ]; then
 		size=$(du -h "$target" | cut -f1)
-		printf '  %-22s %s%s\n' "$name.pdf" "$size" "$retried"
+		sheets=$(python3 -c "$PDFSTAT" "$target" | cut -d' ' -f1)
+		printf '    %-16s %6s  %s page(s)%s\n' "$name.pdf" "$size" "$sheets" "$retried"
 	else
-		printf '  %-22s FAILED\n' "$name.pdf"
+		printf '    %-16s FAILED\n' "$name.pdf"
 	fi
 done
-
 echo
-echo "Done. $OUT/ holds one PDF per page."
-if [ "$MODE" = "screen" ]; then
-	echo "These are single tall pages -- the reader scrolls, nothing is cut."
-	echo "To do the same by hand in any browser: open the page with ?pdf=screen"
-	echo "on the end of the address, then Print -> Save as PDF."
-fi
+
+done
+
+echo "Done."
+echo "  $OUT/screen/  single tall pages -- the site as it looks. Send these."
+echo "  $OUT/print/   A4 sheets -- for somebody who will actually print it."
+echo
+echo "To make one by hand in any browser: open the page with ?pdf=screen on"
+echo "the end of the address, then Print -> Save as PDF."
