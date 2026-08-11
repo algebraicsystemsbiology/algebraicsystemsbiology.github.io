@@ -33,16 +33,10 @@
     transform: none !important;
   }
 
-  /* ── Remove gap between legend and network diagram ────────────── */
-  .network-legend {
-    margin-bottom: 0 !important;
-  }
-  .network-block {
-    margin-top: 0 !important;
-  }
-  #who-works-on-what .inner p {
-    display: none !important;
-  }
+  /* The paragraph under "Who Works On What" used to be hidden here. It is the
+     only thing on the page that says what the diagram is, and hiding it saved
+     nothing -- the empty space it was meant to reclaim came from the diagram's
+     own min-height, which is fixed where it belongs, in the frame's stylesheet. */
    /* ── Who Works On What — close gap on mobile ─────────────────── */
   #who-works-on-what .inner {
     padding-bottom: 0 !important;
@@ -52,26 +46,14 @@
     margin-top: 0 !important;
   }
 
-  .network-legend {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding: 0 !important;
-  }
-
-  .network-block {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-
   /* ── Visualisations — scrollable ─────────────────────────────── */
-  .network-block,
+  /* .network-block lived in the diagram's own document, which loads no
+     stylesheet from here, so the rules that used to target it did nothing at
+     all. That handling now sits in Data Viz/who-works-on-what.html. */
   .connects-block,
   #collab-viz {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
-  }
-  .network-block svg {
-    min-width: 600px !important;
   }
   #collab-viz svg {
     min-width: 500px !important;

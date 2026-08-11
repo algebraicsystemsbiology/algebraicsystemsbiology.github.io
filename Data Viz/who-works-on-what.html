@@ -41,6 +41,29 @@
   height: auto;
   overflow: visible;
 }
+
+/* On a phone the diagram cannot be made to fit. Its viewBox is 1200 wide and
+   about 1456 tall -- two columns of names with arcs between them -- so at
+   320px the drawing computes to some 350px tall, while min-height held the
+   box at 860. The result was a small diagram floating in 250px of blank above
+   it and 250px below.
+
+   Rather than shrink it to illegibility, give it a width it can be read at
+   and let the reader swipe. 700px keeps the proportions of the desktop
+   drawing; the box then matches what is drawn in it, and the blank goes. */
+@media (max-width: 900px) {
+  .network-block {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .network-block svg {
+    min-width: 700px;
+    min-height: 0;
+  }
+  .network-caption::after {
+    content: " · swipe sideways to see it all";
+  }
+}
 .link {
   stroke-opacity: 0.28;
   transition: stroke-opacity 0.2s;
@@ -430,7 +453,15 @@ loadMembers()
     var last = 0;
 
     function postHeight() {
-      var h = Math.ceil(document.documentElement.scrollHeight);
+      // The *content's* height, not the document's. documentElement
+      // .scrollHeight can never be less than the viewport, and the viewport
+      // here is the frame the parent sizes from this number -- so reporting
+      // it fed straight back: the parent set the frame to content + 4, the
+      // next measurement read content + 4, and the frame grew by four pixels
+      // for as long as the page was open, sliding everything below it down.
+      var content = document.querySelector('.frame-inner');
+      var h = Math.ceil(content ? content.getBoundingClientRect().height
+                                : document.documentElement.scrollHeight);
       if (!h || Math.abs(h - last) < 2) return;
       last = h;
       if (window.parent !== window) {
