@@ -118,6 +118,12 @@
 		</div>
 
 <script src="/assets/js/jquery.min.js"></script>
+<!-- main.js calls .scrolly() and .scrollex() unconditionally, so the two
+     plugins have to be here even though this page has nothing to scroll to.
+     Without them the page threw "$(...).scrolly is not a function" and main.js
+     stopped at that line, taking everything after it with it. -->
+<script src="/assets/js/jquery.scrolly.min.js"></script>
+<script src="/assets/js/jquery.scrollex.min.js"></script>
 <script src="/assets/js/browser.min.js"></script>
 <script src="/assets/js/breakpoints.min.js"></script>
 <script src="/assets/js/util.js"></script>
