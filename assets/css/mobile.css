@@ -98,13 +98,22 @@
     font-size: 0.7rem !important;
     line-height: 1.3 !important;
   }
+  /* Details stays. It is the only way into a theme's publications from here,
+     and it was hidden on mobile -- which left the tile with nothing to act on.
+     0.65rem is 9.5px on a phone, and the button was 19px tall: too small to
+     read and too small to hit, so it is bigger as well as present. */
   .gallery.style2 article .caption .button {
-    font-size: 0.65rem !important;
-    padding: 0.4rem 0.8rem !important;
+    font-size: 0.78rem !important;
+    padding: 0.55rem 1.1rem !important;
+    min-height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
   }
-    /* Remove details button on mobile */
-  .gallery.style2 article .caption .actions {
-    display: none !important;
+
+  .gallery.style2 article .caption ul.actions {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 0.6rem !important;
   }
 
   /* The photographs behind these are mid-tone, so the heading needs a shadow
