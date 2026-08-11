@@ -138,8 +138,8 @@
       const showPhoto = !roles.some(r => ROLES_WITHOUT_PHOTO.includes(r));
       const photoFilename = m?.photo?.filename || '';
       const photoSrc = photoFilename
-        ? `data/photos/${encodeURI(photoFilename)}`
-        : 'images/pic01.jpg';
+        ? `/data/photos/${encodeURI(photoFilename)}`
+        : '/images/pic01.jpg';
 
       const titleText = m.title ? `${m.title} ` : '';
       const roleText = Array.isArray(m.internal_roles)
@@ -158,7 +158,7 @@
       card.innerHTML = `
         ${showPhoto
           ? `<img class="member-photo" src="${photoSrc}" alt="${m.name_full}"
-             onerror="this.onerror=null;this.src='images/pic01.jpg';">`
+             onerror="this.onerror=null;this.src='/images/pic01.jpg';">`
           : '<div class="member-photo member-photo-blank" aria-hidden="true"></div>'}
         <h3>${titleText}${m.name_full}</h3>
         ${roleText ? `<p class="member-role">${roleText}</p>` : ''}
@@ -268,7 +268,7 @@
 
   async function init() {
     try {
-      const res = await fetch('./data/group_members.json', { cache: 'no-store' });
+      const res = await fetch('/data/group_members.json', { cache: 'no-store' });
       if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
       const members = await res.json();
 

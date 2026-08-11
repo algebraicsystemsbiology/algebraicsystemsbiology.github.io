@@ -26,7 +26,7 @@ function normalizeText(value) {
 }
 
 async function loadThemes() {
-  const res = await fetch('./data/research-themes.json', { cache: 'no-cache' });
+  const res = await fetch('/data/research-themes.json', { cache: 'no-cache' });
   if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
   THEMES = await res.json();
 }
@@ -61,7 +61,7 @@ function getThemeFromUrl() {
 }
 
 async function loadPublications() {
-  const response = await fetch('./data/publications.json');
+  const response = await fetch('/data/publications.json');
   if (!response.ok) {
     throw new Error(`Failed to load publications.json: ${response.status}`);
   }

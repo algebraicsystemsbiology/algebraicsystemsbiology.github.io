@@ -24,7 +24,7 @@
 		var slot = document.getElementById('site-footer');
 		if (!slot) return;
 
-		fetch('partials/footer.html', { cache: 'no-cache' })
+		fetch('/partials/footer.html', { cache: 'no-cache' })
 			.then(function (res) {
 				if (!res.ok) throw new Error('HTTP ' + res.status);
 				return res.text();

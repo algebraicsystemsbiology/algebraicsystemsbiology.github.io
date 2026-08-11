@@ -1,11 +1,11 @@
 {
-  "index.html": [
+  "/": [
     {
       "id": "contact",
       "label": "Get Involved"
     }
   ],
-  "research.html": [
+  "/research/": [
     {
       "id": "themes",
       "label": "Mathematics built for the complexity of living systems"
@@ -19,7 +19,7 @@
       "label": "Translational applications"
     }
   ],
-  "people.html": [
+  "/people/": [
     {
       "id": "who-works-on-what",
       "label": "Who Works On What"
@@ -33,8 +33,8 @@
       "label": "Alumni"
     }
   ],
-  "publications.html": [],
-  "engage.html": [
+  "/publications/": [],
+  "/engage/": [
     {
       "id": "Short-Talks",
       "label": "What is?"

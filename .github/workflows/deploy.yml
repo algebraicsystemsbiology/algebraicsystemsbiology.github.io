@@ -82,6 +82,14 @@ jobs:
       - name: Verify data and site agree
         run: python3 scripts/check_data.py _site
 
+      # Internal links always fail the build. External ones -- the group's own
+      # members' sites, ORCID and Scholar profiles, every publication link --
+      # are checked against the assembled data, where they actually live, but
+      # only a definite 404 or a hostname that does not resolve counts: those
+      # servers are not ours, and a timeout is not a reason to block a deploy.
+      - name: Verify links resolve
+        run: python3 scripts/check_links.py _site --external
+
       - name: Guard against leaked internals
         run: |
           set -euo pipefail

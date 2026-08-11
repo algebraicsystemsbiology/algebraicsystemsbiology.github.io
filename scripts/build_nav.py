@@ -23,13 +23,16 @@ import sys
 from html.parser import HTMLParser
 
 # The order the menu presents them in; mirrors partials/nav-button.html.
-PAGES = [
-    "index.html",
-    "research.html",
-    "people.html",
-    "publications.html",
-    "engage.html",
-]
+# url -> file. The site serves directory urls (/research/, not /research.html),
+# so the menu's links and this manifest are keyed by the url a visitor sees,
+# while the sections are read out of that page's index.html.
+PAGES = {
+    "/": "index.html",
+    "/research/": "research/index.html",
+    "/people/": "people/index.html",
+    "/publications/": "publications/index.html",
+    "/engage/": "engage/index.html",
+}
 
 OUTPUT = os.path.join("partials", "nav-sections.json")
 
@@ -77,14 +80,14 @@ class Sections(HTMLParser):
 
 def collect(root="."):
     out = {}
-    for page in PAGES:
+    for url, page in PAGES.items():
         path = os.path.join(root, page)
         if not os.path.exists(path):
             continue
         parser = Sections()
         with open(path, encoding="utf-8") as fh:
             parser.feed(fh.read())
-        out[page] = parser.found
+        out[url] = parser.found
     return out
 
 

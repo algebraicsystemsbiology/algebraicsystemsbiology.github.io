@@ -1,6 +1,6 @@
 async function loadMembers() {
   try {
-    const response = await fetch('./data/group_members.json');
+    const response = await fetch('/data/group_members.json');
     if (!response.ok) {
       throw new Error(`Failed to load group_members.json: ${response.status}`);
     }
@@ -55,8 +55,8 @@ function renderMembers(members) {
 
     const photoFilename = member?.photo?.filename || '';
     const photoSrc = photoFilename
-      ? `data/photos/${encodeURI(photoFilename)}`
-      : 'images/pic01.jpg';
+      ? `/data/photos/${encodeURI(photoFilename)}`
+      : '/images/pic01.jpg';
 
     const titleText = member.title ? `${member.title} ` : '';
     const roleText = Array.isArray(member.internal_roles)
@@ -87,7 +87,7 @@ function renderMembers(members) {
         class="member-photo"
         src="${photoSrc}"
         alt="${member.name_full}"
-        onerror="this.onerror=null;this.src='images/pic01.jpg';"
+        onerror="this.onerror=null;this.src='/images/pic01.jpg';"
       >
 
       <h3>${titleText}${member.name_full}</h3>

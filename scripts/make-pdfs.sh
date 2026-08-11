@@ -39,7 +39,8 @@ OUT="pdf"
 WIDTH=1440
 MODE="screen"
 LIMIT=90          # half-second ticks before giving up (~45s)
-PAGES=(index.html research.html people.html publications.html engage.html privacy.html)
+# Directory urls; the name after the slash is what each PDF is called.
+PAGES=("" research people publications engage privacy)
 
 while [ $# -gt 0 ]; do
 	case "$1" in
@@ -80,7 +81,7 @@ if [ -z "$CHROME" ]; then
 	exit 1
 fi
 
-if ! curl -sf -o /dev/null "$BASE/index.html"; then
+if ! curl -sf -o /dev/null "$BASE/"; then
 	echo "Nothing is serving $BASE." >&2
 	echo "Start the preview server first:  python3 -m http.server 8000" >&2
 	exit 1
@@ -154,21 +155,21 @@ echo "output  : $OUT/"
 echo
 
 for page in "${PAGES[@]}"; do
-	name="${page%.html}"
+	name="${page:-index}"
 	target="$OUT/$name.pdf"
 	# A fresh profile each time: a stale disk cache is the classic reason a
 	# just-edited stylesheet does not show up in the output.
 	profile="$(mktemp -d)"
 
 	if [ "$MODE" = "screen" ]; then
-		url="$BASE/$page?pdf=screen"
+		url="$BASE/$page/?pdf=screen"
 		# assets/js/screen-pdf.js sets an @page as tall as the document, so
 		# --print-to-pdf emits a single page rather than a stack of sheets.
 		# The window width is what the layout is built against, so it is also
 		# the page width.
 		extra=(--window-size="$WIDTH,900")
 	else
-		url="$BASE/$page"
+		url="$BASE/$page/"
 		extra=(--window-size="$WIDTH,900")
 	fi
 
@@ -216,7 +217,7 @@ for page in "${PAGES[@]}"; do
 				--virtual-time-budget=15000 --run-all-compositor-stages-before-draw \
 				--no-pdf-header-footer --print-to-pdf-no-header \
 				"${extra[@]}" --print-to-pdf="$target" \
-				"$BASE/$page?pdf=screen&height=$needed" || true
+				"$BASE/$page/?pdf=screen&height=$needed" || true
 			rm -rf "$profile"
 			read -r pagecount _ < <(python3 -c "$PDFSTAT" "$target")
 			retried="  (fitted at ${needed}px)"

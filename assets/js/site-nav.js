@@ -24,10 +24,15 @@
 (function () {
 	'use strict';
 
+	// The site serves directory urls, so a page is identified by its folder --
+	// "/research/" -- and that is what partials/nav-sections.json is keyed by
+	// and what the menu links to. Anything ending in index.html, which is what
+	// some servers and a local file open will give you, is folded onto the
+	// same value, and a missing trailing slash is added.
 	function currentPage() {
-		var path = window.location.pathname;
-		var file = path.substring(path.lastIndexOf('/') + 1);
-		return file || 'index.html';
+		var path = window.location.pathname.replace(/index\.html$/, '');
+		if (path.charAt(path.length - 1) !== '/') path += '/';
+		return path;
 	}
 
 	function buildGroups(nav, sections) {
@@ -115,11 +120,11 @@
 		if (!nav) return;
 
 		Promise.all([
-			fetch('partials/nav-button.html', { cache: 'no-cache' }).then(function (r) {
+			fetch('/partials/nav-button.html', { cache: 'no-cache' }).then(function (r) {
 				if (!r.ok) throw new Error('nav-button.html: HTTP ' + r.status);
 				return r.text();
 			}),
-			fetch('partials/nav-sections.json', { cache: 'no-cache' })
+			fetch('/partials/nav-sections.json', { cache: 'no-cache' })
 				.then(function (r) { return r.ok ? r.json() : {}; })
 				// Sub-items are an enhancement: if the manifest is missing the
 				// menu should still list the pages.

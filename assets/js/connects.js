@@ -12,7 +12,7 @@
   let THEME_COLOURS = {};
   let THEME_SLUGS = {};
 
-  const THEMES_URL = './data/research-themes.json';
+  const THEMES_URL = '/data/research-themes.json';
 
   async function loadThemes() {
     const res = await fetch(THEMES_URL, { cache: 'no-cache' });
@@ -29,7 +29,7 @@
   // so adding, removing, or re-tagging a publication updates this diagram
   // automatically — no code changes required.
 
-  const DATA_URL = './data/publications.json';
+  const DATA_URL = '/data/publications.json';
 
   async function loadConnections() {
     const res = await fetch(DATA_URL, { cache: 'no-store' });

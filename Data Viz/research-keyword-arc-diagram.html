@@ -137,11 +137,12 @@ let THEMES = [];
 let THEME_COLOURS = {};
 let SHORT = {};
 
-// Relative to this file, which sits in "Data Viz/" -- the data is a directory
-// up. Written as './data/...' this diagram fetched a 404 and fell back to the
-// invented SAMPLE below, so the front page drew a made-up set of connections
-// that looked entirely plausible.
-const THEMES_URL = '../data/research-themes.json';
+// Absolute, so it does not matter that this file sits in "Data Viz/" or which
+// page embeds it. It was once written relative and resolved against this
+// folder instead of the site root: the fetch 404'd, the diagram fell back to
+// the invented SAMPLE below, and the front page drew a made-up set of
+// connections that looked entirely plausible.
+const THEMES_URL = '/data/research-themes.json';
 
 async function loadThemes(){
   const res = await fetch(THEMES_URL, { cache:'no-cache' });
@@ -152,7 +153,7 @@ async function loadThemes(){
   SHORT = Object.fromEntries(themes.map(t => [t.name, t.short || t.name]));
 }
 
-const DATA_URL = '../data/publications.json';
+const DATA_URL = '/data/publications.json';
 
 function sample(){
   const t = THEMES, out = [];

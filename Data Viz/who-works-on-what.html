@@ -179,7 +179,7 @@
 let THEME_COLOURS = {};
 
 async function loadThemeColours() {
-  const res = await fetch('../data/research-themes.json', { cache: 'no-cache' });
+  const res = await fetch('/data/research-themes.json', { cache: 'no-cache' });
   if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
   const themes = await res.json();
   THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
@@ -194,7 +194,7 @@ const PERSON_COLOUR = "#b0b8be";
 // ../data/group_members.json (adding, removing, or editing a member's keywords)
 // is all that's needed to change what's drawn here. No code changes required.
 
-const DATA_URL = '../data/group_members.json';
+const DATA_URL = '/data/group_members.json';
 
 async function loadMembers() {
   await loadThemeColours();

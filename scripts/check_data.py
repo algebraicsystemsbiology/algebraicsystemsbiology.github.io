@@ -63,7 +63,7 @@ def theme_vocabularies(root):
             norm(k) for p in json.load(fh).values() for k in (p.get("keywords") or [])
         }
 
-    research = os.path.join(root, "research.html")
+    research = os.path.join(root, "research", "index.html")
     if os.path.exists(research):
         with open(research, encoding="utf-8") as fh:
             text = fh.read()
@@ -72,7 +72,9 @@ def theme_vocabularies(root):
         }
         vocab["research filter labels"] = {
             norm(_url.unquote(m.group(1)))
-            for m in re.finditer(r"publications\.html\?theme=[^&\"]*&(?:amp;)?label=([^\"]+)", text)
+            # The page moved from publications.html to /publications/; match
+            # either, so this does not have to be edited again if it moves.
+            for m in re.finditer(r"publications(?:\.html|/)\?theme=[^&\"]*&(?:amp;)?label=([^\"]+)", text)
         }
 
     return vocab
@@ -166,12 +168,12 @@ def main():
             if not (t.get("short") or "").strip():
                 problems.append(f"theme {t['name']!r} has no short label in research-themes.json")
 
-        research = os.path.join(root, "research.html")
+        research = os.path.join(root, "research", "index.html")
         if os.path.exists(research):
             with open(research, encoding="utf-8") as fh:
                 text = fh.read()
             linked = {urllib.parse.unquote(m.group(1))
-                      for m in re.finditer(r"publications\.html\?theme=([^&\"]*)", text)}
+                      for m in re.finditer(r"publications(?:\.html|/)\?theme=([^&\"]*)", text)}
             known = {t["slug"] for t in themes}
             for bad in sorted(linked - known):
                 problems.append(

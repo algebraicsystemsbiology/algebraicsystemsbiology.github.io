@@ -97,6 +97,52 @@ ruby -run -e httpd . -p 8000   # Ruby
 php -S localhost:8000          # PHP
 ```
 
+### Where the pages live, and how paths are written
+
+Each page is a folder with an `index.html`, so the urls have no extensions:
+
+```
+index.html            ->  /
+research/index.html   ->  /research/
+people/index.html     ->  /people/
+publications/…        ->  /publications/
+engage/…              ->  /engage/
+privacy/…             ->  /privacy/
+```
+
+**Every path in the site is written from the root** — `/assets/css/main.css`,
+`/data/publications.json`, `/research/` — never relative. That is not a style
+preference. A relative path resolves against whichever page loaded it, so
+`data/photos/x.jpg` in a script became `/people/data/photos/x.jpg` the moment
+People moved into a folder, and every member photograph 404'd while the page
+still looked perfectly fine. `scripts/check_links.py` fails on any relative
+`data/`, `images/` or `partials/` path found in JavaScript for exactly that
+reason.
+
+This works because the site is served from the root of a domain
+(`<org>.github.io`). A project site served under a subpath would need the
+paths rewritten.
+
+### Checking links
+
+```sh
+python3 scripts/check_links.py .                 # internal only, instant
+python3 scripts/check_links.py . --external      # plus every outside link
+```
+
+Internal links, assets, the paths fetched at runtime, and `#fragment` targets
+all have to resolve, and a failure is always a mistake in this repository.
+
+External links are the group members' own sites, ORCID and Scholar profiles,
+GitHub accounts, and every publication link. They are read from the *data*,
+not from the pages — those links are rendered at runtime, so scanning the
+html would check none of the ones most likely to rot. Only a definite 404,
+410 or a hostname that does not resolve counts as broken; a timeout, a rate
+limit or a server that refuses automated requests is reported and passed
+over, because none of those is a reason to block a deploy.
+
+CI runs `check_links.py _site --external` on every build.
+
 ### Regenerating the menu after editing a page
 
 ```sh
@@ -271,9 +317,9 @@ must be fixed at the source**; there is nothing to change in this repository.
 - `python -m http.server` sends no-cache headers inconsistently and browsers
   cache aggressively. If a CSS or JS edit does not appear, hard-reload
   (`Ctrl-Shift-R`, or `Cmd-Shift-R` on macOS).
-- Pages worth checking after a change: `/`, `people.html`, `research.html`,
-  `publications.html`, `engage.html`, `privacy.html`, and the arc diagram
-  embedded on the front page.
+- Pages worth checking after a change: `/`, `/people/`, `/research/`,
+  `/publications/`, `/engage/`, `/privacy/`, and the arc diagram embedded on
+  the front page.
 - Filenames are **case-sensitive** on GitHub Pages (and on Linux) but not on
   macOS. A link that works when previewing on a Mac can still 404 once
   published, so match the on-disk capitalisation exactly. `scripts/check_data.py`
