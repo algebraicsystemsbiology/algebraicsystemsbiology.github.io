@@ -32,6 +32,34 @@ required.
 
 Membership and publication changes need sync of the machine-generated data.  
 
+## The tools
+
+Everything lives in `scripts/`. Nothing needs installing beyond Python 3 and,
+for the PDFs, a browser.
+
+| Command | What it does | Run it |
+|---|---|---|
+| `python3 -m http.server 8000` | Serves the site for preview at <http://localhost:8000> | whenever you are working |
+| `python3 scripts/check_data.py .` | Photos, locations, emails, duplicate publications, theme vocabulary, menu freshness | before pushing |
+| `python3 scripts/check_links.py .` | Internal links, assets, runtime paths, `#fragments` | before pushing |
+| `python3 scripts/check_links.py . --external` | The above plus every members' site, ORCID, Scholar, GitHub and publication link | after a data sync |
+| `python3 scripts/build_nav.py` | Regenerates the menu's section list | after adding or retitling a section |
+| `./scripts/make-pdfs.sh` | Both PDF sets into `pdf/` | to send the site to someone |
+| `./scripts/fetch-data.sh` | Pulls published data for a preview | if you have no local data |
+| `python3 scripts/publication_duplicates.py data/publications.json` | Just the duplicate check, standalone | rarely; `check_data` includes it |
+
+The deploy runs `check_data.py` and `check_links.py --external` against the
+assembled site on every push, so anything they catch locally would have
+stopped the build anyway.
+
+**After editing anything, the short loop is:**
+
+```sh
+python3 scripts/build_nav.py        # only if you touched a section heading
+python3 scripts/check_data.py .
+python3 scripts/check_links.py .
+```
+
 ## Previewing the site locally
 
 The site **cannot** be previewed by opening `index.html` in a browser: several
@@ -193,7 +221,7 @@ To do the same by hand in any browser, on any machine, add `?pdf=screen` to
 the address and print to PDF:
 
 ```
-http://localhost:8000/people.html?pdf=screen
+http://localhost:8000/people/?pdf=screen
 ```
 
 `assets/js/screen-pdf.js` reads that parameter, takes the print stylesheet out
@@ -226,6 +254,26 @@ photograph with the logo beneath it, rather than the near-black rectangle the
 scroll-driven version printed as. And it keeps member cards, publications,
 photographs and research tiles whole across page breaks.
 
+### Checking how it looks on a phone
+
+There is no script for this one; it is done by driving a browser. What the
+last pass found, so the same ground is not re-covered:
+
+- **A caption at `opacity: 0` hides everything inside it.** The research tiles
+  used to reveal on tap, with the heading set to `opacity: 1` so it would show
+  through — it cannot, and the tiles were bare photographs with no text.
+- **`min-height` beats an inline `height`.** Both diagram frames are sized by
+  the height they report over `postMessage`, and both also had a CSS floor
+  taller than the diagram draws on a phone. The floor won, and the difference
+  showed as blank space. The floors are now placeholders, 120px and 200px.
+- **`max-width` on an inner column can override the template's `max-width:
+  100%`.** Privacy scrolled sideways on a phone until it became
+  `min(900px, 100%)`.
+- Anything below 12px is too small to set text in, and a tap target under
+  about 28px square is hard to hit. The menu was failing both.
+
+Worth re-checking at 320, 375 and 768 after layout changes.
+
 ### The research themes live in one file
 
 `data/research-themes.json` is the list of the twelve research themes. It is
@@ -241,7 +289,7 @@ each entry carries four things:
 
 `name` must match the keyword exactly as it is spelled in Coda, since that is
 what the publication and member records are tagged with. `slug` is written out
-rather than derived from the name, so `publications.html?theme=…` links cannot
+rather than derived from the name, so `/publications/?theme=…` links cannot
 drift from it. `colour` is the theme's colour everywhere it is drawn, and
 `short` is the abbreviated label the arc diagram uses.
 
@@ -254,19 +302,19 @@ Everything reads from that file at runtime:
 | `Data Viz/research-keyword-arc-diagram.html` | the front page's arc diagram |
 | `Data Viz/who-works-on-what.html` | theme colours on the People diagram |
 
-`connects.js` currently draws nothing: `research.html` loads it, and
+`connects.js` currently draws nothing: `research/index.html` loads it, and
 `connects.css`, but contains no `.connects-block` element for it to render
 into, so `init()` returns immediately. Either restore the markup or drop the
 two `<script>`/`<link>` lines — the script itself works.
 
-The exception is `research.html`, whose tiles are hand-written prose and cannot
+The exception is `research/index.html`, whose tiles are hand-written prose and cannot
 be generated. `scripts/check_data.py` compares its tile headings and filter
 links against the file, and compares both against the keywords in the member
 and publication data, so a theme renamed in Coda fails the deploy rather than
 quietly emptying a filter.
 
 **To add or rename a theme:** edit `research-themes.json`, add a tile to
-`research.html`, and make sure the name matches Coda exactly. Nothing else
+`research/index.html`, and make sure the name matches Coda exactly. Nothing else
 needs touching.
 
 ### Checking the data is consistent
