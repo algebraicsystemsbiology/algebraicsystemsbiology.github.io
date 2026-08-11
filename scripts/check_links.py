@@ -53,10 +53,17 @@ class Links(HTMLParser):
         self.refs = []
         self.ids = set()
 
+    # <link rel="preconnect"> names a server to open a connection to, not a
+    # document to fetch. Asking for it returns 404 from Google Fonts and means
+    # nothing at all.
+    NOT_LINKS = {"preconnect", "dns-prefetch"}
+
     def handle_starttag(self, tag, attrs):
         d = dict(attrs)
         if d.get("id"):
             self.ids.add(d["id"])
+        if tag == "link" and d.get("rel", "").lower() in self.NOT_LINKS:
+            return
         for attr in ("href", "src"):
             value = d.get(attr)
             if value:
