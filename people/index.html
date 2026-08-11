@@ -178,20 +178,15 @@
 			width: 100%;
 			border: 0;
 			display: block;
-			/* A floor only: the frame reports its real height and the script at
-			   the end of this page grows it to fit, so the diagram never keeps
-			   a scrollbar of its own. Set near the natural height so nothing
-			   scrolls in the moment before the first message arrives. */
-			height: 900px;
+			/* A floor only, and a low one. The frame reports its real height and
+			   the script at the end of this page sizes it to fit. Setting the
+			   floor near the diagram's desktop height meant a 900px empty box
+			   on a phone, where the diagram is shorter, and a visible shove
+			   downwards of everything below it when the real height arrived. */
+			min-height: 200px;
 			background: #fff;
 		}
-		@media (max-width: 980px) {
-			#networkFrame { height: 820px; }
-		}
 
-		@media (max-width: 736px) {
-			#networkFrame { height: 680px; }
-		}
 	</style>
 	</head>
 

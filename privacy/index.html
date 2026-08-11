@@ -52,7 +52,10 @@
 <div id="wrapper" class="divided">
 
 	<section class="wrapper style1 align-center">
-		<div class="inner" style="max-width: 900px; text-align: left;">
+		<!-- min() so the 900px measure never exceeds the screen: a plain
+		     max-width:900px overrode the template's max-width:100% and the page
+		     scrolled sideways on a phone. -->
+		<div class="inner" style="max-width: min(900px, 100%); text-align: left;">
 
 			<h1>Privacy Policy</h1>
 

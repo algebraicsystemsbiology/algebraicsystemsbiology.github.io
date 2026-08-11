@@ -101,7 +101,12 @@
     width:100%;
     border:0;
     display:block;
-    min-height:520px;
+    /* Only a floor for the moment before the frame reports its height. It used
+       to be 520px here and 460 on a phone, which is taller than the diagram
+       ever draws at that width -- the arc is wide and shallow, 130px at 375 --
+       so a third of a screen of blank sat under it. min-height would win over
+       the height the message sets, so it has to be small. */
+    min-height:120px;
     height:520px;
     background:#fff;
   }
@@ -109,12 +114,12 @@
   @media (max-width:860px){
 .hero-text{padding:0 1.5rem 2vh}
     .cue{display:none}
-    #themesFrame{min-height:380px;height:380px;}
+    #themesFrame{min-height:120px}
 	}
 
   @media (max-width:600px){
     .hero-text{padding:0 1rem 2vh}
-    #themesFrame{min-height:460px;height:460px;}
+    #themesFrame{min-height:120px}
   }
 
   /* Onward-pointing line under the intro — lighter than .major, signals

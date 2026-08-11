@@ -104,8 +104,23 @@
   @media (max-width:860px){
     .nav{top:1.25rem;left:1.25rem}
     .nav-links{width:200px}
-    .nav-links a{font-size:.72rem;letter-spacing:.05em}
+    /* .72rem lands at 10.6px on a phone, which is below the size anything
+       should be set in. */
+    .nav-links a{font-size:.82rem;letter-spacing:.05em}
+    .nav-links a.sub{font-size:.78rem}
   }
+
+  /* On a 320px screen a 68px button is a fifth of the width. */
+  @media (max-width:600px){
+    .nav-toggle{width:48px;height:48px}
+    .nav-toggle svg{width:34px;height:34px}
+    .nav{gap:.6rem}
+  }
+
+  /* The caret was a 12px-wide target: too small to hit, and the only way to
+     open a page's sections. */
+  .nav-sub-toggle{min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center}
+  .nav-links a.sub{padding-top:.55rem;padding-bottom:.55rem}
   @media (prefers-reduced-motion:reduce){
     .nav-toggle,.nav-links,.nav-links a{transition:none!important}
   }
