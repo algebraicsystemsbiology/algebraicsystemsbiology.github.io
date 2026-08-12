@@ -1,4 +1,13 @@
-/* nav.css — the dot-burst menu, shared by every page.
+/* page-frame.css — everything that frames a page's content, shared by all of
+ * them: the dot-burst menu, the logo bar, and the vertical spacing at the top
+ * and bottom of a page.
+ *
+ * It was called nav.css, which was true when it held only the menu. It grew
+ * the logo, then the padding that lifts the first section to the top of the
+ * page, then the footer's spacing and the page-title rules -- all of them the
+ * frame rather than the content, and none of them navigation.
+ *
+ * ── The menu ──────────────────────────────────────────────────────────────
  *
  * Previously copy-pasted into each page's inline <style>, where it had already
  * drifted: people/research/engage carried `text-align: left` on .nav-links
@@ -302,4 +311,13 @@
 
 	.page-title + .wrapper.style1 > .inner {
 		padding-top: 1.5rem;
+	}
+
+	/* No rule directly under a page title. .divided draws one above every
+	   section after the first, but a title is not a section of content -- it
+	   is the head of the page, and on Engage it carries the photograph too.
+	   A line between that and the first heading cuts the top of the page in
+	   half. */
+	#wrapper.divided > .page-title + * {
+		box-shadow: none !important;
 	}

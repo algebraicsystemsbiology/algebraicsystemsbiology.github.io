@@ -22,7 +22,7 @@
 		<link rel="stylesheet" href="/assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 		<link rel="stylesheet" href="/assets/css/mobile.css" />
-		<link rel="stylesheet" href="/assets/css/nav.css" />
+		<link rel="stylesheet" href="/assets/css/page-frame.css" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" />
 		<link rel="stylesheet" href="/assets/css/print.css" media="print" />
 
@@ -65,6 +65,23 @@
 		.is-hidden { display: none !important; }
 
 	
+		/* The space belongs under the photograph, not under "What is?". With 28px
+		   below the picture and 93px between that heading's paragraph and its
+		   tiles, the photograph read as the opening image of the What is?
+		   section rather than as the top of the page. The two are swapped: the
+		   picture is set apart from what follows, and the heading sits close to
+		   the tiles it introduces. */
+		.page-banner {
+			display: block;
+			width: 100%;
+			height: auto;
+			margin: 1.5rem 0 3rem;
+		}
+
+		#Short-Talks > .inner {
+			padding-bottom: 0;
+		}
+
 		/* ── Adventures: the page's own bits ─────────────────────────────── */
 
 		#travels { background: #ffffff; position: relative; }
@@ -414,6 +431,12 @@
 	<section class="wrapper style1 page-title">
 		<div class="inner">
 			<h1>Engage</h1>
+			<!-- Shown whole rather than cropped to a band: it is a group
+			     photograph, and a fixed-height crop takes the heads off the
+			     back row on a narrow screen. -->
+			<img class="page-banner"
+			     src="/images/group-retreat-2025.jpg"
+			     alt="The Algebraic Systems Biology group at its retreat, May 2025" />
 		</div>
 	</section>
 
