@@ -105,7 +105,6 @@
 	position: relative;
 	width: 100%;
 	user-select: none;
-	/* carried over when the duplicate block above was removed */
 	max-width: 860px;
 	margin: 2rem auto 0;
 }

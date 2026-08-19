@@ -123,11 +123,6 @@
 	margin-top: 0;
 }
 
-#alumni-heading {
-	cursor: pointer;
-	user-select: none;
-}
-
 /* Alumni cards carry no photograph, so they are text-only and much shorter than
    member cards. Narrower columns keep the list compact rather than leaving each
    name adrift in whitespace. */
