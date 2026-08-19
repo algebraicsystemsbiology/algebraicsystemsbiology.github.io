@@ -54,7 +54,9 @@ jobs:
           persist-credentials: false
 
       # Assemble into _site rather than publishing the checkout directly, so
-      # .git, .github and scripts/ can never leak into the deployed artifact.
+      # .git, .github, scripts/, documentation/ and wip/ can never leak into
+      # the deployed artifact. documentation/ is maintainer notes and wip/ holds
+      # features that are not finished; neither should be served.
       - name: Assemble site
         run: |
           set -euo pipefail
@@ -65,6 +67,8 @@ jobs:
             --exclude '.data-src/' \
             --exclude '_site/' \
             --exclude 'scripts/' \
+            --exclude 'documentation/' \
+            --exclude 'wip/' \
             --exclude '.gitignore' \
             ./ _site/
           # Generated data lives under data/ in asb-website-data, separating it
@@ -93,7 +97,7 @@ jobs:
       - name: Guard against leaked internals
         run: |
           set -euo pipefail
-          for p in .git .github .data-src scripts; do
+          for p in .git .github .data-src scripts documentation wip; do
             if [ -e "_site/$p" ]; then echo "::error::$p leaked into the artifact"; exit 1; fi
           done
           if grep -rlE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)' _site/data/*.json >/dev/null 2>&1; then

@@ -1,0 +1,91 @@
+/* Bubble diagram of institutions the group has published with, rendered into
+ * #collab-viz by collaborators.js.
+ *
+ * To use: copy this into assets/css/, add a <link> to it from the page that
+ * carries the #collab-viz markup, and load it after main.css. The two mobile
+ * blocks at the bottom belong with it and are written to stand alone. */
+
+#collab-viz {
+	width: 100%;
+	max-width: 860px;
+	margin: 2rem auto 0;
+	position: relative;
+}
+
+#collab-viz svg {
+	width: 100%;
+	height: auto;
+	overflow: visible;
+}
+
+.collab-node circle {
+	transition: opacity 0.2s;
+	cursor: default;
+}
+
+.collab-node text {
+	font-family: "Helvetica Neue", sans-serif;
+	font-size: 11px;
+	fill: #444;
+	pointer-events: none;
+}
+
+.collab-tooltip {
+	position: absolute;
+	background: rgba(255, 255, 255, 0.97);
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 0.6rem 0.9rem;
+	font-family: "Helvetica Neue", sans-serif;
+	font-size: 0.75rem;
+	color: #333;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.15s;
+	max-width: 220px;
+	line-height: 1.5;
+	z-index: 100;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.collab-tooltip strong {
+	display: block;
+	font-size: 0.8rem;
+	color: #111;
+	margin-bottom: 0.15rem;
+}
+
+.collab-caption {
+	text-align: center;
+	font-family: "Helvetica Neue", sans-serif;
+	font-size: 0.68rem;
+	color: #bbb;
+	letter-spacing: 0.05em;
+	margin-top: 1rem;
+}
+
+/* The diagram is wider than a phone, so it scrolls sideways inside its own box
+   rather than squeezing. These lived in assets/css/mobile.css. */
+@media screen and (max-width: 736px) {
+	#collab-viz {
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch !important;
+	}
+
+	#collab-viz svg {
+		min-width: 500px !important;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#collab-viz {
+		overflow-x: auto !important;
+		-webkit-overflow-scrolling: touch !important;
+		width: 100% !important;
+	}
+
+	#collab-viz svg {
+		min-width: 600px !important;
+		display: block !important;
+	}
+}
