@@ -1,0 +1,82 @@
+/* links.css — the brand palette, and the definition of what a link looks like.
+ * Loaded last of the screen stylesheets, after main.css and page-frame.css, so
+ * what is here is the final word.
+ *
+ * To restyle every link on the site, change the tokens below. Nothing else
+ * declares a link colour or underline.
+ *
+ * Print is not covered here: print.css loads after this file and strips links
+ * back to plain ink, because an underline costs nothing on screen and means
+ * nothing on paper. */
+
+:root {
+	/* The palette. These four were copy-pasted into a :root block inside each
+	   of the six pages' inline <style>, so the brand cyan was written out six
+	   times. It is written once, here. */
+	--ink:    #30363d;
+	--blue:   #47D3E5;
+	--pink:   #db8992;
+	/* A bare RGB triple, for rgba(var(--shadow), a). Only the home page uses
+	   it, but it is part of the palette and belongs beside the rest. */
+	--shadow: 15, 18, 21;
+
+	/* Links are the brand's cyan hue at a lightness that is readable on white:
+	   187deg at 32%, which is 4.60:1. Hover darkens to 7.14:1.
+
+	   --blue is the brand cyan and belongs on the logo and on dark ground,
+	   where it is 11.7:1. On white it is 1.79:1, so it is not used for link
+	   text or for a link's underline.
+
+	   Floors for anyone editing these: 4.5:1 for the resting colour, 3:1 for an
+	   underline that is a link's only cue. Nothing above ~40% lightness in this
+	   hue meets either. */
+	--link:                     #14818F;
+	--link-hover:               #0F616B;
+	--link-weight:              inherit;
+	--link-underline-offset:    0.12em;
+	--link-underline-thickness: 1px;
+}
+
+/* The canonical link: the cyan above, at the weight of the sentence it sits in,
+   plus an underline.
+
+   The underline is drawn in both states. Colour alone may not be the only thing
+   marking a link within prose (WCAG 1.4.1), so it stays even though the text is
+   already a different colour, and holding it on hover keeps the line from
+   shifting under the pointer. */
+a {
+	color: var(--link);
+	font-weight: var(--link-weight);
+	text-decoration: underline;
+	text-decoration-thickness: var(--link-underline-thickness);
+	text-underline-offset: var(--link-underline-offset);
+	transition: color 0.2s ease-in-out;
+}
+
+a:hover,
+a:focus-visible {
+	color: var(--link-hover);
+	text-decoration: underline;
+}
+
+/* Someone tabbing through needs more than a colour change to see where they
+   are, and the hover colour alone is a weak signal. */
+a:focus-visible {
+	outline: 2px solid var(--link-hover);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* ── Links that are not prose ──────────────────────────────────────────────
+ *
+ * Components that happen to be anchors: the nav, the Details and Watch buttons,
+ * the member cards' icons, the gallery thumbnails, the logo. Most opt out at
+ * class specificity and need nothing here -- .button and .icon both set
+ * text-decoration: none in main.css, and .nav-links a sets its own colour in
+ * page-frame.css, so a bare `a` selector cannot reach them.
+ *
+ * These two carry only an image, so there is no underline to see. */
+a.site-logo,
+.image a {
+	text-decoration: none;
+}

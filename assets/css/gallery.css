@@ -1,0 +1,134 @@
+/* gallery.css — the .gallery.style2 tiles: the research themes on Research and
+ * the recorded talks on Engage. Loaded by research/index.html and
+ * engage/index.html.
+ *
+ * These rules adjust the HTML5 UP gallery: captions stay visible, tiles wrap
+ * rather than scroll, and the arrows are always shown. Each block says what it
+ * governs. */
+
+/* Gallery (style2) — captions are always visible.
+   The template revealed them only on hover, which left the panels as bare
+   background images: unreadable without hovering every tile, and with no
+   hover at all on touch devices. Mobile keeps its own tap-to-reveal
+   behaviour, which lives in mobile.css under max-width 736px and overrides
+   this. */
+.gallery.style2 article .caption {
+		opacity: 1;
+	}
+
+/* Gallery (style2, big) — the research tiles wrap instead of scrolling.
+   The template makes every style2 gallery a horizontal scroller, so most of
+   the tiles were hidden until you dragged or clicked an arrow. On the research
+   page all of them should simply be visible: two per row, wrapping onto as
+   many rows as it takes.
+
+   justify-content: center is what centres a lone tile on a final row. Full
+   rows are unaffected, since two tiles at 50% already fill the width.
+
+   The arrows disappear on their own: with the tiles wrapped there is nothing
+   to scroll, so assets/js/gallery-arrows.js marks the gallery no-scroll and
+   the rules below hide them. Engage's gallery is .medium and still scrolls. */
+.gallery.style2.big > .inner {
+		-moz-flex-wrap: wrap;
+		-webkit-flex-wrap: wrap;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		-moz-justify-content: center;
+		-webkit-justify-content: center;
+		-ms-justify-content: center;
+		justify-content: center;
+		/* main.js sets these inline on every gallery's .inner to make it a
+		   horizontal scroller; inline styles outrank a stylesheet, so these
+		   need !important or the wrapped rows below the first are clipped. */
+		overflow-x: visible !important;
+		overflow-y: visible !important;
+	}
+
+.gallery.style2.big article {
+		width: 50%;
+		max-width: none;
+	}
+
+@media screen and (max-width: 736px) {
+
+		.gallery.style2.big article {
+			width: 100%;
+		}
+
+	}
+
+/* Gallery (style2) — the Details button sits in the same place on every tile.
+   Two things made it wander. The caption is a vertically-centred column, so
+   with body text of 174 to 315 characters the button landed at a different
+   height in each tile and no two in a row lined up: margin-top:auto pins it to
+   the bottom instead. And ul.actions carries margin-left:-1rem against a
+   1rem left padding on each li -- which spaces a row of buttons evenly, but
+   offsets a lone button from centre. */
+.gallery.style2 article .caption ul.actions {
+		margin-left: 0;
+		margin-top: auto;
+		-moz-justify-content: center;
+		-webkit-justify-content: center;
+		-ms-justify-content: center;
+		justify-content: center;
+	}
+
+.gallery.style2 article .caption ul.actions li {
+			padding-left: 0;
+		}
+
+/* Gallery (style2) — the Details outline is a border, not an inset shadow.
+   The template draws it with box-shadow: inset 0 0 0 1px white. A shadow is
+   painted, not laid out, so on a display whose scaling puts the button's edge
+   on a fractional device pixel the hairline antialiases differently from one
+   tile to the next -- which is why the outlines looked mismatched at 100% zoom
+   and matched once zoomed in. A border goes through layout, where the engine
+   rounds to whole device pixels, so it rasterises consistently.
+
+   box-sizing is border-box site-wide, so the border does not change the
+   button's size; line-height is reduced by the 2px the border now occupies to
+   keep the label centred. */
+.gallery.style2 article .caption .button {
+		box-shadow: none;
+		border: 1px solid #ffffff;
+		line-height: calc(3.325em - 2px);
+	}
+
+.gallery.style2 article .caption .button:hover,
+		.gallery.style2 article .caption .button:active {
+			box-shadow: none;
+			border-color: #47D3E5;
+		}
+
+/* Gallery (style2, big) — no arrows at all.
+   The research galleries wrap and never scroll, so the arrows have nothing to
+   do. They are absolutely positioned 5rem-wide overlays carrying a
+   rgba(0,0,0,0.25) gradient at z-index 2 -- above the captions at z-index 1 --
+   pinned to the left and right edges of the gallery. Left in place they tint
+   the outer edge of whichever tile sits at each end of a row, which is why the
+   Details button's white outline looked different depending on where its tile
+   was. Hiding them outright, in CSS, does not depend on the scroll-position
+   script noticing there is nothing to scroll. */
+.gallery.style2.big > .forward,
+	.gallery.style2.big > .backward {
+		display: none;
+	}
+
+/* Gallery arrows — always visible, so the presence of more content is
+   apparent without hovering, and hidden only where there is nothing to
+   scroll to. The template showed them on hover alone and regardless of
+   position, so a gallery offered a left arrow while already at the left edge,
+   and showed both even when every item already fitted.
+   assets/js/gallery-arrows.js sets the state classes. */
+.gallery.style2 > .forward,
+	.gallery.style2 > .backward {
+		opacity: 1;
+	}
+
+.gallery.style2.at-start > .backward,
+	.gallery.style2.at-end > .forward,
+	.gallery.style2.no-scroll > .forward,
+	.gallery.style2.no-scroll > .backward {
+		opacity: 0;
+		pointer-events: none;
+	}

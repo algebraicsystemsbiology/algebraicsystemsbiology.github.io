@@ -1,0 +1,194 @@
+/* publications.css — the Publications page: the theme filter and the citation
+ * list. Loaded only by publications/index.html.
+ *
+ * main.css sets `button { color: #000000 !important }`, so the filter's colour
+ * states below need !important of their own to take effect. */
+
+/* ── Layout: filter on the left, citations on the right ─────────────────── */
+
+#page-top {
+	padding-top: 1rem;
+}
+
+.publications-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 2rem;
+	margin-top: 0;
+	width: 100%;
+}
+
+#publications-filter {
+	flex: 0 0 18rem;
+	max-width: 18rem;
+	margin-top: 3rem;
+	text-align: left;
+}
+
+#publications-list {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	max-width: none;
+	text-align: left;
+}
+
+/* ── Page heading ───────────────────────────────────────────────────────── */
+
+/* The filter list sits directly under the heading with no section boundary
+   between them, so the template's parting space is not wanted here. */
+#page-top header { margin-bottom: 0; }
+#page-top #theme-title { margin-bottom: 0.25rem; }
+
+/* The subtitle is empty until a theme is chosen but keeps its line either way,
+   so choosing one does not shove the list down the page. 1lh is one line box of
+   this element's own line-height; the em value above it is the fallback. */
+#theme-title {
+	min-height: 1.7em;
+	min-height: 1lh;
+}
+
+/* ── Theme filter ───────────────────────────────────────────────────────── */
+
+#publications-filter h3 {
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+
+#publications-filter .theme-filter-list {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#publications-filter .theme-filter-list li {
+	display: block;
+	border-top: solid 1px rgba(0, 0, 0, 0.2);
+	padding: 0.15rem 0;
+	margin: 0 0 0.5rem 0;
+}
+
+#publications-filter .theme-filter-list li:first-child {
+	border-top: 0;
+}
+
+#publications-filter .theme-filter {
+	all: unset;
+
+	display: block;
+	width: 100%;
+	padding: 0.15rem 0;
+
+	font-family: inherit;
+	font-size: 0.85rem;
+	font-weight: 300;
+	line-height: 1.15;
+
+	text-align: left;
+	cursor: pointer;
+	color: var(--ink) !important;
+}
+
+/* The dot carries the theme's own colour, set as --theme-dot on the button by
+   assets/js/publications.js out of data/research-themes.json. The All button is
+   not a theme and takes the fallback grey. */
+#publications-filter .theme-filter::before {
+	content: "";
+	display: inline-block;
+	width: 0.7rem;
+	height: 0.7rem;
+	border-radius: 50%;
+	margin-right: 0.65rem;
+	vertical-align: middle;
+	background: var(--theme-dot, #cccccc);
+}
+
+#publications-filter .theme-filter:hover {
+	color: var(--link-hover) !important;
+}
+
+/* The chosen theme is underlined as well as recoloured, so its state does not
+   rest on colour alone. The theme colours themselves are far too light to read
+   as text -- they stay on the dot, where they identify nothing on their own. */
+#publications-filter .theme-filter.is-active {
+	color: var(--link) !important;
+	font-weight: 400;
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+	text-decoration-thickness: 1px;
+}
+
+/* ── Citation list ──────────────────────────────────────────────────────── */
+
+.publication-year-group {
+	margin-top: 3rem;
+}
+
+.publication-year-group h3 {
+	margin-bottom: 1.5rem;
+	border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+	padding-bottom: 0.5rem;
+}
+
+.publication-entry {
+	margin-bottom: 1.5rem;
+	line-height: 1.6;
+}
+
+.publication-title {
+	font-style: italic;
+	font-weight: 700;
+	margin-bottom: 0.2rem;
+}
+
+.publication-citation {
+	margin: 0;
+}
+
+.publication-authors,
+.publication-meta {
+	display: inline;
+}
+
+.publication-meta::before {
+	content: " ";
+}
+
+.publication-links {
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	margin-top: 0.35rem;
+}
+
+.publication-bibtex {
+	margin-left: 0;
+}
+
+.publication-bibtex summary {
+	cursor: pointer;
+}
+
+.publication-bibtex pre {
+	margin-top: 0.75rem;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	font-size: 0.9rem;
+}
+
+/* ── Narrow screens: the filter stops being a column and sits above ─────── */
+
+@media (max-width: 980px) {
+	.publications-layout {
+		flex-direction: column;
+	}
+
+	#publications-filter {
+		flex: 1 1 auto;
+		max-width: none;
+		width: 100%;
+		margin-top: 0;
+	}
+}

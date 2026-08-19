@@ -50,13 +50,9 @@
   /* .network-block lived in the diagram's own document, which loads no
      stylesheet from here, so the rules that used to target it did nothing at
      all. That handling now sits in Data Viz/who-works-on-what.html. */
-  .connects-block,
-  #collab-viz {
+  .connects-block {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
-  }
-  #collab-viz svg {
-    min-width: 500px !important;
   }
 
   /* ── Alumni grid — 2 cols on phone ───────────────────────────── */
@@ -120,16 +116,5 @@
      to stay legible. */
   .gallery.style2 article .caption h3 {
     text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5) !important;
-  }
-    /* ── Collaborator viz — scrollable on mobile ─────────────────── */
-  #collab-viz {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    width: 100% !important;
-  }
-
-  #collab-viz svg {
-    min-width: 600px !important;
-    display: block !important;
   }
 }

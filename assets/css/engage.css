@@ -1,0 +1,298 @@
+/* engage.css — the Engage page: the banner, the short-talks section, and the
+ * Adventures photo album with its full-screen viewer. Loaded only by
+ * engage/index.html.
+ *
+ * The .gallery.style2 tiles that hold the talks are styled by gallery.css,
+ * shared with Research. */
+
+/* The space belongs under the photograph, not under "What is?". With 28px
+   below the picture and 93px between that heading's paragraph and its
+   tiles, the photograph read as the opening image of the What is?
+   section rather than as the top of the page. The two are swapped: the
+   picture is set apart from what follows, and the heading sits close to
+   the tiles it introduces. */
+.page-banner {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 1.5rem 0 3rem;
+}
+
+#Short-Talks > .inner {
+	padding-bottom: 0;
+}
+
+/* ── Adventures: the page's own bits ─────────────────────────────── */
+
+#travels { background: #ffffff; position: relative; }
+
+/* ── Photo viewer ──────────────────────────────────────────────────
+   The polaroids are square-cropped thumbnails (object-fit: cover), so
+   tapping one is the only way to see the whole photograph. It opens in
+   place -- nothing navigates away. */
+
+.photo-viewer {
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 200;                       /* the fixed menu sits at 50 */
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 4vmin;
+	background: rgba(22, 20, 18, 0.88);
+	cursor: zoom-out;
+}
+
+.photo-viewer.is-open { display: flex; }
+
+.photo-viewer figure {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.9rem;
+	max-width: 100%;
+}
+
+.photo-viewer img {
+	display: block;
+	max-width: 100%;
+	max-height: 78vh;
+	width: auto;
+	height: auto;
+	background: #fff;
+	padding: 0.5rem;
+	box-shadow: 0 12px 44px rgba(0,0,0,0.55);
+}
+
+.photo-viewer figcaption {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 1.3rem;
+	line-height: 1.3;
+	color: #f4ece2;
+	text-align: center;
+	max-width: 34rem;
+}
+
+.photo-viewer-close {
+	position: absolute;
+	top: 1rem; right: 1.25rem;
+	width: 2.6rem; height: 2.6rem;
+	padding: 0;
+	border: 0; border-radius: 50%;
+	background: rgba(255,255,255,0.16);
+	color: #fff;
+	font-size: 1.5rem; line-height: 1;
+	cursor: pointer;
+}
+
+.photo-viewer-close:hover,
+.photo-viewer-close:focus-visible { background: rgba(255,255,255,0.32); }
+
+/* The pointer is the only hint that a polaroid does anything. */
+.polaroid img { cursor: zoom-in; }
+
+	/* ── Album ──────────────────────────────────────────────────── */
+#travels-section { padding: 0; }
+
+.album-wrap {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 0 2rem 3rem;
+}
+
+.album {
+	position: relative;
+	width: 100%;
+	user-select: none;
+	/* carried over when the duplicate block above was removed */
+	max-width: 860px;
+	margin: 2rem auto 0;
+}
+
+.album-spread {
+	display: none;
+	position: relative;
+	background: #f2ece0;
+	border-radius: 4px;
+	padding: 2.5rem 2rem 2.5rem 3rem;
+	box-shadow: -4px 0 8px rgba(0,0,0,0.08), 4px 4px 16px rgba(0,0,0,0.12), inset 4px 0 8px rgba(0,0,0,0.04);
+	min-height: 500px;
+	overflow: hidden;
+}
+
+.album-spread.is-active { display: block; }
+
+/* Spine line */
+.album-spread::before {
+	content: '';
+	position: absolute;
+	left: 2.2rem; top: 0; bottom: 0;
+	width: 1px;
+	background: linear-gradient(to bottom, transparent 0%, rgba(160,140,110,0.3) 10%, rgba(160,140,110,0.3) 90%, transparent 100%);
+}
+
+.spread-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 1.2rem;
+	padding-left: 1rem;   /* carried over from the duplicate block */
+}
+
+.spread-title {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 2.2rem;
+	font-weight: 700;
+	color: #3a3028;
+	line-height: 1.1;
+	margin: 0;
+}
+
+.spread-date {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 1.1rem;
+	color: #9a8878;
+	margin-top: 0.2rem;
+}
+
+.spread-stamp {
+	display: inline-block;
+	border: 2px solid #c4956a;
+	color: #c4956a;
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 0.8rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	padding: 0.3rem 0.7rem;
+	transform: rotate(-8deg);
+	opacity: 0.7;
+	white-space: nowrap;
+	margin-top: 0.5rem;
+	flex-shrink: 0;
+}
+
+.spread-note {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 1.25rem;
+	color: #5a4a3a;
+	margin-bottom: 1.5rem;
+	position: relative;
+	padding-left: 0.8rem;
+	line-height: 1.5;
+}
+
+.spread-note::before {
+	content: '→';
+	position: absolute;
+	left: -0.6rem;
+	color: #c4956a;
+}
+
+.spread-photos {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	align-items: flex-start;
+	justify-content: center;
+	padding-left: 1rem;   /* carried over from the duplicate block */
+}
+
+.polaroid {
+	background: #fff;
+	/* A polaroid's lower border is deeper than its sides and the
+	   caption is written on it; 2.2rem left a band of empty card
+	   below the caption instead. */
+	padding: 0.6rem 0.6rem 0.9rem;
+	box-shadow: 2px 3px 12px rgba(0,0,0,0.15);
+	position: relative;
+	flex: 0 0 auto;
+	width: calc(33% - 1rem);
+	min-width: 150px;
+	max-width: 240px;
+}
+
+.polaroid:nth-child(odd)  { transform: rotate(-2.5deg); }
+.polaroid:nth-child(even) { transform: rotate(1.8deg); }
+.polaroid:nth-child(3n)   { transform: rotate(-1deg) translateY(10px); }
+
+.polaroid img {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	display: block;
+	background: #e8e0d4;
+}
+
+.polaroid-caption {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 0.95rem;
+	color: #6a5a4a;
+	text-align: center;
+	margin-top: 0.5rem;
+	/* It is a <p>, so without this it takes the template's 2rem and
+	   pushes the bottom of the card 32px further down. */
+	margin-bottom: 0;
+	line-height: 1.2;
+}
+
+/* Washi tape */
+.polaroid::before {
+	content: '';
+	position: absolute;
+	top: -9px; left: 50%;
+	transform: translateX(-50%) rotate(-3deg);
+	width: 44px; height: 18px;
+	background: rgba(180,200,220,0.55);
+	border-radius: 1px;
+}
+.polaroid:nth-child(even)::before { background: rgba(210,185,155,0.55); transform: translateX(-50%) rotate(4deg); }
+.polaroid:nth-child(3n)::before   { background: rgba(190,210,190,0.5); transform: translateX(-50%) rotate(-1deg); }
+
+/* Navigation */
+.album-nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	margin-top: 2rem;
+}
+
+.album-btn {
+	background: none;
+	border: 1px solid rgba(160,140,110,0.4);
+	border-radius: 50%;
+	width: 40px; height: 40px;
+	cursor: pointer;
+	color: #9a8878;
+	font-size: 1.1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	padding: 0;
+}
+.album-btn:hover { background: rgba(160,140,110,0.1); color: #5a4a3a; border-color: rgba(160,140,110,0.7); }
+.album-btn:disabled { opacity: 0.25; cursor: default; }
+
+.album-counter {
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 1.1rem;
+	color: #9a8878;
+}
+
+.album-empty {
+	text-align: center;
+	padding: 4rem 1rem;
+	font-family: 'Caveat', 'Modern Love', cursive;
+	font-size: 1.4rem;
+	color: #9a8878;
+}
+
+@media screen and (max-width: 736px) {
+	.album-wrap { padding: 0 1rem 2rem; }
+	.album-spread { padding: 1.5rem 1rem 1.5rem 2rem; min-height: 400px; }
+	.spread-title { font-size: 1.6rem; }
+	.polaroid { width: calc(50% - 0.75rem); min-width: 110px; }
+	.album-spread::before { left: 1.5rem; }
+}

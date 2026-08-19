@@ -1,0 +1,181 @@
+/* people.css — the People page: the current-member grid, the alumni list, and
+ * the Who We Work With diagram. Loaded only by people/index.html.
+ *
+ * The icon links on a card take their colour from links.css. */
+
+/* ── Current members ────────────────────────────────────────────────────── */
+
+#members-grid .member-card {
+	text-align: center;
+	padding-bottom: 1.25rem;
+}
+
+#members-grid .member-photo {
+	width: 160px;
+	height: 160px;
+	object-fit: cover;
+	border-radius: 50%;
+	display: block;
+	margin: 0 auto 1.25rem auto;
+}
+
+/* Members shown without a photograph still reserve its space, so their names
+   line up with everyone else's. .member-photo above sets the box; this only
+   makes it invisible. */
+#members-grid .member-photo-blank {
+	background: none;
+	border: 0;
+}
+
+#members-grid .member-role {
+	font-weight: 600;
+	margin-bottom: 0.75rem;
+}
+
+#members-grid .member-bio {
+	max-width: 34rem;
+	margin: 0 auto 1rem auto;
+}
+
+/* Location tag. A member may hold more than one, so these sit side by side
+   without touching. */
+.member-institution {
+	display: inline-block;
+	font-size: 0.65rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 0.15rem 0.5rem;
+	border-radius: 999px;
+	margin-top: 0.25rem;
+	background: rgba(0, 0, 0, 0.06);
+	color: #5a616b;
+}
+
+.member-institution + .member-institution {
+	margin-left: 0.3rem;
+}
+
+.member-institution.mpi {
+	background: rgba(30, 189, 209, 0.12);
+	color: #0e9aac;
+}
+
+.member-institution.oxford {
+	background: rgba(70, 110, 180, 0.12);
+	color: #3a5fa0;
+}
+
+/* ── Card icon links, shared by both grids ──────────────────────────────── */
+
+.member-links {
+	display: flex;
+	justify-content: center;
+}
+
+.member-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	padding: 0.2rem;
+}
+
+.member-link:hover {
+	transform: translateY(-1px);
+}
+
+/* Member cards are roomy and carry several icons; alumni cards are compact and
+   carry one, at a size that suits the smaller type around it. */
+#members-grid .member-links {
+	gap: 0.6rem;
+	flex-wrap: wrap;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+#members-grid .member-link {
+	font-size: 1.2rem;
+}
+
+#alumni-grid .member-links {
+	margin-top: 0.45rem;
+}
+
+#alumni-grid .member-link {
+	font-size: 1rem;
+}
+
+/* ── Alumni ─────────────────────────────────────────────────────────────── */
+
+/* Alumni draws its own rule above itself, like every other section, so Current
+   Members carries none below. */
+#members {
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.wrapper.style1.alumni-section > .inner {
+	padding-top: 2rem;
+}
+
+.alumni-section {
+	margin-top: 0;
+}
+
+#alumni-heading {
+	cursor: pointer;
+	user-select: none;
+}
+
+/* Alumni cards carry no photograph, so they are text-only and much shorter than
+   member cards. Narrower columns keep the list compact rather than leaving each
+   name adrift in whitespace. */
+.alumni-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+.alumni-card {
+	text-align: center;
+	padding: 0.85rem 0.75rem;
+}
+
+.alumni-card h3 {
+	font-size: 0.95rem;
+	margin-bottom: 0.2rem;
+}
+
+.alumni-card .alumni-role {
+	font-size: 0.78rem;
+	color: #888;
+	margin-bottom: 0.25rem;
+}
+
+.alumni-card .alumni-dates {
+	font-size: 0.72rem;
+	color: #aaa;
+	margin-bottom: 0.5rem;
+}
+
+/* ── Embedded Who Works On What frame ───────────────────────────────────── */
+
+/* The diagram lives in Data Viz/who-works-on-what.html; its own styles travel
+   with it. */
+.network-shell {
+	width: 100%;
+	margin: 1rem 0 0;
+}
+
+#networkFrame {
+	width: 100%;
+	border: 0;
+	display: block;
+	/* A floor only, and a low one: the frame reports its real height and the
+	   script at the end of the page sizes it to fit. A floor near the diagram's
+	   desktop height leaves an empty box on a phone, where it is shorter. */
+	min-height: 200px;
+	background: #fff;
+}
