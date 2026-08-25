@@ -215,10 +215,20 @@ def external_urls(root):
 
     data = os.path.join(root, "data")
 
+    def records(loaded):
+        """The rows, however the file is shaped.
+
+        The generated data arrives keyed by the source database's row id, and
+        scripts/strip_identifiers.py takes those keys off on the way out, which
+        turns each file into a list. This runs on either side of that step, so
+        it must read both.
+        """
+        return loaded.values() if isinstance(loaded, dict) else loaded
+
     members = os.path.join(data, "group_members.json")
     if os.path.exists(members):
         with open(members, encoding="utf-8") as fh:
-            for person in json.load(fh).values():
+            for person in records(json.load(fh)):
                 who = person.get("name_full") or "(unnamed)"
                 for key, value in person.items():
                     if key.startswith("link_") and isinstance(value, str) and value.startswith("http"):
@@ -227,7 +237,7 @@ def external_urls(root):
     pubs = os.path.join(data, "publications.json")
     if os.path.exists(pubs):
         with open(pubs, encoding="utf-8") as fh:
-            for pub in json.load(fh).values():
+            for pub in records(json.load(fh)):
                 title = (pub.get("publication_title") or "(untitled)")[:48]
                 for key in ("link_publication", "link_arxiv"):
                     value = pub.get(key)
