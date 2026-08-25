@@ -137,7 +137,6 @@
 // twelve colours down to three by layer.
 let THEMES = [];
 let THEME_COLOURS = {};
-let SHORT = {};
 
 // Absolute, so it does not matter that this file sits in "Data Viz/" or which
 // page embeds it. It was once written relative and resolved against this
@@ -152,7 +151,6 @@ async function loadThemes(){
   const themes = await res.json();
   THEMES = themes.map(t => t.name);
   THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
-  SHORT = Object.fromEntries(themes.map(t => [t.name, t.short || t.name]));
 }
 
 const DATA_URL = '/data/publications.json';
@@ -391,12 +389,17 @@ function render(data){
     .attr('stroke', '#fff')
     .attr('stroke-width', 2);
 
+  // One baseline for every label, cleared by the largest dot rather than by
+  // each one's own radius -- otherwise a theme with few publications sat higher
+  // than its neighbours and the row read as ragged.
+  const labelY = baseY + d3.max(data.nodes, d => d.r) + 24;
+
   seg.append('text')
     .attr('class', 'label')
     .attr('x', d => d.mid)
-    .attr('y', d => baseY + d.r + 24)
+    .attr('y', labelY)
     .attr('text-anchor', 'middle')
-    .text(d => SHORT[d.theme] || d.theme)
+    .text(d => d.theme)
     .each(function() {
       wrapLabel(d3.select(this), Math.max(step * 0.9, 90));
     });

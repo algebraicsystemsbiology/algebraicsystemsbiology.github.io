@@ -165,11 +165,6 @@ def main():
         for t in themes:
             if not t.get("colour", "").startswith("#"):
                 problems.append(f"theme {t['name']!r} has no colour in research-themes.json")
-            # The arc diagram labels its nodes with the short form; without one
-            # a new theme would push the full name into a space sized for
-            # "TDA".
-            if not (t.get("short") or "").strip():
-                problems.append(f"theme {t['name']!r} has no short label in research-themes.json")
 
         research = os.path.join(root, "research", "index.html")
         if os.path.exists(research):
