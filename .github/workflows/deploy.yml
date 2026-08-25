@@ -101,20 +101,43 @@ jobs:
       - name: Strip source-database identifiers from the published data
         run: python3 scripts/strip_identifiers.py _site/data
 
+      # Publications, People and Research draw their content in the browser, so
+      # the HTML that leaves here would otherwise carry containers and no words.
+      # This runs the pages in headless Chromium and keeps what they drew, using
+      # the site's own scripts as the renderer rather than a second copy of the
+      # templates. After the strip above, so no row id can be baked in.
+      - name: Bake the rendered pages into the HTML
+        run: python3 scripts/prerender.py _site
+
       - name: Guard against leaked internals
         run: |
           set -euo pipefail
           for p in .git .github .data-src scripts documentation wip; do
             if [ -e "_site/$p" ]; then echo "::error::$p leaked into the artifact"; exit 1; fi
           done
+          # The data files, and the HTML the step above baked that data into.
+          # Member addresses are the concern; the group's own contact addresses
+          # are written in partials/ on purpose, so those two are excepted.
           if grep -rlE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)' _site/data/*.json >/dev/null 2>&1; then
             echo "::error::email addresses present in published data"; exit 1
+          fi
+          if grep -rhoE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)[A-Za-z0-9._-]*' \
+               $(find _site -name '*.html') 2>/dev/null \
+               | grep -vE '^(harringtonoffice@mpi-cbg\.de|alipour@mpi-cbg\.de)$' | sort -u | head; then
+            if grep -rhoE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)[A-Za-z0-9._-]*' \
+                 $(find _site -name '*.html') 2>/dev/null \
+                 | grep -qvE '^(harringtonoffice@mpi-cbg\.de|alipour@mpi-cbg\.de)$'; then
+              echo "::error::an unexpected email address was baked into the HTML"; exit 1
+            fi
           fi
           # Row ids from the source database, either as a field or as one of
           # its "i-" shaped values. Publisher URLs that happen to contain the
           # word uuid are not matched: this looks for the key and the id shape.
-          if grep -rlE '"uuid"[[:space:]]*:|"i-[A-Za-z0-9_-]{10}"' _site/data/*.json >/dev/null 2>&1; then
-            echo "::error::source-database row ids present in published data"; exit 1
+          # The quotes matter in the HTML: unquoted, "i-" plus ten characters
+          # matches inside ordinary slugs such as id="member-leyi-lucy-jiang".
+          if grep -rlE '"uuid"[[:space:]]*:|"i-[A-Za-z0-9_-]{10}"' \
+               _site/data/*.json $(find _site -name '*.html') >/dev/null 2>&1; then
+            echo "::error::source-database row ids present in the published site"; exit 1
           fi
 
       - name: Configure Pages

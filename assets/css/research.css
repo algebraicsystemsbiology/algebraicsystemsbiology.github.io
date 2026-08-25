@@ -113,3 +113,22 @@
 	}
 
 }
+
+
+/* Vertical rhythm for the area sections. Keyed on data-area and on position,
+   not on the sections' ids, so an area added, removed or reordered in
+   data/research-areas.json needs no change here.
+
+   The theme default is 7rem top / 5rem bottom, which stacks to about 12rem
+   between two sections and opens a white band between the areas. The first
+   area is tighter still, because it follows the page's intro paragraph rather
+   than another area's cards. Specificity has to clear .wrapper.style1 > .inner
+   in main.css, which is why the wrapper classes are named here too. */
+section[data-area].wrapper.style1 > .inner {
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+}
+
+section[data-area] + section[data-area].wrapper.style1 > .inner {
+	padding-top: 3rem;
+}

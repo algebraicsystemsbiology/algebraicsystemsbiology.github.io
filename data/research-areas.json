@@ -1,0 +1,17 @@
+[
+  {
+    "id": "mathematics",
+    "heading": "Mathematics built for the complexity of living systems",
+    "intro": "Biology doesn't fit neatly into the mathematics built for physics or engineering. Living systems are nonlinear, high-dimensional, and irreducibly messy. Their data lives on curved surfaces, in tensor structures, in topological shapes, not flat Euclidean space."
+  },
+  {
+    "id": "bridge",
+    "heading": "Where algebraic precision meets biological uncertainty",
+    "intro": "Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks."
+  },
+  {
+    "id": "translation",
+    "heading": "Translational applications",
+    "intro": "The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense; We are answering biomedical questions that could not be answered otherwise"
+  }
+]

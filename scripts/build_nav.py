@@ -9,6 +9,11 @@ Rather than type that list out, it is derived from the pages: any <section>
 with an id and an <h2> becomes a sub-item, labelled with that heading, or with
 data-nav-label if the heading is unsuitable for a menu.
 
+The research page is the exception: its sections carry neither an id nor a
+heading in the markup, because assets/js/research.js draws them from
+data/research-areas.json. A <section data-area="..."> takes both from that file,
+which is where an area is described.
+
 Run this after adding, removing or retitling a section:
 
     python3 scripts/build_nav.py
@@ -53,8 +58,9 @@ class Sections(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         d = dict(attrs)
-        if tag == "section" and d.get("id"):
-            self._cur = {"id": d["id"], "label": d.get("data-nav-label"), "h2": None}
+        if tag == "section" and (d.get("id") or d.get("data-area")):
+            self._cur = {"id": d.get("id"), "label": d.get("data-nav-label"),
+                         "area": d.get("data-area"), "h2": None}
         if tag == "h2" and self._cur is not None and self._cur["h2"] is None:
             self._in_h2 = True
             self._buf = ""
@@ -73,12 +79,25 @@ class Sections(HTMLParser):
             self._cur["h2"] = " ".join(text.split())
         if tag == "section" and self._cur is not None:
             label = self._cur["label"] or self._cur["h2"]
-            if label:
-                self.found.append({"id": self._cur["id"], "label": label})
+            # An area's label is not in the markup to be found; collect() fills
+            # it in from the data.
+            if label or self._cur["area"]:
+                self.found.append({"id": self._cur["id"], "label": label,
+                                   "area": self._cur["area"]})
             self._cur = None
 
 
+def areas(root):
+    """id -> heading, for the sections whose words live in the data."""
+    path = os.path.join(root, "data", "research-areas.json")
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        return {a["id"]: a.get("heading") for a in json.load(fh)}
+
+
 def collect(root="."):
+    headings = areas(root)
     out = {}
     for url, page in PAGES.items():
         path = os.path.join(root, page)
@@ -87,7 +106,15 @@ def collect(root="."):
         parser = Sections()
         with open(path, encoding="utf-8") as fh:
             parser.feed(fh.read())
-        out[url] = parser.found
+        items = []
+        for found in parser.found:
+            # An area section carries neither: both its anchor id and its
+            # heading are the area's own, from data/research-areas.json.
+            sid = found["id"] or found["area"]
+            label = found["label"] or headings.get(found["area"])
+            if sid and label:
+                items.append({"id": sid, "label": label})
+        out[url] = items
     return out
 
 

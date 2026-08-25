@@ -4,83 +4,95 @@
     "slug": "applied-algebraic-geometry-and-tensors",
     "colour": "#63b9be",
     "short": "Alg. Geometry",
-    "group": "mathematics"
+    "area": "mathematics",
+    "description": "Biological data is not two-dimensional. Algebraic geometry gives us the tools to work in the higher-dimensional spaces where the real structure lives — and to know, with mathematical certainty, when that structure can be uniquely recovered."
   },
   {
     "name": "Topological Data Analysis",
     "slug": "topological-data-analysis",
     "colour": "#55afc0",
     "short": "TDA",
-    "group": "mathematics"
+    "area": "mathematics",
+    "description": "Shape is information. Topology lets us detect and measure geometric structure in biological data — across scales, across noise — capturing features that algebra and statistics alone cannot see."
   },
   {
     "name": "Software & Computational Mathematics",
     "slug": "software-and-computational-mathematics",
     "colour": "#6ab9d0",
     "short": "Software & Comp. Math",
-    "group": "mathematics"
+    "area": "mathematics",
+    "description": "New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale."
   },
   {
     "name": "Identifiability, Statistics, & AI",
     "slug": "identifiability-statistics-and-ai",
     "colour": "#829bb8",
     "short": "Stats & AI",
-    "group": "mathematics"
+    "area": "mathematics",
+    "description": "Before asking what a model predicts, we ask a harder question: can its parameters ever be uniquely determined from data at all? If the answer is no, no amount of computation will produce a trustworthy result."
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
     "colour": "#829dc9",
     "short": "Dynamical Sys.",
-    "group": "bridge"
+    "area": "bridge",
+    "description": "Living systems are not static. They evolve, oscillate, bifurcate, and self-organise — and understanding why requires mathematics that can describe change, stability, and the sudden transitions between them."
   },
   {
     "name": "Biological Networks",
     "slug": "biological-networks",
     "colour": "#918bbd",
     "short": "Bio Networks",
-    "group": "bridge"
+    "area": "bridge",
+    "description": "Every cell is governed by networks — of genes, proteins, signals, and feedback loops. This prior knowledge about how a system is wired is too valuable to ignore, and too complex to reason about without algebra and combinatorics."
   },
   {
     "name": "Morphology & Spatial Biology",
     "slug": "morphology-and-spatial-biology",
     "colour": "#aa91af",
     "short": "Morphology",
-    "group": "bridge"
+    "area": "bridge",
+    "description": "Where a cell is matters as much as what it is. Geometric and topological methods reveal spatial organisation in tissues and imaging data that no standard analysis would find — including cell types and structures that were previously invisible."
   },
   {
     "name": "Omics",
     "slug": "omics",
     "colour": "#b49ac7",
     "short": "Omics",
-    "group": "bridge"
+    "area": "bridge",
+    "description": "A single modern experiment can describe the activity of every gene, every protein, in a tissue sample. The challenge is not producing this data. It is finding the mathematical framework that can reveal what it actually means."
   },
   {
     "name": "Oncology",
     "slug": "oncology",
     "colour": "#b97e98",
     "short": "Oncology",
-    "group": "translation"
+    "area": "translation",
+    "description": "Cancer does not follow a single script. Tumour cells rewire their signalling, that vary between patients, between cell populations, and over time — and understanding that variation requires mathematics to interpretable structure in high-dimensional, heterogeneous data."
   },
   {
     "name": "Immunology",
     "slug": "immunology",
     "colour": "#d98291",
     "short": "Immunology",
-    "group": "translation"
+    "area": "translation",
+    "description": "The immune system is one of the most complex dynamical systems in biology — capable of extraordinary precision and catastrophic dysregulation, often governed by differences too subtle for any single experiment to isolate. Mathematical modelling makes it possible to ask questions that experiment alone cannot reach."
   },
   {
     "name": "Neuroscience",
     "slug": "neuroscience",
     "colour": "#d79b96",
     "short": "Neuroscience",
-    "group": "translation"
+    "area": "translation",
+    "description": "Neural circuits encode information in geometry as much as in activity. Topological and network methods developed by the group reveal hidden structure in how the brain represents the world — structure that only becomes visible when you have the mathematics to look for it."
   },
   {
     "name": "From Coral to Contagions",
     "slug": "from-coral-to-contagions",
     "colour": "#d98968",
     "short": "Coral to Contagions",
-    "group": "translation"
+    "area": "translation",
+    "description": "This theme needs a description."
   }
 ]

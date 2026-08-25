@@ -7,15 +7,15 @@
   ],
   "/research/": [
     {
-      "id": "themes",
+      "id": "mathematics",
       "label": "Mathematics built for the complexity of living systems"
     },
     {
-      "id": "layer2",
+      "id": "bridge",
       "label": "Where algebraic precision meets biological uncertainty"
     },
     {
-      "id": "layer3",
+      "id": "translation",
       "label": "Translational applications"
     }
   ],
