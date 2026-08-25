@@ -36,6 +36,13 @@ function getThemeConfigByLabel(label) {
   return THEMES.find(t => t.name === label) || null;
 }
 
+function slugify(text) {
+  return (text || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    .slice(0, 60);
+}
+
 function getThemeFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('theme') || '';
@@ -297,7 +304,10 @@ function renderPublications() {
 
         const card = document.createElement('section');
         card.className = 'publication-entry';
-        card.id = `pub-${pub.uuid}`;
+        // A slug of the title, not the source database's row id: those are
+        // stripped before the data is published, and a title is a better
+        // anchor for a human to land on anyway.
+        card.id = `pub-${slugify(pub.publication_title)}`;
 
         card.innerHTML = `
           <p class="publication-title"><em>${pub.publication_title}</em></p>

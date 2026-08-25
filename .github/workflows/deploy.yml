@@ -94,6 +94,13 @@ jobs:
       - name: Verify links resolve
         run: python3 scripts/check_links.py _site --external
 
+      # After the checks, not before: scripts/check_data.py relies on the source
+      # database's row ids being the keys of these files, which is how it
+      # notices a duplicated row. They are of no use to a reader, so the last
+      # thing that happens to the data is that they come off.
+      - name: Strip source-database identifiers from the published data
+        run: python3 scripts/strip_identifiers.py _site/data
+
       - name: Guard against leaked internals
         run: |
           set -euo pipefail
@@ -102,6 +109,12 @@ jobs:
           done
           if grep -rlE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)' _site/data/*.json >/dev/null 2>&1; then
             echo "::error::email addresses present in published data"; exit 1
+          fi
+          # Row ids from the source database, either as a field or as one of
+          # its "i-" shaped values. Publisher URLs that happen to contain the
+          # word uuid are not matched: this looks for the key and the id shape.
+          if grep -rlE '"uuid"[[:space:]]*:|"i-[A-Za-z0-9_-]{10}"' _site/data/*.json >/dev/null 2>&1; then
+            echo "::error::source-database row ids present in published data"; exit 1
           fi
 
       - name: Configure Pages
