@@ -1,9 +1,8 @@
 // theme-cards.js — paints the Research page's theme cards from the one place a
 // theme's colour is written, data/research-themes.json.
 //
-// Each card carries data-theme="<slug>". This sets three custom properties on
-// it: --theme-colour is the colour as written, used for the numbered disc, and
-// --theme-top / --theme-bottom are the two ends of the card's gradient.
+// Each card carries data-theme="<slug>". This sets --theme-top and
+// --theme-bottom on it, the two ends of the card's gradient.
 //
 // The two ends are derived rather than stored, so a theme needs no second and
 // third colour maintained beside the first. The derivation is done in OKLCH,
@@ -73,7 +72,6 @@
 			const colour = byslug[card.dataset.theme];
 			if (!colour) return;              // a card whose theme left the data
 			const { L, C, h } = toOklch(colour);
-			card.style.setProperty('--theme-colour', colour);
 			card.style.setProperty('--theme-top', fit(Math.min(0.97, L + LIFT), C * TOP_CHROMA, h));
 			card.style.setProperty('--theme-bottom',
 				fit(Math.min(0.97, L + LIFT * (1 - BOTTOM)),

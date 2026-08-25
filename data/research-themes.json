@@ -3,72 +3,84 @@
     "name": "Applied Algebraic Geometry & Tensors",
     "slug": "applied-algebraic-geometry-and-tensors",
     "colour": "#63b9be",
-    "short": "Alg. Geometry"
+    "short": "Alg. Geometry",
+    "group": "mathematics"
   },
   {
     "name": "Topological Data Analysis",
     "slug": "topological-data-analysis",
     "colour": "#55afc0",
-    "short": "TDA"
+    "short": "TDA",
+    "group": "mathematics"
   },
   {
     "name": "Software & Computational Mathematics",
     "slug": "software-and-computational-mathematics",
     "colour": "#6ab9d0",
-    "short": "Software & Comp. Math"
+    "short": "Software & Comp. Math",
+    "group": "mathematics"
   },
   {
     "name": "Identifiability, Statistics, & AI",
     "slug": "identifiability-statistics-and-ai",
     "colour": "#829bb8",
-    "short": "Stats & AI"
+    "short": "Stats & AI",
+    "group": "mathematics"
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
     "colour": "#829dc9",
-    "short": "Dynamical Sys."
+    "short": "Dynamical Sys.",
+    "group": "bridge"
   },
   {
     "name": "Biological Networks",
     "slug": "biological-networks",
     "colour": "#918bbd",
-    "short": "Bio Networks"
+    "short": "Bio Networks",
+    "group": "bridge"
   },
   {
     "name": "Morphology & Spatial Biology",
     "slug": "morphology-and-spatial-biology",
     "colour": "#aa91af",
-    "short": "Morphology"
+    "short": "Morphology",
+    "group": "bridge"
   },
   {
     "name": "Omics",
     "slug": "omics",
     "colour": "#b49ac7",
-    "short": "Omics"
+    "short": "Omics",
+    "group": "bridge"
   },
   {
     "name": "Oncology",
     "slug": "oncology",
     "colour": "#b97e98",
-    "short": "Oncology"
+    "short": "Oncology",
+    "group": "translation"
   },
   {
     "name": "Immunology",
     "slug": "immunology",
     "colour": "#d98291",
-    "short": "Immunology"
+    "short": "Immunology",
+    "group": "translation"
   },
   {
     "name": "Neuroscience",
     "slug": "neuroscience",
     "colour": "#d79b96",
-    "short": "Neuroscience"
+    "short": "Neuroscience",
+    "group": "translation"
   },
   {
     "name": "From Coral to Contagions",
     "slug": "from-coral-to-contagions",
     "colour": "#d98968",
-    "short": "Coral to Contagions"
+    "short": "Coral to Contagions",
+    "group": "translation"
   }
 ]

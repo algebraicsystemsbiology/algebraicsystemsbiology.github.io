@@ -82,7 +82,7 @@
     </section>
 
 <!-- Layer 1 -->
-<section id="themes" class="wrapper style1 align-center">
+<section id="themes" data-group="mathematics" class="wrapper style1 align-center">
 	<div class="inner" style="padding-top: 2rem; padding-bottom: 2rem;">
 		<h2>Mathematics built for the complexity of living systems</h2>
 
@@ -91,10 +91,8 @@
 			Living systems are nonlinear, high-dimensional, and irreducibly messy. Their data lives on curved surfaces, in tensor structures, in topological shapes, not flat Euclidean space.
 		</p>
 		<div class="theme-cards onscroll-fade-in">
-
 			<details class="theme-card" data-theme="applied-algebraic-geometry-and-tensors">
 				<summary>
-					<span class="theme-num" aria-hidden="true">1</span>
 					<span class="theme-name">Applied Algebraic Geometry &amp; Tensors</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -104,10 +102,8 @@
 					   aria-label="Publications on Applied Algebraic Geometry &amp; Tensors">Publications</a>
 				</div>
 			</details>
-
 			<details class="theme-card" data-theme="topological-data-analysis">
 				<summary>
-					<span class="theme-num" aria-hidden="true">2</span>
 					<span class="theme-name">Topological Data Analysis</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -117,10 +113,19 @@
 					   aria-label="Publications on Topological Data Analysis">Publications</a>
 				</div>
 			</details>
-
+			<details class="theme-card" data-theme="software-and-computational-mathematics">
+				<summary>
+					<span class="theme-name">Software &amp; Computational Mathematics</span>
+					<span class="theme-caret" aria-hidden="true"></span>
+				</summary>
+				<div class="theme-body">
+					<p>New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale.</p>
+					<a class="button small" href="/publications/?theme=software-and-computational-mathematics&label=Software & Computational Mathematics"
+					   aria-label="Publications on Software &amp; Computational Mathematics">Publications</a>
+				</div>
+			</details>
 			<details class="theme-card" data-theme="identifiability-statistics-and-ai">
 				<summary>
-					<span class="theme-num" aria-hidden="true">3</span>
 					<span class="theme-name">Identifiability, Statistics, &amp; AI</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -131,9 +136,28 @@
 				</div>
 			</details>
 
+
+
+
+
+		</div>
+		</div>
+
+
+</section>
+
+<!-- Layer 2 -->
+<section id="layer2" data-group="bridge" class="wrapper style1 align-center">
+	<div class="inner">
+		<h2>Where algebraic precision meets biological uncertainty</h2>
+
+		<p>
+			Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks.
+		</p>
+
+	<div class="theme-cards onscroll-fade-in">
 			<details class="theme-card" data-theme="dynamical-systems-and-mathematical-modelling">
 				<summary>
-					<span class="theme-num" aria-hidden="true">4</span>
 					<span class="theme-name">Dynamical Systems &amp; Mathematical Modeling</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -143,40 +167,8 @@
 					   aria-label="Publications on Dynamical Systems &amp; Mathematical Modeling">Publications</a>
 				</div>
 			</details>
-
-		</div>
-		</div>
-
-
-</section>
-
-<!-- Layer 2 -->
-<section id="layer2" class="wrapper style1 align-center">
-	<div class="inner">
-		<h2>Where algebraic precision meets biological uncertainty</h2>
-
-		<p>
-			Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks.
-		</p>
-
-	<div class="theme-cards onscroll-fade-in">
-
-			<details class="theme-card" data-theme="software-and-computational-mathematics">
-				<summary>
-					<span class="theme-num" aria-hidden="true">5</span>
-					<span class="theme-name">Software &amp; Computational Mathematics</span>
-					<span class="theme-caret" aria-hidden="true"></span>
-				</summary>
-				<div class="theme-body">
-					<p>New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale.</p>
-					<a class="button small" href="/publications/?theme=software-and-computational-mathematics&label=Software & Computational Mathematics"
-					   aria-label="Publications on Software &amp; Computational Mathematics">Publications</a>
-				</div>
-			</details>
-
 			<details class="theme-card" data-theme="biological-networks">
 				<summary>
-					<span class="theme-num" aria-hidden="true">6</span>
 					<span class="theme-name">Biological Networks</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -186,10 +178,8 @@
 					   aria-label="Publications on Biological Networks">Publications</a>
 				</div>
 			</details>
-
 			<details class="theme-card" data-theme="morphology-and-spatial-biology">
 				<summary>
-					<span class="theme-num" aria-hidden="true">7</span>
 					<span class="theme-name">Morphology &amp; Spatial Biology</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -199,38 +189,8 @@
 					   aria-label="Publications on Morphology &amp; Spatial Biology">Publications</a>
 				</div>
 			</details>
-
-			<details class="theme-card" data-theme="oncology">
-				<summary>
-					<span class="theme-num" aria-hidden="true">8</span>
-					<span class="theme-name">Oncology</span>
-					<span class="theme-caret" aria-hidden="true"></span>
-				</summary>
-				<div class="theme-body">
-					<p>Cancer does not follow a single script. Tumour cells rewire their signalling, that vary between patients, between cell populations, and over time — and understanding that variation requires mathematics to interpretable structure in high-dimensional, heterogeneous data.</p>
-					<a class="button small" href="/publications/?theme=oncology&label=Oncology"
-					   aria-label="Publications on Oncology">Publications</a>
-				</div>
-			</details>
-			
-		</div>
-	</div>
-</section>
-
-<!-- Layer 3 -->
-<section id="layer3" class="wrapper style1 align-center">
-
-	<div class="inner">
-		<h2>Translational applications</h2>
-
-		<p>
-			The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense; We are answering biomedical questions that could not be answered otherwise
-		</p>
-		<div class="theme-cards onscroll-fade-in">
-
 			<details class="theme-card" data-theme="omics">
 				<summary>
-					<span class="theme-num" aria-hidden="true">9</span>
 					<span class="theme-name">Omics</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -243,9 +203,35 @@
 
 
 
+
+			
+		</div>
+	</div>
+</section>
+
+<!-- Layer 3 -->
+<section id="layer3" data-group="translation" class="wrapper style1 align-center">
+
+	<div class="inner">
+		<h2>Translational applications</h2>
+
+		<p>
+			The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense; We are answering biomedical questions that could not be answered otherwise
+		</p>
+		<div class="theme-cards onscroll-fade-in">
+			<details class="theme-card" data-theme="oncology">
+				<summary>
+					<span class="theme-name">Oncology</span>
+					<span class="theme-caret" aria-hidden="true"></span>
+				</summary>
+				<div class="theme-body">
+					<p>Cancer does not follow a single script. Tumour cells rewire their signalling, that vary between patients, between cell populations, and over time — and understanding that variation requires mathematics to interpretable structure in high-dimensional, heterogeneous data.</p>
+					<a class="button small" href="/publications/?theme=oncology&label=Oncology"
+					   aria-label="Publications on Oncology">Publications</a>
+				</div>
+			</details>
 			<details class="theme-card" data-theme="immunology">
 				<summary>
-					<span class="theme-num" aria-hidden="true">10</span>
 					<span class="theme-name">Immunology</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -255,10 +241,8 @@
 					   aria-label="Publications on Immunology">Publications</a>
 				</div>
 			</details>
-
 			<details class="theme-card" data-theme="neuroscience">
 				<summary>
-					<span class="theme-num" aria-hidden="true">11</span>
 					<span class="theme-name">Neuroscience</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -270,7 +254,6 @@
 			</details>
 			<details class="theme-card" data-theme="from-coral-to-contagions">
 				<summary>
-					<span class="theme-num" aria-hidden="true">12</span>
 					<span class="theme-name">From Coral to Contagions</span>
 					<span class="theme-caret" aria-hidden="true"></span>
 				</summary>
@@ -280,6 +263,11 @@
 					   aria-label="Publications on From Coral to Contagions">Publications</a>
 				</div>
 			</details>
+
+
+
+
+
 
 		</div>
 		</div>

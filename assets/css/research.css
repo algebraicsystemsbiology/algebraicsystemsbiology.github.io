@@ -21,7 +21,6 @@
 .theme-card {
 	--theme-top: #EFEAE4;
 	--theme-bottom: #E6DFD7;
-	--theme-colour: #6E6357;
 
 	background-image: linear-gradient(to bottom, var(--theme-top) 0%, var(--theme-bottom) 100%);
 	border: 1px solid rgba(20, 26, 32, 0.14);
@@ -47,24 +46,6 @@
 
 .theme-name {
 	flex: 1 1 auto;
-}
-
-/* The disc carries the theme's colour at full strength. It is the only place
-   the undiluted colour appears, which is what lets the card itself stay pale
-   enough to read dark text on. */
-.theme-num {
-	flex: 0 0 auto;
-	width: 1.6rem;
-	height: 1.6rem;
-	border-radius: 50%;
-	border: 1.5px solid var(--theme-colour);
-	color: var(--theme-colour);
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 0.72rem;
-	font-weight: 600;
-	font-variant-numeric: tabular-nums;
 }
 
 .theme-caret {

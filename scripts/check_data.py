@@ -177,6 +177,22 @@ def main():
                 text = fh.read()
             linked = {urllib.parse.unquote(m.group(1))
                       for m in re.finditer(r"publications(?:\.html|/)\?theme=([^&\"]*)", text)}
+            # Each section declares the group it shows, and each theme names the
+            # group it belongs to. A theme that moves between groups in the data
+            # and not on the page, or the reverse, is caught here.
+            want = {t["slug"]: t["group"] for t in themes if t.get("group")}
+            for sec in re.finditer(r'<section[^>]*data-group="([^"]+)"(.*?)</section>', text, re.S):
+                gid = sec.group(1)
+                for slug in re.findall(r'data-theme="([^"]+)"', sec.group(2)):
+                    if want.get(slug) and want[slug] != gid:
+                        problems.append(
+                            f"research card {slug!r} sits in the {gid!r} group on the page "
+                            f"but research-themes.json puts it in {want[slug]!r}"
+                        )
+            shown = set(re.findall(r'data-theme="([^"]+)"', text))
+            for slug in sorted(set(want) - shown):
+                problems.append(f"theme {slug!r} has no card on the research page")
+
             # A card names its theme by slug too, which is what
             # assets/js/theme-cards.js looks up in order to colour it.
             linked |= set(re.findall(r'<details class="theme-card" data-theme="([^"]+)"', text))
