@@ -108,6 +108,10 @@ def main(argv):
     chrome = browser()
     if not chrome:
         return 1
+    # Recorded because this is the one step that cannot be tried outside CI:
+    # which browser the runner offered is the first thing worth knowing when it
+    # behaves differently there.
+    print(f"prerender: rendering with {chrome}")
 
     httpd = serve(root)
     port = httpd.server_address[1]
