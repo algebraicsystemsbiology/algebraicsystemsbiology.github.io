@@ -125,7 +125,7 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s;
-  max-width: 230px;
+  max-width: 280px;
   line-height: 1.5;
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -141,6 +141,12 @@
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+#network-tooltip .about {
+  margin: 0.45rem 0 0;
+  color: #4a4f57;
+  font-size: 0.72rem;
+  line-height: 1.5;
 }
 #network-tooltip .themes-list {
   margin-top: 0.35rem;
@@ -214,12 +220,16 @@
 // from the data: one theme was keyed "Other Applications" when the data called
 // it "From Coral to Contagions", so its nodes had no colour at all.
 let THEME_COLOURS = {};
+// The same descriptions the research page's cards show, so a theme explains
+// itself here too rather than only offering a name and a count.
+let THEME_ABOUT = {};
 
 async function loadThemeColours() {
   const res = await fetch('/data/research-themes.json', { cache: 'no-cache' });
   if (!res.ok) throw new Error(`Failed to load research-themes.json: ${res.status}`);
   const themes = await res.json();
   THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
+  THEME_ABOUT = Object.fromEntries(themes.map(t => [t.name, t.description || '']));
 }
 
 // People nodes: single neutral tone, differentiated only by size
@@ -271,7 +281,11 @@ function showMessage(text) {
     const words = text.split(' ');
     let line1 = '', line2 = '';
     for (const word of words) {
-      if ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1) {
+      // Once a word has gone to the second line every later word follows it.
+      // Without that, a short word that still fits the first line jumps ahead
+      // of the longer ones already pushed down, and the name reads back
+      // scrambled: "Applied Algebraic & / Geometry Tensors".
+      if (!line2 && ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1)) {
         line1 = (line1 + ' ' + word).trim();
       } else {
         line2 = (line2 + ' ' + word).trim();
@@ -447,10 +461,18 @@ function showMessage(text) {
     tooltip.style('opacity', 0);
   }
 
+  // Names carry ampersands and the descriptions are prose, so both are escaped
+  // before going into the tooltip's markup.
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   const themeHtml = d =>
-    `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`;
+    `<strong>${esc(d)}</strong>` +
+    `<span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>` +
+    (THEME_ABOUT[d] ? `<p class="about">${esc(THEME_ABOUT[d])}</p>` : '');
   const memberHtml = d =>
-    `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`;
+    `<strong>${esc(d.id)}</strong><span class="sub">${esc(d.role)}</span>` +
+    (d.keywords.length ? `<div class="themes-list">${esc(d.keywords.join(' · '))}</div>` : '');
 
   themeNodes
     .on('mouseover', function (ev, d) {

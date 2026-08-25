@@ -46,14 +46,17 @@
 	function build(themes, members, pubs) {
 		var out = [];
 
+		// A theme's description is worth searching as well as showing: it is how
+		// "cancer" finds Oncology and "shape" finds Topological Data Analysis,
+		// neither of which says so in its name.
 		themes.forEach(function (t) {
 			out.push({
 				kind: 'Theme',
 				label: t.name,
-				sub: '',
+				sub: t.description || '',
 				href: '/publications/?theme=' + encodeURIComponent(t.slug) +
 				      '&label=' + encodeURIComponent(t.name),
-				hay: fold(t.name + ' ' + (t.short || ''))
+				hay: fold([t.name, t.short, t.description].join(' '))
 			});
 		});
 
