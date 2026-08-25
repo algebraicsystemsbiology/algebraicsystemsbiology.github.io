@@ -136,6 +136,23 @@
 	line-height: 1.6;
 }
 
+/* Marked for a moment when arrived at from a link, so it is obvious which
+   entry in a long list was meant. */
+.publication-entry.is-target {
+	background: color-mix(in srgb, var(--link) 12%, transparent);
+	box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--link) 12%, transparent);
+	border-radius: 2px;
+	transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.publication-entry.is-target {
+		transition: none;
+	}
+
+}
+
 .publication-title {
 	font-style: italic;
 	font-weight: 700;

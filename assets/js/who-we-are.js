@@ -3,6 +3,15 @@
 
 (function () {
 
+  // Same shape of slug the rest of the site uses: lowercased, runs of anything
+  // that is not a letter or digit collapsed to a single dash.
+  function slugify(name) {
+    return (name || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+
   // Locations come from each member's location_tag, set explicitly in the
   // group database. They used to be inferred from the email domain, which
   // stopped working once emails were removed from the published data — and
@@ -133,6 +142,8 @@
     const buildCard = m => {
       const card = document.createElement('section');
       card.className = 'member-card';
+      // Lets a search result, or any link, land on one person.
+      card.id = 'member-' + slugify(m.name_full);
 
       const roles = m.internal_roles || [];
       const showPhoto = !roles.some(r => ROLES_WITHOUT_PHOTO.includes(r));

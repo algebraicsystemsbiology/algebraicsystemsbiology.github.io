@@ -26,4 +26,17 @@
 	<a href="/people/">PEOPLE</a>
 	<a href="/publications/">PAPERS</a>
 	<a href="/engage/">ENGAGE</a>
+
+	<!-- Search over publications, people and research themes. The data is
+	     fetched the first time the field is used, not on page load: the two
+	     private files come to about 200KB between them and most visits never
+	     search. assets/js/site-search.js does the work. -->
+	<form class="nav-search" role="search" onsubmit="return false;">
+		<label for="siteSearch">Search</label>
+		<input id="siteSearch" type="search" autocomplete="off" spellcheck="false"
+		       placeholder="Papers, people, themes"
+		       aria-describedby="siteSearchStatus" aria-controls="siteSearchResults" />
+		<p id="siteSearchStatus" class="nav-search-status" role="status"></p>
+		<ul id="siteSearchResults" class="nav-search-results"></ul>
+	</form>
 </div>

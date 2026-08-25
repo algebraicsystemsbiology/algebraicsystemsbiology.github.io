@@ -333,6 +333,25 @@ function renderPublications() {
   });
 }
 
+// The cards do not exist when the browser first looks for the anchor, so a
+// link to /publications/#pub-... lands at the top of the page and stays there.
+// This runs once the list is built, and again if the hash changes while the
+// page is open. The card is marked briefly so it is obvious which one was
+// meant: an entry in a long list is otherwise hard to pick out even when it is
+// scrolled to.
+function revealFromHash() {
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  if (!id) return;
+  const card = document.getElementById(id);
+  if (!card) return;
+
+  card.scrollIntoView({ block: 'center', behavior: 'auto' });
+  card.classList.add('is-target');
+  setTimeout(() => card.classList.remove('is-target'), 2600);
+}
+
+window.addEventListener('hashchange', revealFromHash);
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     await Promise.all([loadThemes(), loadPublications()]);
@@ -345,6 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setActiveTheme(activeTheme);
+    revealFromHash();
   } catch (error) {
     console.error(error);
     const container = document.getElementById('publications-list');
