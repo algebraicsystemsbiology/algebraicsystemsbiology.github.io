@@ -38,7 +38,7 @@ def theme_vocabularies(root):
 
     data/research-themes.json is the canonical list. The names also appear in
     the member and publication keywords, which come from the group database,
-    and twice on the research page -- as a tile heading, and as the label in
+    and twice on the research page -- as a card name, and as the label in
     the link to the publications filter. Those are written by hand and can
     drift, so they are compared here.
 
@@ -67,8 +67,11 @@ def theme_vocabularies(root):
     if os.path.exists(research):
         with open(research, encoding="utf-8") as fh:
             text = fh.read()
-        vocab["research tile headings"] = {
-            norm(re.sub(r"<[^>]+>", "", t)) for t in re.findall(r"<h3>(.*?)</h3>", text, re.S)
+        # Each theme is a card whose summary carries the name; the section
+        # headings above them are <h2> and are not theme names.
+        vocab["research card names"] = {
+            norm(re.sub(r"<[^>]+>", "", t))
+            for t in re.findall(r'<span class="theme-name">(.*?)</span>', text, re.S)
         }
         vocab["research filter labels"] = {
             norm(_url.unquote(m.group(1)))
@@ -174,6 +177,9 @@ def main():
                 text = fh.read()
             linked = {urllib.parse.unquote(m.group(1))
                       for m in re.finditer(r"publications(?:\.html|/)\?theme=([^&\"]*)", text)}
+            # A card names its theme by slug too, which is what
+            # assets/js/theme-cards.js looks up in order to colour it.
+            linked |= set(re.findall(r'<details class="theme-card" data-theme="([^"]+)"', text))
             known = {t["slug"] for t in themes}
             for bad in sorted(linked - known):
                 problems.append(

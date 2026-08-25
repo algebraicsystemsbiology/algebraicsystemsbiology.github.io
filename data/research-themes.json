@@ -2,73 +2,73 @@
   {
     "name": "Applied Algebraic Geometry & Tensors",
     "slug": "applied-algebraic-geometry-and-tensors",
-    "colour": "#abbbca",
+    "colour": "#63b9be",
     "short": "Alg. Geometry"
   },
   {
     "name": "Topological Data Analysis",
     "slug": "topological-data-analysis",
-    "colour": "#8c959f",
+    "colour": "#55afc0",
     "short": "TDA"
   },
   {
     "name": "Software & Computational Mathematics",
     "slug": "software-and-computational-mathematics",
-    "colour": "#929ba2",
+    "colour": "#6ab9d0",
     "short": "Software & Comp. Math"
   },
   {
     "name": "Identifiability, Statistics, & AI",
     "slug": "identifiability-statistics-and-ai",
-    "colour": "#948d93",
+    "colour": "#829bb8",
     "short": "Stats & AI"
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
-    "colour": "#857b7f",
+    "colour": "#829dc9",
     "short": "Dynamical Sys."
   },
   {
     "name": "Biological Networks",
     "slug": "biological-networks",
-    "colour": "#b0b0b2",
+    "colour": "#918bbd",
     "short": "Bio Networks"
   },
   {
     "name": "Morphology & Spatial Biology",
     "slug": "morphology-and-spatial-biology",
-    "colour": "#ad9c96",
+    "colour": "#aa91af",
     "short": "Morphology"
   },
   {
     "name": "Omics",
     "slug": "omics",
-    "colour": "#e0d6d1",
+    "colour": "#b49ac7",
     "short": "Omics"
   },
   {
     "name": "Oncology",
     "slug": "oncology",
-    "colour": "#e1cdc2",
+    "colour": "#b97e98",
     "short": "Oncology"
   },
   {
     "name": "Immunology",
     "slug": "immunology",
-    "colour": "#e8d5d0",
+    "colour": "#d98291",
     "short": "Immunology"
   },
   {
     "name": "Neuroscience",
     "slug": "neuroscience",
-    "colour": "#ead8d4",
+    "colour": "#d79b96",
     "short": "Neuroscience"
   },
   {
     "name": "From Coral to Contagions",
     "slug": "from-coral-to-contagions",
-    "colour": "#ebcfcb",
+    "colour": "#d98968",
     "short": "Coral to Contagions"
   }
 ]
