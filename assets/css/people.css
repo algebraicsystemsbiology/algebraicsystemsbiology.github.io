@@ -172,5 +172,5 @@
 	   script at the end of the page sizes it to fit. A floor near the diagram's
 	   desktop height leaves an empty box on a phone, where it is shorter. */
 	min-height: 200px;
-	background: #fff;
+	background: var(--ground);
 }

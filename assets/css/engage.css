@@ -24,7 +24,7 @@
 
 /* ── Adventures: the page's own bits ─────────────────────────────── */
 
-#travels { background: #ffffff; position: relative; }
+#travels { background: var(--ground); position: relative; }
 
 /* ── Photo viewer ──────────────────────────────────────────────────
    The polaroids are square-cropped thumbnails (object-fit: cover), so
