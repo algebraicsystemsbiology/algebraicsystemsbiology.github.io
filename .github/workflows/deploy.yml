@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out site
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       # Mint a short-lived (~1 hour) installation token instead of holding a
       # long-lived credential. The GitHub App is org-owned, so this keeps
@@ -36,7 +36,7 @@ jobs:
       # data repository.
       - name: Mint a short-lived data-repo token
         id: data-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.DATA_APP_ID }}
           private-key: ${{ secrets.DATA_APP_PRIVATE_KEY }}
@@ -46,7 +46,7 @@ jobs:
       # Machine-generated data lives in a private repo so that member photos
       # do not persist in this repository's public history.
       - name: Check out generated data
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: algebraicsystemsbiology/asb-website-data
           token: ${{ steps.data-token.outputs.token }}
@@ -146,10 +146,10 @@ jobs:
           fi
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -162,4 +162,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
