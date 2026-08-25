@@ -18,7 +18,7 @@
 	--pink:   #db8992;
 	/* The page ground. Every surface that is "the paper" takes this; component
 	   surfaces that sit on top of it set their own. */
-	--ground: #FAEFE3;
+	--ground: #FCF7F1;
 	/* A bare RGB triple, for rgba(var(--shadow), a). Only the home page uses
 	   it, but it is part of the palette and belongs beside the rest. */
 	--shadow: 15, 18, 21;
