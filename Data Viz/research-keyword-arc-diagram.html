@@ -10,9 +10,10 @@
     --ink:#30363d;
     --muted:#6b7178;
     --line:#e4e6e9;
-    /* Matches --ground in assets/css/links.css. This document is embedded in
-       an iframe and loads no stylesheet from there, so the value is repeated. */
-    --bg:#FAEFE3;
+    /* Transparent, so whatever the iframe sits on shows through: the page's
+       beige on screen and in the screen-shaped export, and white on paper,
+       where print.css strips the frame's own background. */
+    --bg:transparent;
   }
 
   *{box-sizing:border-box}

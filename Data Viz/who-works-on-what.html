@@ -19,9 +19,12 @@
   html, body {
     margin: 0;
     padding: 0;
-    /* Matches --ground in assets/css/links.css. This document is embedded in an
-       iframe and loads no stylesheet from there, so the value is repeated. */
-    background: #FAEFE3;
+    /* Transparent, so whatever the iframe sits on shows through: the page's
+       beige on screen and in the screen-shaped export, and white on paper,
+       where print.css strips the frame's own background. Painting a colour here
+       instead put a tan block on an otherwise white sheet, and painting white
+       put a white block on the beige page. */
+    background: transparent;
     font-family: 'Source Sans Pro', 'Helvetica Neue', sans-serif;
     color: #30363d;
   }
