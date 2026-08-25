@@ -81,7 +81,13 @@
   font-size: 15px;
   fill: #555;
   cursor: pointer;
-  pointer-events: none;
+}
+/* One target per node, covering the dot and its name together, so the gap
+   between them is not dead space. Transparent, and sized from the node's own
+   bounding box once both parts are drawn. */
+.node .hit {
+  fill: transparent;
+  cursor: pointer;
 }
 .node.theme text {
   font-size: 15px;
@@ -239,6 +245,9 @@ async function loadMembers() {
       role: (m.internal_roles && m.internal_roles[0]) || '',
       keywords: (m.keywords || []).filter(k => knownThemes.has(k))
     }))
+    // Someone tagged with no research theme has nothing to join here, and drew
+    // as a lone dot with no line at all.
+    .filter(m => m.keywords.length > 0)
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return members;
@@ -286,7 +295,10 @@ function showMessage(text) {
   });
 
   const width = 1200, height = Math.max(1100, Math.max(members.length, themes.length) * 26);
-  const leftX = 280, rightX = 920;
+  // Who on the left, what they work on on the right, so the picture reads in
+  // the same order as its title. People sit further in than the themes did,
+  // because a name label runs leftwards and the longest is about 220px.
+  const peopleX = 300, themeX = 900;
   const topPad = 55, bottomPad = 55;
 
   const svg = d3.select('#network-svg').attr('viewBox', `0 0 ${width} ${height}`);
@@ -303,8 +315,8 @@ function showMessage(text) {
     .padding(0.2);
 
   const nodePos = {};
-  themes.forEach(t  => { nodePos[t]    = { x: leftX,  y: themeY(t)    }; });
-  members.forEach(m => { nodePos[m.id] = { x: rightX, y: memberY(m.id) }; });
+  themes.forEach(t  => { nodePos[t]    = { x: themeX,  y: themeY(t)    }; });
+  members.forEach(m => { nodePos[m.id] = { x: peopleX, y: memberY(m.id) }; });
 
   const themeDegree  = {};
   themes.forEach(t  => { themeDegree[t] = members.filter(m => m.keywords.includes(t)).length; });
@@ -330,7 +342,7 @@ function showMessage(text) {
     .data(themes)
     .join('g')
     .attr('class', 'node theme')
-    .attr('transform', d => `translate(${leftX},${themeY(d)})`);
+    .attr('transform', d => `translate(${themeX},${themeY(d)})`);
 
   themeNodes.append('circle')
     .attr('r', d => 7 + Math.sqrt(themeDegree[d]) * 3.5)
@@ -344,9 +356,9 @@ function showMessage(text) {
     const g = d3.select(this);
     lines.forEach((line, i) => {
       g.append('text')
-        .attr('x', -28)
+        .attr('x', 28)
         .attr('dy', (startDy + i * lineHeight) + 'px')
-        .attr('text-anchor', 'end')
+        .attr('text-anchor', 'start')
         .attr('dominant-baseline', 'middle')
         .text(line);
     });
@@ -357,7 +369,7 @@ function showMessage(text) {
     .data(members)
     .join('g')
     .attr('class', 'node member')
-    .attr('transform', d => `translate(${rightX},${memberY(d.id)})`);
+    .attr('transform', d => `translate(${peopleX},${memberY(d.id)})`);
 
   memberNodes.append('circle')
     .attr('r', d => d.role === 'Director' ? 18 : 7 + Math.sqrt(memberDegree[d.id]) * 3)
@@ -365,9 +377,23 @@ function showMessage(text) {
     .attr('fill-opacity', 0.85);
 
   memberNodes.append('text')
-    .attr('x', 22).attr('dy', '0.35em')
-    .attr('text-anchor', 'start')
+    .attr('x', -22).attr('dy', '0.35em')
+    .attr('text-anchor', 'end')
     .text(d => d.id);
+
+  // The dot alone is a small target, and the name beside it is what people
+  // actually point at. Each node gets one hit area covering both.
+  function addHitArea(selection) {
+    selection.each(function () {
+      const b = this.getBBox();
+      d3.select(this).insert('rect', ':first-child')
+        .attr('class', 'hit')
+        .attr('x', b.x - 8).attr('y', b.y - 5)
+        .attr('width', b.width + 16).attr('height', b.height + 10);
+    });
+  }
+  addHitArea(themeNodes);
+  addHitArea(memberNodes);
 
   // Interaction
   const tooltip = d3.select('#network-tooltip');
@@ -397,46 +423,55 @@ function showMessage(text) {
     linkSel.classed('dimmed', false).classed('highlighted', false);
   }
 
-  function tip(event, html) {
-    tooltip.html(html).style('opacity', 1)
-      .style('left', (event.clientX + 14) + 'px')
-      .style('top', (event.clientY - 10) + 'px');
+  // The tooltip sits beside the dot it explains rather than following the
+  // pointer, which put it on top of whatever you were reading. It goes on the
+  // side away from the label -- right of a person, left of a theme -- so it
+  // cannot cover the name it is describing.
+  function tipAt(nodeEl, html, side) {
+    tooltip.html(html).style('opacity', 1);
+    const dot = nodeEl.querySelector('circle').getBoundingClientRect();
+    const box = tooltip.node().getBoundingClientRect();
+    const gap = 16;
+    let left = side === 'right' ? dot.right + gap : dot.left - gap - box.width;
+    let top = dot.top + dot.height / 2 - box.height / 2;
+    // Keep it inside the frame even for the topmost, lowest and longest of them.
+    left = Math.max(8, Math.min(left, window.innerWidth - box.width - 8));
+    top = Math.max(8, Math.min(top, window.innerHeight - box.height - 8));
+    tooltip.style('left', left + 'px').style('top', top + 'px');
   }
 
-  function moveTip(event) {
-    tooltip.style('left', (event.clientX + 14) + 'px').style('top', (event.clientY - 10) + 'px');
+  function hideTip() {
+    tooltip.style('opacity', 0);
   }
+
+  const themeHtml = d =>
+    `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`;
+  const memberHtml = d =>
+    `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`;
 
   themeNodes
-    .on('mouseover', (ev, d) => {
-      if (!pinned) {
-        highlight(d);
-        tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`);
-      }
+    .on('mouseover', function (ev, d) {
+      if (!pinned) { highlight(d); tipAt(this, themeHtml(d), 'left'); }
     })
-    .on('mousemove', moveTip)
-    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
-    .on('click', (ev, d) => {
-      if (pinned === d) { pinned = null; clear(); tooltip.style('opacity', 0); }
-      else { pinned = d; highlight(d); tip(ev, `<strong>${d}</strong><span class="sub">${themeDegree[d]} researcher${themeDegree[d] !== 1 ? 's' : ''}</span>`); }
+    .on('mouseout', () => { if (!pinned) { clear(); hideTip(); } })
+    .on('click', function (ev, d) {
+      if (pinned === d) { pinned = null; clear(); hideTip(); }
+      else { pinned = d; highlight(d); tipAt(this, themeHtml(d), 'left'); }
     });
 
   memberNodes
-    .on('mouseover', (ev, d) => {
-      if (!pinned) {
-        highlight(d.id);
-        tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`);
-      }
+    .on('mouseover', function (ev, d) {
+      if (!pinned) { highlight(d.id); tipAt(this, memberHtml(d), 'right'); }
     })
-    .on('mousemove', moveTip)
-    .on('mouseout', () => { if (!pinned) { clear(); tooltip.style('opacity', 0); } })
-    .on('click', (ev, d) => {
-      if (pinned === d.id) { pinned = null; clear(); tooltip.style('opacity', 0); }
-      else { pinned = d.id; highlight(d.id); tip(ev, `<strong>${d.id}</strong><span class="sub">${d.role}</span>${d.keywords.length ? `<div class="themes-list">${d.keywords.join(' · ')}</div>` : ''}`); }
+    .on('mouseout', () => { if (!pinned) { clear(); hideTip(); } })
+    .on('click', function (ev, d) {
+      if (pinned === d.id) { pinned = null; clear(); hideTip(); }
+      else { pinned = d.id; highlight(d.id); tipAt(this, memberHtml(d), 'right'); }
     });
 
+
   svg.on('click', ev => {
-    if (ev.target === svg.node()) { pinned = null; clear(); tooltip.style('opacity', 0); }
+    if (ev.target === svg.node()) { pinned = null; clear(); hideTip(); }
   });
 }
 
