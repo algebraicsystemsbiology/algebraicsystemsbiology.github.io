@@ -15,7 +15,6 @@ import json
 import os
 import re
 import sys
-import urllib.parse
 
 MEMBER_EMAIL_DOMAINS = ("maths.ox", "mpi-cbg", "mpipz", "gmail", "ludwig", "balliol", "stcatz")
 
@@ -37,16 +36,15 @@ def theme_vocabularies(root):
     """Collect the research-theme names from every place they are written.
 
     data/research-themes.json is the canonical list. The names also appear in
-    the member and publication keywords, which come from the group database,
-    and twice on the research page -- as a tile heading, and as the label in
-    the link to the publications filter. Those are written by hand and can
-    drift, so they are compared here.
+    the member and publication keywords, which come from the group database, so
+    a theme renamed there and not here empties a filter; that is what this
+    catches.
 
-    The network diagram and publications.js are not checked: they read
-    research-themes.json at runtime rather than holding their own copies.
+    Nothing on the site is checked for holding its own copy of the names, because
+    nothing does: the research page, the diagrams and publications.js all read
+    research-themes.json, at runtime or through the deploy's prerender.
     """
     import html as _html
-    import urllib.parse as _url
 
     vocab = {}
 
@@ -61,20 +59,6 @@ def theme_vocabularies(root):
     with open(os.path.join(root, "data", "publications.json"), encoding="utf-8") as fh:
         vocab["publication keywords"] = {
             norm(k) for p in json.load(fh).values() for k in (p.get("keywords") or [])
-        }
-
-    research = os.path.join(root, "research", "index.html")
-    if os.path.exists(research):
-        with open(research, encoding="utf-8") as fh:
-            text = fh.read()
-        vocab["research tile headings"] = {
-            norm(re.sub(r"<[^>]+>", "", t)) for t in re.findall(r"<h3>(.*?)</h3>", text, re.S)
-        }
-        vocab["research filter labels"] = {
-            norm(_url.unquote(m.group(1)))
-            # The page moved from publications.html to /publications/; match
-            # either, so this does not have to be edited again if it moves.
-            for m in re.finditer(r"publications(?:\.html|/)\?theme=[^&\"]*&(?:amp;)?label=([^\"]+)", text)
         }
 
     return vocab
@@ -162,23 +146,45 @@ def main():
         for t in themes:
             if not t.get("colour", "").startswith("#"):
                 problems.append(f"theme {t['name']!r} has no colour in research-themes.json")
-            # The arc diagram labels its nodes with the short form; without one
-            # a new theme would push the full name into a space sized for
-            # "TDA".
-            if not (t.get("short") or "").strip():
-                problems.append(f"theme {t['name']!r} has no short label in research-themes.json")
+            if not t.get("description", "").strip():
+                problems.append(f"theme {t['name']!r} has no description in research-themes.json")
 
+        # Nothing on the research page carries these words: assets/js/research.js
+        # draws the headings, intros and cards from the data, and the deploy bakes
+        # what it draws into the published HTML. So there is no second copy to
+        # drift, and what is worth checking is that the page still offers a
+        # container for every area the data describes.
         research = os.path.join(root, "research", "index.html")
-        if os.path.exists(research):
+        areas_path = os.path.join(root, "data", "research-areas.json")
+        if os.path.exists(research) and os.path.exists(areas_path):
             with open(research, encoding="utf-8") as fh:
                 text = fh.read()
-            linked = {urllib.parse.unquote(m.group(1))
-                      for m in re.finditer(r"publications(?:\.html|/)\?theme=([^&\"]*)", text)}
-            known = {t["slug"] for t in themes}
-            for bad in sorted(linked - known):
+            with open(areas_path, encoding="utf-8") as fh:
+                areas = {a["id"]: a for a in json.load(fh)}
+
+            for aid in sorted({t.get("area") for t in themes if t.get("area")}):
+                if aid not in areas:
+                    problems.append(
+                        f"research-themes.json puts themes in area {aid!r}, "
+                        f"which research-areas.json does not define"
+                    )
+
+            sections = set(re.findall(r'<section[^>]*data-area="([^"]+)"', text))
+            for aid in sorted(areas):
+                if aid not in sections:
+                    problems.append(
+                        f"area {aid!r} is in research-areas.json but the research page has no "
+                        f'<section data-area="{aid}"> to draw it into'
+                    )
+            for aid in sorted(sections - set(areas)):
                 problems.append(
-                    f"research.html links ?theme={bad!r}, which is not a slug in research-themes.json"
+                    f"the research page has a section for area {aid!r}, "
+                    f"which research-areas.json does not define"
                 )
+            for aid, area in sorted(areas.items()):
+                for field in ("heading", "intro"):
+                    if not str(area.get(field, "")).strip():
+                        problems.append(f"area {aid!r} has no {field} in research-areas.json")
 
         for source, names in sorted(theme_vocabularies(root).items()):
             for missing in sorted(canonical - names):

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "mathematics",
+    "heading": "Intradisciplinary mathematics",
+    "intro": "As experimental technology advances to provide finer and higher resolution observations, there is a need to understand the nonlinearity, high-dimensionality, and complexity of living systems. We build mathematics to handle data that is multi-dimensional, multi-scale, spatio-temporal while considering mathematical tractability and computability."
+  },
+  {
+    "id": "bridge",
+    "heading": "From interdisciplinary mathematics to systems biology",
+    "intro": "We take an interdisciplinary approach to bridge mathematics to biological systems. We complement existing approaches by combining new mathematical perspectives to analyse spatial and high dimensional systems (eg morphology and omics)."
+  },
+  {
+    "id": "translation",
+    "heading": "Translational applications",
+    "intro": "We are highly motivated to develop applicable mathematics that has direct impact to real-world systems. We apply and translate our work in mathematics and systems biology to answer questions in the sciences, ranging from complex diseases to coral reef dynamics to social contagions."
+  }
+]

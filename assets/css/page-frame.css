@@ -35,6 +35,12 @@
     text-align:left;
     width:250px;opacity:0;transform:translateY(-8px);
     pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+  /* The panel grows with its search results. Capping .nav rather than the panel
+     means the toggle's height is accounted for automatically: .nav is already a
+     flex column, so min-height:0 lets the panel shrink and scroll inside itself
+     instead of running off the bottom of the window. */
+  .nav{max-height:calc(100vh - 4rem)}
+  .nav-links{min-height:0;overflow-y:auto}
   .nav.open .nav-links{opacity:1;transform:none;pointer-events:auto;
     background:#fff;border-radius:6px;padding:.25rem 1.1rem;
     box-shadow:0 6px 24px rgba(0,0,0,.22)}
@@ -110,6 +116,45 @@
      Before this, Research's sentence-length headings widened the whole menu as
      it expanded, which was disorienting. */
   .nav-links a.sub{white-space:normal;max-width:100%;line-height:1.3}
+  /* Search, at the foot of the menu. Its results are links, so links.css would
+     otherwise underline them and paint them the link colour; the selectors here
+     carry a class and so outrank it. */
+  .nav-search{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem;
+    padding:.8rem 0 0;border-top:1px solid rgba(48,54,61,.28)}
+  .nav-search label{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#5a616b}
+  .nav-search input{font:inherit;font-size:.82rem;width:100%;padding:.4rem .55rem;color:#30363d;
+    background:#fff;border:1px solid rgba(48,54,61,.28);border-radius:4px}
+  .nav-search input:focus-visible{outline:2px solid var(--link);outline-offset:1px}
+  /* Both of these are empty until something is typed. Hidden rather than merely
+     blank, so the panel does not carry a band of nothing under the field. */
+  .nav-search-status{margin:0;font-size:.68rem;color:#5a616b}
+  .nav-search-status:empty{display:none}
+  .nav-search-results{list-style:none;margin:0;padding:0;overflow-y:auto;
+    max-height:min(15rem,38vh)}
+  .nav-search-results:empty{display:none}
+  /* .nav-links a sets uppercase, letter-spacing, weight 600 and nowrap for the
+     menu's own entries. A publication title in caps is unreadable and a long
+     one would run out of the panel, so a result undoes all four. The staggered
+     fade-in the menu entries use is undone too: results appear as you type, and
+     should not wait their turn. */
+  .nav-search-results a{display:block;padding:.35rem .45rem;border-radius:4px;
+    text-decoration:none;text-transform:none;letter-spacing:normal;font-weight:400;
+    white-space:normal;overflow-wrap:anywhere;transition:none!important;
+    transition-delay:0s!important}
+  .nav-search-results a:hover,
+  .nav-search-results a.is-active,
+  .nav-search-results a:focus-visible{background:rgba(48,54,61,.08);outline:none}
+  .nav-search-results .r-kind{display:block;font-size:.57rem;letter-spacing:.11em;
+    text-transform:uppercase;color:#7a8089}
+  .nav-search-results .r-label{display:block;font-size:.8rem;line-height:1.3;color:#30363d;
+    font-weight:500}
+  /* A theme's sub-line is its whole description, which is several sentences.
+     Clamped so eight results still fit the panel; the full text stays in the
+     markup for a screen reader. */
+  .nav-search-results .r-sub{display:-webkit-box;-webkit-box-orient:vertical;
+    -webkit-line-clamp:3;line-clamp:3;overflow:hidden;
+    font-size:.68rem;line-height:1.3;color:#5a616b}
+
   @media (max-width:860px){
     .nav{top:1.25rem;left:1.25rem}
     .nav-links{width:200px}
@@ -265,10 +310,28 @@
 		}
 
 		/* The content starts at the top. Only enough padding is left to keep a
-		   full-width line of text clear of the logo's lower edge -- headings
-		   are narrow and sit well inside it. */
+		   full-width line of text clear of the logo's lower edge; the heading
+		   is the one thing that rises beside it. */
 		#wrapper > .wrapper:first-child > .inner {
 			padding-top: 2rem;
+		}
+
+		/* Which means the heading has to stop before the logo does. It used to
+		   be short enough that it always did, and a longer one ran underneath:
+		   the logo is a fixed 270px block pinned to the right, while the
+		   content column and the heading's size both step up at breakpoints, so
+		   the first line rewraps and lands differently against it. Measured
+		   across widths the collision came and went -- 54px at 1440, clear at
+		   1550, 90px at 1700, clear at 1920 -- so no choice of breakpoint fixes
+		   it and the heading has to be unable to reach.
+
+		   100% is the content column. Half of it, plus half the viewport, is
+		   the distance from the heading's left edge to the page's right edge;
+		   taking off the logo and 2rem leaves the heading clear of it at every
+		   width, and min() stops the cap once the column is narrower than that
+		   anyway. */
+		#wrapper > .wrapper:first-child h1 {
+			max-width: min(100%, calc(50% + 50vw - 270px - 3rem));
 		}
 
 	}

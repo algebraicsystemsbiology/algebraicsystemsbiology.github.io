@@ -250,12 +250,15 @@ h1, h2, h3, h4, p, li {
 /* Both are iframes sized to their content by postMessage. Anything that
    clipped or scrolled them on screen would crop them on paper. */
 #themesFrame,
-#network-frame,
+#networkFrame,
 iframe {
 	overflow: visible !important;
 	break-inside: avoid;
 	page-break-inside: avoid;
 	max-width: 100%;
+	/* The frames take the page's ground on screen. On paper the page is white,
+	   and a frame keeping its own colour prints as a block of tan. */
+	background: none !important;
 }
 
 /* The shell is 100vw wide on screen, pulled out of the content column by a
@@ -266,6 +269,8 @@ iframe {
 	left: auto !important;
 	transform: none !important;
 	margin: 4mm 0 !important;
+	/* It carries the page's ground on screen, behind a transparent frame. */
+	background: none !important;
 }
 
 /* ── Spacing ────────────────────────────────────────────────────────────── */
@@ -310,4 +315,55 @@ a {
 .publication-links a,
 .member-link {
 	color: #30363d !important;
+}
+
+/* ── Research theme cards ───────────────────────────────────────────────── */
+
+/* A card is a <details>, so on paper every one is forced open: the
+   descriptions are the substance of the page and a printed copy that needed
+   clicking would carry twelve headings and nothing else. The gradient goes --
+   it is a screen device, and backgrounds are dropped when printing anyway. */
+
+.theme-cards {
+	display: block !important;
+}
+
+.theme-card {
+	display: block !important;
+	background: none !important;
+	border: 0 !important;
+	border-top: 1px solid rgba(0, 0, 0, 0.25) !important;
+	border-radius: 0 !important;
+	padding: 3mm 0 4mm 0 !important;
+	margin: 0 !important;
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.theme-card > summary {
+	list-style: none;
+	font-weight: 600;
+}
+
+.theme-card .theme-caret {
+	display: none !important;
+}
+
+/* A closed <details> hides its content inside the shadow tree, which ordinary
+   author CSS cannot reach -- ::details-content is the handle for it. Browsers
+   without that pseudo-element are covered by the beforeprint handler in
+   assets/js/theme-cards.js, which opens every card before the page is drawn. */
+.theme-card::details-content {
+	content-visibility: visible !important;
+	block-size: auto !important;
+}
+
+.theme-card > .theme-body {
+	display: block !important;
+	padding-left: 2.3rem !important;
+}
+
+/* "Publications" is a link to a filtered list. There is nothing to click here. */
+.theme-card .button {
+	display: none !important;
 }

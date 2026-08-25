@@ -16,22 +16,25 @@
 	--ink:    #30363d;
 	--blue:   #47D3E5;
 	--pink:   #db8992;
+	/* The page ground. Every surface that is "the paper" takes this; component
+	   surfaces that sit on top of it set their own. */
+	--ground: #FAEFE3;
 	/* A bare RGB triple, for rgba(var(--shadow), a). Only the home page uses
 	   it, but it is part of the palette and belongs beside the rest. */
 	--shadow: 15, 18, 21;
 
-	/* Links are the brand's cyan hue at a lightness that is readable on white:
-	   187deg at 32%, which is 4.60:1. Hover darkens to 7.14:1.
+	/* Links are the brand's cyan hue at a lightness that is readable on the
+	   beige ground: 5.03:1, with hover at 7.92:1.
 
 	   --blue is the brand cyan and belongs on the logo and on dark ground,
-	   where it is 11.7:1. On white it is 1.79:1, so it is not used for link
+	   where it is 11.7:1. On the ground it is 1.7:1, so it is not used for link
 	   text or for a link's underline.
 
-	   Floors for anyone editing these: 4.5:1 for the resting colour, 3:1 for an
-	   underline that is a link's only cue. Nothing above ~40% lightness in this
-	   hue meets either. */
-	--link:                     #14818F;
-	--link-hover:               #0F616B;
+	   Floors for anyone editing these: 4.5:1 against --ground for the resting
+	   colour, 3:1 for an underline that is a link's only cue. The ground is
+	   darker than white, so a colour that passed on white may not pass here. */
+	--link:                     #12717D;
+	--link-hover:               #0D5159;
 	--link-weight:              inherit;
 	--link-underline-offset:    0.12em;
 	--link-underline-thickness: 1px;
@@ -79,4 +82,10 @@ a:focus-visible {
 a.site-logo,
 .image a {
 	text-decoration: none;
+}
+
+/* The paper. main.css paints the body white; this is the one place the site's
+   ground colour is set. */
+body {
+	background: var(--ground);
 }

@@ -2,73 +2,97 @@
   {
     "name": "Applied Algebraic Geometry & Tensors",
     "slug": "applied-algebraic-geometry-and-tensors",
-    "colour": "#abbbca",
-    "short": "Alg. Geometry"
+    "colour": "#63b9be",
+    "short": "Alg. Geometry",
+    "area": "mathematics",
+    "description": "Applied algebraic geometry is the mathematical field that studies nonlinear algebra (algebraic geometry) and multilinear algebra (tensors)."
   },
   {
     "name": "Topological Data Analysis",
     "slug": "topological-data-analysis",
-    "colour": "#8c959f",
-    "short": "TDA"
+    "colour": "#55afc0",
+    "short": "TDA",
+    "area": "mathematics",
+    "description": "Topological data analysis is the mathematical field that studies the shape of data. By computing topological invariants of data, one obtains a multi-scale geometric descriptor."
   },
   {
     "name": "Software & Computational Mathematics",
     "slug": "software-and-computational-mathematics",
-    "colour": "#929ba2",
-    "short": "Software & Comp. Math"
+    "colour": "#6ab9d0",
+    "short": "Software & Comp. Math",
+    "area": "mathematics",
+    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source."
   },
   {
     "name": "Identifiability, Statistics, & AI",
     "slug": "identifiability-statistics-and-ai",
-    "colour": "#948d93",
-    "short": "Stats & AI"
+    "colour": "#829bb8",
+    "short": "Stats & AI",
+    "area": "mathematics",
+    "description": "Combining mathematical models and noisy data requires statistics and AI. Identifiablity is necessary for well-posed parameter estimation."
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
-    "colour": "#857b7f",
-    "short": "Dynamical Sys."
+    "colour": "#829dc9",
+    "short": "Dynamical Sys.",
+    "area": "bridge",
+    "description": "Mathematical models describe and predict the evolution of natural phenomena. Dynamical systems is the mathematical field to study how such systems behave under different conditions."
   },
   {
     "name": "Biological Networks",
     "slug": "biological-networks",
-    "colour": "#b0b0b2",
-    "short": "Bio Networks"
+    "colour": "#918bbd",
+    "short": "Bio Networks",
+    "area": "bridge",
+    "description": "Molecules, their interactions and feedbacks can be modeled as graphs and analyzed with network theory. Such chemical reaction networks can also be described as polynomial dynamical systems."
   },
   {
     "name": "Morphology & Spatial Biology",
     "slug": "morphology-and-spatial-biology",
-    "colour": "#ad9c96",
-    "short": "Morphology"
+    "colour": "#aa91af",
+    "short": "Morphology",
+    "area": "bridge",
+    "description": "To study biological shape (morphology) and spatial organization of cells in tissues, we use geometry and topology to complement existing approaches. "
   },
   {
     "name": "Omics",
     "slug": "omics",
-    "colour": "#e0d6d1",
-    "short": "Omics"
+    "colour": "#b49ac7",
+    "short": "Omics",
+    "area": "bridge",
+    "description": "Modern genomics experiments describe the activity of every gene, RNA or every protein in a tissue sample. We take a mathematical perspective to understand transcriptomics and proteomics."
   },
   {
     "name": "Oncology",
     "slug": "oncology",
-    "colour": "#e1cdc2",
-    "short": "Oncology"
+    "colour": "#b97e98",
+    "short": "Oncology",
+    "area": "translation",
+    "description": "Cancer disrupts cellular processes and tissue homeostatsis. We study and quantify how tumour cells rewire their signaling, alter blood vessel growth and change tissue organisation."
   },
   {
     "name": "Immunology",
     "slug": "immunology",
-    "colour": "#e8d5d0",
-    "short": "Immunology"
+    "colour": "#d98291",
+    "short": "Immunology",
+    "area": "translation",
+    "description": "The immune system plays an important role to maintain health and dysfunctions in many diseases. We study the molecules, signalling pathways and immune cells in diseases ranging from cancer, lupus and covid."
   },
   {
     "name": "Neuroscience",
     "slug": "neuroscience",
-    "colour": "#ead8d4",
-    "short": "Neuroscience"
+    "colour": "#d79b96",
+    "short": "Neuroscience",
+    "area": "translation",
+    "description": "The brain is a mysterious organ, encompassing structural and functional networks. The shape and connectivity of neuronal cells and circuits benefit from mathematics to understand its complexity and predict behavior."
   },
   {
     "name": "From Coral to Contagions",
     "slug": "from-coral-to-contagions",
-    "colour": "#ebcfcb",
-    "short": "Coral to Contagions"
+    "colour": "#d98968",
+    "short": "Coral to Contagions",
+    "area": "translation",
+    "description": "Many other scientific applications, including the evolution of coral reefs, music identification and social contagions, benefit from algebraic, network and topological analysis."
   }
 ]

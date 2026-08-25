@@ -7,15 +7,15 @@
   ],
   "/research/": [
     {
-      "id": "themes",
-      "label": "Mathematics built for the complexity of living systems"
+      "id": "mathematics",
+      "label": "Intradisciplinary mathematics"
     },
     {
-      "id": "layer2",
-      "label": "Where algebraic precision meets biological uncertainty"
+      "id": "bridge",
+      "label": "From interdisciplinary mathematics to systems biology"
     },
     {
-      "id": "layer3",
+      "id": "translation",
       "label": "Translational applications"
     }
   ],

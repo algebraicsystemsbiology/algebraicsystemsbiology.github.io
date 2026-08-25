@@ -36,6 +36,13 @@ function getThemeConfigByLabel(label) {
   return THEMES.find(t => t.name === label) || null;
 }
 
+function slugify(text) {
+  return (text || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    .slice(0, 60);
+}
+
 function getThemeFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('theme') || '';
@@ -297,7 +304,10 @@ function renderPublications() {
 
         const card = document.createElement('section');
         card.className = 'publication-entry';
-        card.id = `pub-${pub.uuid}`;
+        // A slug of the title, not the source database's row id: those are
+        // stripped before the data is published, and a title is a better
+        // anchor for a human to land on anyway.
+        card.id = `pub-${slugify(pub.publication_title)}`;
 
         card.innerHTML = `
           <p class="publication-title"><em>${pub.publication_title}</em></p>
@@ -323,6 +333,25 @@ function renderPublications() {
   });
 }
 
+// The cards do not exist when the browser first looks for the anchor, so a
+// link to /publications/#pub-... lands at the top of the page and stays there.
+// This runs once the list is built, and again if the hash changes while the
+// page is open. The card is marked briefly so it is obvious which one was
+// meant: an entry in a long list is otherwise hard to pick out even when it is
+// scrolled to.
+function revealFromHash() {
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  if (!id) return;
+  const card = document.getElementById(id);
+  if (!card) return;
+
+  card.scrollIntoView({ block: 'center', behavior: 'auto' });
+  card.classList.add('is-target');
+  setTimeout(() => card.classList.remove('is-target'), 2600);
+}
+
+window.addEventListener('hashchange', revealFromHash);
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     await Promise.all([loadThemes(), loadPublications()]);
@@ -335,6 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setActiveTheme(activeTheme);
+    revealFromHash();
   } catch (error) {
     console.error(error);
     const container = document.getElementById('publications-list');

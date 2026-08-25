@@ -2,17 +2,22 @@
 # make-pdfs.sh — save the site as PDFs, for sending to somebody who cannot
 # visit it. Both shapes, because they answer different questions:
 #
-#   pdf/screen/   one tall page per html page, exactly as it looks in a
-#                 browser. Nothing is sliced; the reader scrolls. This is the
-#                 one to send when you want somebody to *see the website*.
-#   pdf/print/    A4, paginated, through assets/css/print.css. This is the one
-#                 to send when somebody will actually print it -- the research
-#                 tiles reflow, the publications filter goes, the type comes
-#                 down to 11pt.
+#   screen/   one tall page per html page, exactly as it looks in a browser.
+#             Nothing is sliced; the reader scrolls. This is the one to send
+#             when you want somebody to *see the website*.
+#   print/    A4, paginated, through assets/css/print.css. This is the one to
+#             send when somebody will actually print it -- the research cards
+#             reflow, the publications filter goes, the type comes down to
+#             11pt.
+#
+# Both land in a dated folder, z_pdf/asb_website_YYYYMMDD/, so a fresh run
+# never overwrites the set you sent last week and the date is on the thing
+# itself. The z_ prefix sorts it to the bottom of the directory listing, out of
+# the way of the site's own folders. Nothing under z_pdf/ is committed.
 #
 # Usage, with the preview server already running (python3 -m http.server 8000):
 #
-#     ./scripts/make-pdfs.sh                    # both sets, into pdf/
+#     ./scripts/make-pdfs.sh                    # both sets, into today's folder
 #     ./scripts/make-pdfs.sh --screen           # only the screen shape
 #     ./scripts/make-pdfs.sh --print            # only the A4 shape
 #     ./scripts/make-pdfs.sh --width 1200       # narrower screen shape
@@ -37,7 +42,7 @@
 set -euo pipefail
 
 BASE="${BASE:-http://localhost:8000}"
-OUT="pdf"
+OUT="z_pdf/asb_website_$(date +%Y%m%d)"
 WIDTH=1440
 MODES=(screen print)   # both unless asked for one
 LIMIT=90          # half-second ticks before giving up (~45s)
@@ -51,7 +56,10 @@ while [ $# -gt 0 ]; do
 		--width)  WIDTH="$2"; shift 2 ;;
 		--out)    OUT="$2"; shift 2 ;;
 		--base)   BASE="$2"; shift 2 ;;
-		-h|--help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+		# The comment block above, to the first line that is not one, rather
+		# than a line range: the range silently truncated the help mid-sentence
+		# whenever the block above it changed length.
+		-h|--help) awk 'NR==1 {next} /^#/ {sub(/^# ?/, ""); print; next} {exit}' "$0"; exit 0 ;;
 		*) echo "unknown option: $1" >&2; exit 2 ;;
 	esac
 done

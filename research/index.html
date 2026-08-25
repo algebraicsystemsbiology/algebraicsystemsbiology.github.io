@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Our Research | Algebraic Systems Biology</title>
+		<title>Mathematics built for the complexity of living systems | Algebraic Systems Biology</title>
 		<meta name="description" content="Twelve connected research themes, from applied algebraic geometry and topological data analysis through to oncology, immunology and neuroscience — the mathematics the group builds, and the biology it is built for." />
 		<!-- How the link looks when somebody pastes it into Slack, LinkedIn or an
 		     email. Not a search-ranking thing: Google ignores these. One shared
@@ -9,7 +9,7 @@
 		     are the page's own, so there is nothing extra to keep in step. -->
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="Algebraic Systems Biology" />
-		<meta property="og:title" content="Our Research | Algebraic Systems Biology" />
+		<meta property="og:title" content="Mathematics built for the complexity of living systems | Algebraic Systems Biology" />
 		<meta property="og:description" content="Twelve connected research themes, from applied algebraic geometry and topological data analysis through to oncology, immunology and neuroscience — the mathematics the group builds, and the biology it is built for." />
 		<meta property="og:url" content="https://algebraicsystemsbiology.github.io/research/" />
 		<meta property="og:image" content="https://algebraicsystemsbiology.github.io/images/og-card.png" />
@@ -23,7 +23,7 @@
 		<link rel="stylesheet" href="/assets/css/connects.css" />
 		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 		<link rel="stylesheet" href="/assets/css/mobile.css" />
-		<link rel="stylesheet" href="/assets/css/gallery.css" />
+		<link rel="stylesheet" href="/assets/css/research.css" />
 		<link rel="stylesheet" href="/assets/css/page-frame.css" />
 		<link rel="stylesheet" href="/assets/css/links.css" />
 		<link rel="stylesheet" href="/assets/css/print.css" media="print" />
@@ -41,15 +41,6 @@
   /* Palette: assets/css/links.css. */
   /* Sub-links inside the panel (submenu items) */
 
-  /* Tighten the vertical gap between the three theme layers.
-     Theme default is 7rem top / 5rem bottom, which stacks to ~12rem
-     between sections. Reduce to close the white band. */
-  #themes > .inner,
-  #layer2 > .inner,
-  #layer3 > .inner{
-    padding-top:3rem;
-    padding-bottom:2rem;
-  }
 </style>
 </head>
 
@@ -70,304 +61,29 @@
 
     <section class="wrapper style1">
       <div class="inner" style="padding-bottom: 2rem;">
-        <h1>Our Research</h1>
+        <h1>Mathematics built for the complexity of living systems</h1>
 
         <p class="major">
-        	We’re mathematicians building methods that handle the messiness of real biological data — and using them to open up questions in biology and medicine that were previously out of reach.
-
-        	Each layer — mathematics, methods, translational questions — is organised around a handful of research themes. Follow any theme to the work <!-- (the work research link) --> behind it and
-        	<a href="/people/">the people</a> doing it.
+        	We build mathematical approaches to handle the complexity of biology. Mathematics offers avenues to answer questions in biology and medicine that were previously out of reach. Each research layer: intradisciplinary mathematics, systems biology, and translational applications contains several research themes. Discover the themes, the work within them, and <a href="/people/">the people</a> bringing them to life.
         </p>
       </div>
     </section>
 
-<!-- Layer 1 -->
-<section id="themes" class="wrapper style1 align-center">
-	<div class="inner" style="padding-top: 2rem; padding-bottom: 2rem;">
-		<h2>Mathematics built for the complexity of living systems</h2>
-
-		<p>
-			Biology doesn't fit neatly into the mathematics built for physics or engineering.
-			Living systems are nonlinear, high-dimensional, and irreducibly messy. Their data lives on curved surfaces, in tensor structures, in topological shapes, not flat Euclidean space.
-		</p>
-		<div class="gallery style2 big onscroll-fade-in">
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/01.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Applied Algebraic Geometry &amp; Tensors</h3>
-
-					<p>
-						Biological data is not two-dimensional. Algebraic geometry gives us the tools to work in the higher-dimensional spaces where the real structure lives — and to know, with mathematical certainty, when that structure can be uniquely recovered.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=applied-algebraic-geometry-and-tensors&label=Applied%20Algebraic%20Geometry%20%26%20Tensors" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/02.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Topological Data Analysis</h3>
-
-					<p>
-						Shape is information. Topology lets us detect and measure geometric structure in biological data — across scales, across noise — capturing features that algebra and statistics alone cannot see.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=topological-data-analysis&label=Topological Data Analysis" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/04.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Identifiability, Statistics, &amp; AI</h3>
-
-					<p>
-						Before asking what a model predicts, we ask a harder question: can its parameters ever be uniquely determined from data at all? If the answer is no, no amount of computation will produce a trustworthy result.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=identifiability-statistics-and-ai&label=Identifiability, Statistics, & AI" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/05.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Dynamical Systems &amp; Mathematical Modeling</h3>
-
-					<p>
-						Living systems are not static. They evolve, oscillate, bifurcate, and self-organise — and understanding why requires mathematics that can describe change, stability, and the sudden transitions between them.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=dynamical-systems-and-mathematical-modelling&label=Dynamical Systems & Mathematical Modeling" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-		</div>
-		</div>
-
-
+<!-- The three research areas. Each section names the area it shows with
+     data-area; its anchor id, heading, intro and theme cards are drawn by
+     assets/js/research.js from data/research-areas.json and
+     data/research-themes.json. The words live there and nowhere else, so
+     that is where they are edited. -->
+<section data-area="mathematics" class="wrapper style1 align-center">
+	<div class="inner"></div>
 </section>
 
-<!-- Layer 2 -->
-<section id="layer2" class="wrapper style1 align-center">
-	<div class="inner">
-		<h2>Where algebraic precision meets biological uncertainty</h2>
-
-		<p>
-			Biological data is not clean. It's incomplete, noisy, high-dimensional, and often shaped by uncertain knowledge. The mathematics in this layer operates in that reality — combining the rigour of algebra and geometry with the messiness of real data, the uncertainty of statistical inference, and the structures encoded in biological networks.
-		</p>
-
-	<div class="gallery style2 big onscroll-fade-in">
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/03.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Software &amp; Computational Mathematics</h3>
-
-					<p>
-						New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=software-and-computational-mathematics&label=Software & Computational Mathematics" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/06.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Biological Networks</h3>
-
-					<p>
-						Every cell is governed by networks — of genes, proteins, signals, and feedback loops. This prior knowledge about how a system is wired is too valuable to ignore, and too complex to reason about without algebra and combinatorics.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=biological-networks&label=Biological Networks" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/07.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Morphology &amp; Spatial Biology</h3>
-
-					<p>
-						Where a cell is matters as much as what it is. Geometric and topological methods reveal spatial organisation in tissues and imaging data that no standard analysis would find — including cell types and structures that were previously invisible.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-							<a href="/publications/?theme=morphology-and-spatial-biology&label=Morphology & Spatial Biology" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/09.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Oncology</h3>
-
-					<p>
-						Cancer does not follow a single script. Tumour cells rewire their signalling, that vary between patients, between cell populations, and over time — and understanding that variation requires mathematics to interpretable structure in high-dimensional, heterogeneous data.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-<a href="/publications/?theme=oncology&label=Oncology" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-			
-		</div>
-	</div>
+<section data-area="bridge" class="wrapper style1 align-center">
+	<div class="inner"></div>
 </section>
 
-<!-- Layer 3 -->
-<section id="layer3" class="wrapper style1 align-center">
-
-	<div class="inner">
-		<h2>Translational applications</h2>
-
-		<p>
-			The word translational has a precise meaning in biomedical science: research that moves between mathematical or experimental insight and clinical or therapeutic application. The group's work is translational in exactly this sense; We are answering biomedical questions that could not be answered otherwise
-		</p>
-		<div class="gallery style2 big onscroll-fade-in">
-
-<article>
-	<div class="image">
-		<img src="/images/gallery/thumbs/08.jpg" alt="" />
-	</div>
-
-	<div class="caption">
-		<h3>Omics</h3>
-
-		<p>
-			A single modern experiment can describe the activity of every gene, every protein, in a tissue sample. The challenge is not producing this data. It is finding the mathematical framework that can reveal what it actually means.
-		</p>
-
-		<ul class="actions fixed">
-			<li>
-				<a href="/publications/?theme=omics&label=Omics" class="button small">Details</a>
-			</li>
-		</ul>
-	</div>
-</article>
-
-
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/10.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Immunology</h3>
-
-					<p>
-						The immune system is one of the most complex dynamical systems in biology — capable of extraordinary precision and catastrophic dysregulation, often governed by differences too subtle for any single experiment to isolate. Mathematical modelling makes it possible to ask questions that experiment alone cannot reach.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-<a href="/publications/?theme=immunology&label=Immunology" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/11.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>Neuroscience</h3>
-
-					<p>
-						Neural circuits encode information in geometry as much as in activity. Topological and network methods developed by the group reveal hidden structure in how the brain represents the world — structure that only becomes visible when you have the mathematics to look for it.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-<a href="/publications/?theme=neuroscience&label=Neuroscience" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-			<article>
-				<div class="image">
-					<img src="/images/gallery/thumbs/12.jpg" alt="" />
-				</div>
-
-				<div class="caption">
-					<h3>From Coral to Contagions</h3>
-
-					<p>
-						This theme needs a description.
-					</p>
-
-					<ul class="actions fixed">
-						<li>
-<a href="/publications/?theme=from-coral-to-contagions&label=From Coral to Contagions" class="button small">Details</a>
-						</li>
-					</ul>
-				</div>
-			</article>
-
-		</div>
-		</div>
-
+<section data-area="translation" class="wrapper style1 align-center">
+	<div class="inner"></div>
 </section>
 
 <!-- Footer -->
@@ -385,9 +101,12 @@
 		<script src="/assets/js/main.js"></script>
 		<script src="/assets/js/site-nav.js"></script>
 		<script src="/assets/js/site-footer.js"></script>
+		<script src="/assets/js/site-logo.js"></script>
+		<script src="/assets/js/site-search.js"></script>
 		<script src="/assets/js/gallery-arrows.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 		<script src="/assets/js/connects.js"></script>
+		<script src="/assets/js/research.js"></script>
 	<script>
 		if (window.matchMedia('(max-width: 736px)').matches) {
 		  var articles = document.querySelectorAll('.gallery.style2 article');

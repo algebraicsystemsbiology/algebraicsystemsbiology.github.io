@@ -10,7 +10,10 @@
     --ink:#30363d;
     --muted:#6b7178;
     --line:#e4e6e9;
-    --bg:#ffffff;
+    /* Transparent, so whatever the iframe sits on shows through: the page's
+       beige on screen and in the screen-shaped export, and white on paper,
+       where print.css strips the frame's own background. */
+    --bg:transparent;
   }
 
   *{box-sizing:border-box}
@@ -95,7 +98,7 @@
     padding:.55rem .7rem;
     font-size:.82rem;
     line-height:1.4;
-    max-width:16rem;
+    max-width:19rem;
     z-index:20;
   }
 
@@ -106,6 +109,12 @@
   }
 
   .tooltip .meta{color:var(--muted)}
+
+  .tooltip .about{
+    margin:.45rem 0 0;
+    font-size:.76rem;
+    line-height:1.5;
+  }
 
   #state-message{
     color:var(--muted);
@@ -135,7 +144,9 @@
 // twelve colours down to three by layer.
 let THEMES = [];
 let THEME_COLOURS = {};
-let SHORT = {};
+// The same descriptions the research page's cards show, so a segment explains
+// itself here too rather than only offering a name and two counts.
+let THEME_ABOUT = {};
 
 // Absolute, so it does not matter that this file sits in "Data Viz/" or which
 // page embeds it. It was once written relative and resolved against this
@@ -150,7 +161,7 @@ async function loadThemes(){
   const themes = await res.json();
   THEMES = themes.map(t => t.name);
   THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
-  SHORT = Object.fromEntries(themes.map(t => [t.name, t.short || t.name]));
+  THEME_ABOUT = Object.fromEntries(themes.map(t => [t.name, t.description || '']));
 }
 
 const DATA_URL = '/data/publications.json';
@@ -389,17 +400,44 @@ function render(data){
     .attr('stroke', '#fff')
     .attr('stroke-width', 2);
 
+  // One baseline for every label, cleared by the largest dot rather than by
+  // each one's own radius -- otherwise a theme with few publications sat higher
+  // than its neighbours and the row read as ragged.
+  const labelY = baseY + d3.max(data.nodes, d => d.r) + 24;
+
   seg.append('text')
     .attr('class', 'label')
     .attr('x', d => d.mid)
-    .attr('y', d => baseY + d.r + 24)
+    .attr('y', labelY)
     .attr('text-anchor', 'middle')
-    .text(d => SHORT[d.theme] || d.theme)
+    .text(d => d.theme)
     .each(function() {
       wrapLabel(d3.select(this), Math.max(step * 0.9, 90));
     });
 
   const tooltip = d3.select('#tooltip');
+  // Names carry ampersands and the descriptions are prose, so both are escaped
+  // before going into the tooltip's markup.
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // The tooltip sits above the dot it explains rather than following the
+  // pointer, which put it on top of whatever you were reading. Above rather
+  // than beside it, because the dots sit in a row with their labels underneath,
+  // so that is the one direction it cannot cover the name it describes.
+  function tipAt(segEl, html) {
+    tooltip.html(html).style('opacity', 1);
+    const dot = segEl.querySelector('circle').getBoundingClientRect();
+    const box = tooltip.node().getBoundingClientRect();
+    const gap = 14;
+    let left = dot.left + dot.width / 2 - box.width / 2;
+    let top = dot.top - gap - box.height;
+    // Keep it inside the frame for the leftmost and rightmost dots, and for a
+    // description tall enough to reach past the top.
+    left = Math.max(8, Math.min(left, window.innerWidth - box.width - 8));
+    top = Math.max(8, top);
+    tooltip.style('left', left + 'px').style('top', top + 'px');
+  }
   const neighbours = new Map(data.nodes.map(d => [d.index, new Set()]));
   links.forEach(l => {
     neighbours.get(l.source).add(l.target);
@@ -415,15 +453,11 @@ function render(data){
         .attr('stroke-width', s => (s.source === d.index || s.target === d.index) ? 1 : 0.8);
 
       const conn = keep.size;
-      tooltip.html(
-        `<strong>${d.theme}</strong>` +
-        `<span class="meta">${d.count} publication${d.count === 1 ? '' : 's'} · ${conn} connection${conn === 1 ? '' : 's'}</span>`
-      ).style('opacity', 1);
-    })
-    .on('mousemove', ev => {
-      tooltip
-        .style('left', (ev.clientX + 14) + 'px')
-        .style('top', (ev.clientY + 14) + 'px');
+      tipAt(this,
+        `<strong>${esc(d.theme)}</strong>` +
+        `<span class="meta">${d.count} publication${d.count === 1 ? '' : 's'} · ${conn} connection${conn === 1 ? '' : 's'}</span>` +
+        (THEME_ABOUT[d.theme] ? `<p class="about">${esc(THEME_ABOUT[d.theme])}</p>` : '')
+      );
     })
     .on('mouseleave', function(){
       seg.classed('faded', false);

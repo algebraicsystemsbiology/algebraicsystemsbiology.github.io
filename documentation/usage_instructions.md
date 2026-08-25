@@ -316,20 +316,25 @@ Worth re-checking at 320, 375 and 768 after layout changes.
 
 `data/research-themes.json` is the list of the twelve research themes. It is
 hand-maintained and tracked in this repository (unlike the generated data), and
-each entry carries four things:
+each entry carries six things:
 
 ```json
-{ "name":   "Topological Data Analysis",
-  "slug":   "topological-data-analysis",
-  "colour": "#8c959f",
-  "short":  "TDA" }
+{ "name":        "Topological Data Analysis",
+  "slug":        "topological-data-analysis",
+  "colour":      "#55afc0",
+  "short":       "TDA",
+  "area":        "mathematics",
+  "description": "Shape is information. Topology lets us…" }
 ```
 
 `name` must match the keyword exactly as it is spelled in Coda, since that is
 what the publication and member records are tagged with. `slug` is written out
 rather than derived from the name, so `/publications/?theme=…` links cannot
-drift from it. `colour` is the theme's colour everywhere it is drawn, and
-`short` is the abbreviated label the arc diagram uses.
+drift from it. `colour` is the theme's colour everywhere it is drawn. `short` is
+an abbreviated label, used by the menu search. `area` names which of the three
+areas in `data/research-areas.json` the theme belongs to. `description` is the
+paragraph the Research page's card shows, and the menu search and both diagrams'
+tooltips show it too.
 
 Everything reads from that file at runtime:
 
@@ -345,11 +350,28 @@ Everything reads from that file at runtime:
 into, so `init()` returns immediately. Either restore the markup or drop the
 two `<script>`/`<link>` lines — the script itself works.
 
-The exception is `research/index.html`, whose tiles are hand-written prose and cannot
-be generated. `scripts/check_data.py` compares its tile headings and filter
-links against the file, and compares both against the keywords in the member
-and publication data, so a theme renamed in Coda fails the deploy rather than
-quietly emptying a filter.
+`research/index.html` holds none of these words. `assets/js/research.js` draws
+the page from the data — each area's heading and intro from
+`data/research-areas.json`, a card per theme from `research-themes.json`, with
+the theme's description inside it — and the deploy bakes what it drew into the
+published HTML (see **Prerendering** below), so the text is in the source a
+crawler reads. Edit the JSON, reload the page; there is no generator to run.
+
+The markup keeps only structure: a `<section>` per area, carrying the anchor id
+and `data-area` to say which area it shows. `scripts/check_data.py` fails the
+deploy if the data names an area the page has no section for, or the reverse.
+Spacing is keyed on `data-area` and on position rather than on those ids, so
+areas can be added, removed or reordered without touching CSS.
+
+```
+python3 scripts/build_research.py
+```
+
+`scripts/check_data.py` compares the page's headings, intros, descriptions and
+filter links against the data, and compares the theme names against the keywords
+in the member and publication data. So a theme renamed in Coda, or a description
+edited without regenerating, fails the deploy rather than quietly emptying a
+filter or shipping stale prose.
 
 **To add or rename a theme:** edit `research-themes.json`, add a tile to
 `research/index.html`, and make sure the name matches Coda exactly. Nothing else
@@ -459,3 +481,21 @@ To rotate: generate a new private key on the App's settings page, update
 `DATA_APP_PRIVATE_KEY` (use the interface on github itself to generate a new
 private key, download it, and copy into the secrets part of the website repo), 
 then delete the old key.
+
+## Prerendering
+
+Publications, People and Research draw their content in the browser. That keeps
+each sentence in one place, but it means the HTML leaving the server would carry
+containers and no words: measured on the assembled site, `publications/index.html`
+held ten crawlable words and `people/index.html` a hundred.
+
+The deploy runs `scripts/prerender.py`, which loads each page in headless
+Chromium, lets the site's own scripts run, and keeps the resulting DOM. Those
+pages then hold 8,142 and 1,450 words. The renderer is the site's own JavaScript
+rather than a second copy of the templates in Python, so nothing here can drift
+from what a visitor sees, and what you preview locally is what ships.
+
+It runs after `strip_identifiers.py`, so no row id can be baked into the HTML,
+and every page asserts what it must contain afterwards — a page whose scripts
+failed would otherwise be written back empty. You never run it: it only ever
+touches `_site`, in CI.

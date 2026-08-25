@@ -72,8 +72,10 @@ jobs:
             --exclude '.gitignore' \
             ./ _site/
           # Generated data lives under data/ in asb-website-data, separating it
-          # from that repo's hand-maintained files (README, sync/).
-          for f in data/group_members.json data/publications.json data/themes.json data/photos; do
+          # from that repo's hand-maintained files (README, sync/). The research
+          # themes are not among them: that list is hand-authored in this
+          # repository, as data/research-themes.json.
+          for f in data/group_members.json data/publications.json data/photos; do
             if [ ! -e ".data-src/$f" ]; then
               echo "::error::expected .data-src/$f in asb-website-data; has its layout changed?"
               exit 1
@@ -86,11 +88,28 @@ jobs:
       - name: Verify data and site agree
         run: python3 scripts/check_data.py _site
 
-      # Internal links always fail the build. External ones -- the group's own
-      # members' sites, ORCID and Scholar profiles, every publication link --
-      # are checked against the assembled data, where they actually live, but
-      # only a definite 404 or a hostname that does not resolve counts: those
-      # servers are not ours, and a timeout is not a reason to block a deploy.
+
+      # After the checks, not before: scripts/check_data.py relies on the source
+      # database's row ids being the keys of these files, which is how it
+      # notices a duplicated row. They are of no use to a reader, so the last
+      # thing that happens to the data is that they come off.
+      - name: Strip source-database identifiers from the published data
+        run: python3 scripts/strip_identifiers.py _site/data
+
+      # Publications, People and Research draw their content in the browser, so
+      # the HTML that leaves here would otherwise carry containers and no words.
+      # This runs the pages in headless Chromium and keeps what they drew, using
+      # the site's own scripts as the renderer rather than a second copy of the
+      # templates. After the strip above, so no row id can be baked in.
+      - name: Bake the rendered pages into the HTML
+        run: python3 scripts/prerender.py _site
+
+      # After the bake, so the links the page scripts generate are checked too,
+      # rather than the empty containers they were generated into. Internal
+      # links always fail the build. External ones -- members' own sites, ORCID
+      # and Scholar profiles, every publication link -- only fail on a definite
+      # 404 or a hostname that does not resolve: those servers are not ours, and
+      # a timeout is not a reason to block a deploy.
       - name: Verify links resolve
         run: python3 scripts/check_links.py _site --external
 
@@ -100,8 +119,30 @@ jobs:
           for p in .git .github .data-src scripts documentation wip; do
             if [ -e "_site/$p" ]; then echo "::error::$p leaked into the artifact"; exit 1; fi
           done
+          # The data files, and the HTML the step above baked that data into.
+          # Member addresses are the concern; the group's own contact addresses
+          # are written in partials/ on purpose, so those two are excepted.
           if grep -rlE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)' _site/data/*.json >/dev/null 2>&1; then
             echo "::error::email addresses present in published data"; exit 1
+          fi
+          # Everything but the two addresses that are published on purpose, in
+          # partials/footer.html and on the privacy page. Listed, then counted,
+          # so the log names what it found before the step fails on it.
+          unexpected=$(grep -rhoE '[A-Za-z0-9._%+-]+@(maths\.ox|mpi-cbg|mpipz|gmail)[A-Za-z0-9._-]*' \
+            --include='*.html' _site \
+            | grep -vxE 'harringtonoffice@mpi-cbg\.de|alipour@mpi-cbg\.de' | sort -u || true)
+          if [ -n "$unexpected" ]; then
+            echo "$unexpected"
+            echo "::error::an unexpected email address was baked into the HTML"; exit 1
+          fi
+          # Row ids from the source database, either as a field or as one of
+          # its "i-" shaped values. Publisher URLs that happen to contain the
+          # word uuid are not matched: this looks for the key and the id shape.
+          # The quotes matter in the HTML: unquoted, "i-" plus ten characters
+          # matches inside ordinary slugs such as id="member-leyi-lucy-jiang".
+          if grep -rlE '"uuid"[[:space:]]*:|"i-[A-Za-z0-9_-]{10}"' \
+               _site/data/*.json --include='*.html' _site >/dev/null 2>&1; then
+            echo "::error::source-database row ids present in the published site"; exit 1
           fi
 
       - name: Configure Pages

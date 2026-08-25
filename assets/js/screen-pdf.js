@@ -75,7 +75,11 @@
 		});
 	}
 
+	// Every media rule is frozen to the answer the screen gives it: 'all' if it
+	// applies here and now, 'not all' if it does not. Nothing is left for the
+	// print pass to re-decide.
 	function rewriteSheets(doc) {
+		var view = doc.defaultView || window;
 		Array.prototype.forEach.call(doc.styleSheets, function (sheet) {
 			var rules;
 			try { rules = sheet.cssRules; } catch (e) { return; }   // cross-origin
@@ -83,8 +87,10 @@
 			Array.prototype.forEach.call(rules, function (rule) {
 				if (!rule.media || !rule.media.mediaText) return;
 				var text = rule.media.mediaText;
-				if (!/\bscreen\b/.test(text)) return;
-				try { rule.media.mediaText = text.replace(/\bscreen\b/g, 'all'); } catch (e) {}
+				if (text === 'all' || text === 'not all') return;
+				var applies;
+				try { applies = view.matchMedia(text).matches; } catch (e) { return; }
+				try { rule.media.mediaText = applies ? 'all' : 'not all'; } catch (e) {}
 			});
 		});
 	}
@@ -96,8 +102,16 @@
 	// 5rem. The document laid out for print came out a third taller than the
 	// one measured, and the tail of it landed on a second page.
 	//
-	// Rewriting the conditions to `all` makes print see what the screen sees.
-	// Width conditions still evaluate, against a page box of the same width.
+	// Turning `screen` into `all` is not enough on its own, because the width
+	// conditions are then evaluated by the print pass -- and print does not
+	// measure the page box this script sets. It measures the printer's paper.
+	// Probed: with @page sized 1440px wide, print still answered a max-width
+	// query as though it were 794px, A4's width. People's member grid dropped
+	// from three columns to two, the document laid out about twice as tall as
+	// the measurement, and every page of it spilled.
+	//
+	// So each rule is frozen to the answer the screen gives, rather than being
+	// left in a form print can re-interpret.
 	function makeScreenRulesApplyToPrint() {
 		rewriteSheets(document);
 		// The diagrams are same-origin frames with stylesheets of their own,
@@ -151,6 +165,25 @@
 			'  transition: none !important; transition-delay: 0s !important }\n' +
 			'.is-inactive, [class*="onscroll-"], [class*="onload-"] {' +
 			'  opacity: 1 !important; transform: none !important }');
+	}
+
+	// A research card is a <details>, closed until somebody opens it, which is
+	// right on screen and useless in a PDF: the page would export as twelve
+	// headings and no text. print.css opens them for paper through
+	// ::details-content; this is the same intent for the screen-shaped export.
+	//
+	// Only the cards. The BibTeX blocks on the publications page are <details>
+	// too, and print.css deliberately leaves those closed -- a hundred and eight
+	// expanded BibTeX records is not what anybody wants to be sent.
+	//
+	// It matters that this runs before the page is measured. Opening a card by
+	// hand after the height has been settled grows the document past its page
+	// box, and the overflow lands on a second sheet cut through whichever card
+	// was open.
+	function openDisclosures() {
+		Array.prototype.forEach.call(document.querySelectorAll('.theme-card:not([open])'), function (d) {
+			d.open = true;
+		});
 	}
 
 	// Whatever height the diagram frames have settled at on screen is the
@@ -248,6 +281,7 @@
 			waited += 150;
 			if (stable >= 2 || waited > 5000) {
 				revealScrollAnimations();
+				openDisclosures();
 				makeScreenRulesApplyToPrint();
 				freezeFrames();
 				h = sizePage();
@@ -262,6 +296,7 @@
 	// "Save as PDF" too.
 	window.addEventListener('beforeprint', function () {
 		revealScrollAnimations();
+		openDisclosures();
 		pinViewportUnits();
 		freezeFrames();
 		sizePage();
@@ -272,6 +307,7 @@
 		makeScreenRulesApplyToPrint();
 		pinViewportUnits();
 		revealScrollAnimations();
+		openDisclosures();
 		trackGrowth();
 
 		var pending = Array.prototype.slice.call(document.images)
