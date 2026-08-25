@@ -310,10 +310,28 @@
 		}
 
 		/* The content starts at the top. Only enough padding is left to keep a
-		   full-width line of text clear of the logo's lower edge -- headings
-		   are narrow and sit well inside it. */
+		   full-width line of text clear of the logo's lower edge; the heading
+		   is the one thing that rises beside it. */
 		#wrapper > .wrapper:first-child > .inner {
 			padding-top: 2rem;
+		}
+
+		/* Which means the heading has to stop before the logo does. It used to
+		   be short enough that it always did, and a longer one ran underneath:
+		   the logo is a fixed 270px block pinned to the right, while the
+		   content column and the heading's size both step up at breakpoints, so
+		   the first line rewraps and lands differently against it. Measured
+		   across widths the collision came and went -- 54px at 1440, clear at
+		   1550, 90px at 1700, clear at 1920 -- so no choice of breakpoint fixes
+		   it and the heading has to be unable to reach.
+
+		   100% is the content column. Half of it, plus half the viewport, is
+		   the distance from the heading's left edge to the page's right edge;
+		   taking off the logo and 2rem leaves the heading clear of it at every
+		   width, and min() stops the cap once the column is narrower than that
+		   anyway. */
+		#wrapper > .wrapper:first-child h1 {
+			max-width: min(100%, calc(50% + 50vw - 270px - 3rem));
 		}
 
 	}
