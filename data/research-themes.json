@@ -5,7 +5,7 @@
     "colour": "#63b9be",
     "short": "Alg. Geometry",
     "area": "mathematics",
-    "description": "Biological data is not two-dimensional. Algebraic geometry gives us the tools to work in the higher-dimensional spaces where the real structure lives — and to know, with mathematical certainty, when that structure can be uniquely recovered."
+    "description": "Applied algebraic geometry is the mathematical field that studies nonlinear algebra (algebraic geometry) and multilinear algebra (tensors)."
   },
   {
     "name": "Topological Data Analysis",
@@ -13,7 +13,7 @@
     "colour": "#55afc0",
     "short": "TDA",
     "area": "mathematics",
-    "description": "Shape is information. Topology lets us detect and measure geometric structure in biological data — across scales, across noise — capturing features that algebra and statistics alone cannot see."
+    "description": "Topological data analysis is the mathematical field that studies the shape of data. By computing topological invariants of data, one obtains a multi-scale geometric descriptor."
   },
   {
     "name": "Software & Computational Mathematics",
@@ -21,7 +21,7 @@
     "colour": "#6ab9d0",
     "short": "Software & Comp. Math",
     "area": "mathematics",
-    "description": "New mathematics requires new algorithms. The group builds the computational tools that make its theoretical methods usable — by other researchers, in other systems, at scale."
+    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source."
   },
   {
     "name": "Identifiability, Statistics, & AI",
@@ -29,7 +29,7 @@
     "colour": "#829bb8",
     "short": "Stats & AI",
     "area": "mathematics",
-    "description": "Before asking what a model predicts, we ask a harder question: can its parameters ever be uniquely determined from data at all? If the answer is no, no amount of computation will produce a trustworthy result."
+    "description": "Combining mathematical models and noisy data requires statistics and AI. Identifiablity is necessary for well-posed parameter estimation."
   },
   {
     "name": "Dynamical Systems & Mathematical Modeling",
@@ -37,7 +37,7 @@
     "colour": "#829dc9",
     "short": "Dynamical Sys.",
     "area": "bridge",
-    "description": "Living systems are not static. They evolve, oscillate, bifurcate, and self-organise — and understanding why requires mathematics that can describe change, stability, and the sudden transitions between them."
+    "description": "Mathematical models describe and predict the evolution of natural phenomena. Dynamical systems is the mathematical field to study how such systems behave under different conditions."
   },
   {
     "name": "Biological Networks",
@@ -45,7 +45,7 @@
     "colour": "#918bbd",
     "short": "Bio Networks",
     "area": "bridge",
-    "description": "Every cell is governed by networks — of genes, proteins, signals, and feedback loops. This prior knowledge about how a system is wired is too valuable to ignore, and too complex to reason about without algebra and combinatorics."
+    "description": "Molecules, their interactions and feedbacks can be modeled as graphs and analyzed with network theory. Such chemical reaction networks can also be described as polynomial dynamical systems."
   },
   {
     "name": "Morphology & Spatial Biology",
@@ -53,7 +53,7 @@
     "colour": "#aa91af",
     "short": "Morphology",
     "area": "bridge",
-    "description": "Where a cell is matters as much as what it is. Geometric and topological methods reveal spatial organisation in tissues and imaging data that no standard analysis would find — including cell types and structures that were previously invisible."
+    "description": "To study biological shape (morphology) and spatial organization of cells in tissues, we use geometry and topology to complement existing approaches. "
   },
   {
     "name": "Omics",
@@ -61,7 +61,7 @@
     "colour": "#b49ac7",
     "short": "Omics",
     "area": "bridge",
-    "description": "A single modern experiment can describe the activity of every gene, every protein, in a tissue sample. The challenge is not producing this data. It is finding the mathematical framework that can reveal what it actually means."
+    "description": "Modern genomics experiments describe the activity of every gene, RNA or every protein in a tissue sample. We take a mathematical perspective to understand transcriptomics and proteomics."
   },
   {
     "name": "Oncology",
@@ -69,7 +69,7 @@
     "colour": "#b97e98",
     "short": "Oncology",
     "area": "translation",
-    "description": "Cancer does not follow a single script. Tumour cells rewire their signalling, that vary between patients, between cell populations, and over time — and understanding that variation requires mathematics to interpretable structure in high-dimensional, heterogeneous data."
+    "description": "Cancer disrupts cellular processes and tissue homeostatsis. We study and quantify how tumour cells rewire their signaling, alter blood vessel growth and change tissue organisation."
   },
   {
     "name": "Immunology",
@@ -77,7 +77,7 @@
     "colour": "#d98291",
     "short": "Immunology",
     "area": "translation",
-    "description": "The immune system is one of the most complex dynamical systems in biology — capable of extraordinary precision and catastrophic dysregulation, often governed by differences too subtle for any single experiment to isolate. Mathematical modelling makes it possible to ask questions that experiment alone cannot reach."
+    "description": "The immune system plays an important role to maintain health and dysfunctions in many diseases. We study the molecules, signalling pathways and immune cells in diseases ranging from cancer, lupus and covid."
   },
   {
     "name": "Neuroscience",
@@ -85,7 +85,7 @@
     "colour": "#d79b96",
     "short": "Neuroscience",
     "area": "translation",
-    "description": "Neural circuits encode information in geometry as much as in activity. Topological and network methods developed by the group reveal hidden structure in how the brain represents the world — structure that only becomes visible when you have the mathematics to look for it."
+    "description": "The brain is a mysterious organ, encompassing structural and functional networks. The shape and connectivity of neuronal cells and circuits benefit from mathematics to understand its complexity and predict behavior."
   },
   {
     "name": "From Coral to Contagions",
@@ -93,6 +93,6 @@
     "colour": "#d98968",
     "short": "Coral to Contagions",
     "area": "translation",
-    "description": "This theme needs a description."
+    "description": "Many other scientific applications, including the evolution of coral reefs, music identification and social contagions, benefit from algebraic, network and topological analysis."
   }
 ]
