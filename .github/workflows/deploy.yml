@@ -152,10 +152,22 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+          # The action already defaults to one day. Stated here so a future
+          # version changing that default cannot quietly widen the window in
+          # which the site's files -- member photos among them -- are
+          # downloadable by anyone with read access to this repository.
+          retention-days: 1
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # actions: write is for the cleanup step below. Stated per job rather than
+    # at the top of the file so the build job, which runs the site's own
+    # scripts, cannot delete anything.
+    permissions:
+      pages: write
+      id-token: write
+      actions: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -163,3 +175,20 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+      # Pages is serving the files by now, so the artifact has no further use,
+      # and it is a copy of the whole site -- member photos included -- that
+      # anyone with read access could download for the next day. Only on
+      # success: a failed deploy should keep the artifact so it can be retried.
+      - name: Delete the deployed artifact
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ids=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
+            --jq '.artifacts[].id')
+          for id in $ids; do
+            gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$id"
+            echo "deleted artifact $id"
+          done
