@@ -62,11 +62,18 @@
 	padding: 0;
 }
 
+/* No padding or margin here, and none between one row and the next: the space
+   belonged to the list item rather than to the button inside it, so 16px of
+   every 40px down the list was not a target. The pointer crossed a dead band
+   between each pair of themes -- hover flickered off, and a click that landed
+   in one did nothing at all. The button carries that space as its own padding
+   now, so the rows tile and the whole row is clickable. The rule between them
+   is the only thing separating two targets. */
 #publications-filter .theme-filter-list li {
 	display: block;
 	border-top: solid 1px rgba(0, 0, 0, 0.2);
-	padding: 0.15rem 0;
-	margin: 0 0 0.5rem 0;
+	padding: 0;
+	margin: 0;
 }
 
 #publications-filter .theme-filter-list li:first-child {
@@ -78,7 +85,9 @@
 
 	display: block;
 	width: 100%;
-	padding: 0.15rem 0;
+	/* Uneven on purpose: this reproduces exactly the spacing the list item and
+	   its margin used to provide, so the list looks the same as before. */
+	padding: 0.3rem 0 0.8rem 0;
 
 	font-family: inherit;
 	font-size: 0.85rem;

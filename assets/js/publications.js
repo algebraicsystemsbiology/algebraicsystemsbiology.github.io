@@ -259,13 +259,15 @@ function renderThemeFilters() {
   });
 }
 
+// One listener on the list rather than one per button, so it does not matter
+// whether the buttons exist yet or are ever rebuilt.
 function setupThemeFilters() {
-  const buttons = document.querySelectorAll('.theme-filter');
+  const list = document.getElementById('theme-filter-list');
+  if (!list) return;
 
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      setActiveTheme(button.dataset.theme || 'All');
-    });
+  list.addEventListener('click', event => {
+    const button = event.target.closest('.theme-filter');
+    if (button) setActiveTheme(button.dataset.theme || 'All');
   });
 }
 
