@@ -38,7 +38,7 @@ jobs:
         id: data-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.DATA_APP_ID }}
+          client-id: ${{ secrets.DATA_APP_CLIENT_ID }}
           private-key: ${{ secrets.DATA_APP_PRIVATE_KEY }}
           owner: algebraicsystemsbiology
           repositories: asb-website-data

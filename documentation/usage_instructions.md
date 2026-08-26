@@ -462,7 +462,7 @@ It requires two repository secrets:
 
 | Secret | Value |
 |---|---|
-| `DATA_APP_ID` | the App's numeric ID, from its settings page |
+| `DATA_APP_CLIENT_ID` | the App's Client ID, from its settings page |
 | `DATA_APP_PRIVATE_KEY` | the full contents of the `.pem` private key |
 
 An App is used rather than a personal access token or a deploy key because:
