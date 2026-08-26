@@ -16,20 +16,20 @@
     "description": "Topological data analysis is the mathematical field that studies the shape of data. By computing topological invariants of data, one obtains a multi-scale geometric descriptor."
   },
   {
-    "name": "Software & Computational Mathematics",
-    "slug": "software-and-computational-mathematics",
-    "colour": "#6ab9d0",
-    "short": "Software & Comp. Math",
-    "area": "mathematics",
-    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source."
-  },
-  {
     "name": "Dynamical Systems & Mathematical Modeling",
     "slug": "dynamical-systems-and-mathematical-modelling",
     "colour": "#829dc9",
     "short": "Dynamical Sys.",
     "area": "mathematics",
     "description": "Mathematical models describe and predict the evolution of natural phenomena. Dynamical systems is the mathematical field to study how such systems behave under different conditions."
+  },
+  {
+    "name": "Software & Computational Mathematics",
+    "slug": "software-and-computational-mathematics",
+    "colour": "#6ab9d0",
+    "short": "Software & Comp. Math",
+    "area": "mathematics",
+    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source."
   },
   {
     "name": "Identifiability, Statistics, & AI",
