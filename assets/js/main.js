@@ -155,8 +155,17 @@
 			.wrapInner('<div class="inner"></div>')
 			.prepend(browser.mobile ? '' : '<div class="forward"></div><div class="backward"></div>')
 			.scrollex({
-				top:		'30vh',
-				bottom:		'30vh',
+				// scrollex measures its trigger zone from the element's own top
+				// and bottom edges, so a vh offset larger than half the element
+				// inverts the zone: the 30vh the template uses is 214px on a
+				// 713px-tall phone, against a gallery 247px tall, and the two
+				// offsets cross. The gallery then has to sit near the middle of
+				// the screen before it counts as in view, which on a phone is
+				// well after it has been looked at -- the tiles are on screen
+				// holding opacity 0 until you scroll past them. At 0 the zone is
+				// the element itself and the fade runs when it comes into view.
+				top:		0,
+				bottom:		0,
 				delay:		50,
 				initialize:	function() {
 					$(this).addClass('is-inactive');

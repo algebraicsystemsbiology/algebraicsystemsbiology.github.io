@@ -233,10 +233,6 @@
 			// Backgrounds carry most of this site's meaning: the research tiles
 			// are photographs, the theme dots are colour.
 			'* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important }\n' +
-			// The scroll cue is an animated arrow inviting a gesture, over the
-			// hero. The menu stays -- it is part of what the page looks like,
-			// and on a single page a fixed element paints once, where it sits.
-			'.cue { display: none !important }\n' +
 			'html, body { overflow-y: visible !important }');
 
 		return height;

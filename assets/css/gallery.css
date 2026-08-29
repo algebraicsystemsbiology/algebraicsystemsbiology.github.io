@@ -132,3 +132,18 @@
 		opacity: 0;
 		pointer-events: none;
 	}
+
+/* An arrow is 5rem of overlay at z-index 2 across the full height of the
+   gallery, so one that is not visible still takes every click meant for the
+   tile under it. The pairs above set both properties together; this is the
+   floor under them -- clicks are granted only to an arrow the state classes
+   are actually showing, so a state nobody anticipated fails closed. */
+.gallery.style2 > .forward,
+	.gallery.style2 > .backward {
+		pointer-events: none;
+	}
+
+.gallery.style2:not(.at-end):not(.no-scroll) > .forward,
+	.gallery.style2:not(.at-start):not(.no-scroll) > .backward {
+		pointer-events: auto;
+	}

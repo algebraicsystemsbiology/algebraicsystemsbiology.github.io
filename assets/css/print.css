@@ -41,7 +41,6 @@ html {
 /* ── Chrome that means nothing on paper ─────────────────────────────────── */
 
 .nav,
-.cue,
 .gallery .forward,
 .gallery .backward,
 .album-nav,
@@ -90,8 +89,7 @@ html {
 
 /* The scrims exist to hold white text over the photograph. Nothing is over it
    here, so they would only darken it. */
-.scrim-base,
-.scrim-scroll {
+.scrim-base {
 	display: none !important;
 }
 
@@ -114,6 +112,20 @@ html {
 .hero-text .hero-menu {
 	color: #30363d !important;
 	text-shadow: none !important;
+}
+
+/* On screen the credit is white type in the corner of the photograph. Here
+   the hero unstacks into normal flow, so it follows the picture as a line of
+   its own -- absolute positioning would otherwise anchor it to the page. */
+.hero-credit {
+	position: static !important;
+	color: #6b7280 !important;
+	text-shadow: none !important;
+	text-align: right;
+	margin: 1mm 0 0 !important;
+	/* The screen rule insets it from the viewport edge; on paper the
+	   photograph above it runs the full width of the text column. */
+	padding: 0 !important;
 }
 
 /* ── Things the page only reveals when you scroll ───────────────────────── */

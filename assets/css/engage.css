@@ -15,7 +15,16 @@
 	display: block;
 	width: 100%;
 	height: auto;
-	margin: 1.5rem 0 3rem;
+	margin: 1.5rem 0 0;
+}
+
+/* The credit carries the gap that used to sit under the photograph, so the
+   two read as one block. Right-aligned, against the picture's edge. */
+.page-banner-credit {
+	margin: .5rem 0 3rem;
+	text-align: right;
+	font-size: .75rem;
+	color: #6b7280;
 }
 
 #Short-Talks > .inner {

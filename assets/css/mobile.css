@@ -61,9 +61,35 @@
     gap: 0.5rem !important;
   }
 
- /* ── Gallery — tap to reveal on mobile ───────────────────────── */
+ /* ── Gallery — one video per row ─────────────────────────────── */
+  /* main.js decides whether the strip scrolls from the user agent -- its
+     browser.mobile flag -- so a narrow desktop window, and a phone viewport in
+     a desktop browser's responsive mode, get the desktop build: the inner is
+     given overflow hidden inline, which cannot be swiped, and a 5rem arrow
+     overlay is injected over each end of a tile barely wider than the screen.
+     The overlays covered the Watch button and there was no way to reach the
+     other videos. Stacked there is nothing to scroll sideways: each video is
+     one full-width row, whatever the browser claims to be. The !important
+     beats main.js's inline styles on .inner. */
+  .gallery.style2 > .inner {
+    display: block !important;
+    overflow: visible !important;
+  }
+
   .gallery.style2 article {
     position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 1.25rem !important;
+  }
+
+  .gallery.style2 article:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .gallery.style2 > .forward,
+  .gallery.style2 > .backward {
+    display: none !important;
   }
   /* The caption stays visible, as it does on every other width. It used to be
      opacity 0 until the tile was tapped, with the heading inside it set to
