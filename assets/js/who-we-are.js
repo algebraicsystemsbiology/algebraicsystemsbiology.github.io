@@ -183,8 +183,42 @@
 
     current.forEach(m => container.appendChild(buildCard(m)));
 
+    layoutGrid(container);
+    window.addEventListener('resize', () => layoutGrid(container), { passive: true });
+  }
+
+  // Both passes measure the rendered layout, and the first changes the heights
+  // the second would read, so the order matters: collapse first, then pad.
+  function layoutGrid(container) {
+    collapseBlankRows(container);
     padFinalRow(container);
-    window.addEventListener('resize', () => padFinalRow(container), { passive: true });
+  }
+
+  // A card without a photograph holds the space one would take so that names
+  // line up across a row. A row where nobody has a photograph has nothing to
+  // line up with, and the reserved boxes read as a band of empty space above
+  // the names, so the reservation is dropped for those rows.
+  //
+  // Rows are read from the rendered layout by offsetTop, as padFinalRow reads
+  // them: the number of cards per row changes with the viewport. Measured with
+  // the marks cleared, so what is measured is always the same layout.
+  function collapseBlankRows(container) {
+    const cards = Array.prototype.slice.call(container.children)
+      .filter(c => !c.classList.contains('is-filler'));
+
+    cards.forEach(c => c.classList.remove('no-photo-row'));
+
+    const rows = new Map();
+    cards.forEach(c => {
+      const top = c.offsetTop;
+      if (!rows.has(top)) rows.set(top, []);
+      rows.get(top).push(c);
+    });
+
+    rows.forEach(row => {
+      const allBlank = row.every(c => c.querySelector('.member-photo-blank'));
+      if (allBlank) row.forEach(c => c.classList.add('no-photo-row'));
+    });
   }
 
   // The grid draws its horizontal rules as a border-top on each card, so a

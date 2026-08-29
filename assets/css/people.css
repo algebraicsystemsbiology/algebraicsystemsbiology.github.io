@@ -27,6 +27,14 @@
 	border: 0;
 }
 
+/* The reservation is only worth making next to a photograph. Where a whole row
+   is people shown without one -- the interns sort last, so they fill the final
+   rows on their own -- there is nothing to line up with and the 160px box is
+   an empty band above their names. who-we-are.js marks those rows. */
+#members-grid .member-card.no-photo-row .member-photo-blank {
+	display: none;
+}
+
 #members-grid .member-role {
 	font-weight: 600;
 	margin-bottom: 0.75rem;

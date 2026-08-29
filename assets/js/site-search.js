@@ -169,44 +169,50 @@
 		load().then(function () { render(search(q), q); });
 	}
 
-	function init() {
+	// The field is a moving target. site-nav.js builds the menu by assigning
+	// nav.innerHTML, and the deploy bakes the built menu into the HTML, so on a
+	// published page the form exists at parse time and is then replaced by an
+	// identical one the moment the menu is rebuilt. Anything bound to the first
+	// copy is bound to a detached node -- typing did nothing at all. Listening
+	// on the document instead means there is nothing to rebind: whichever form
+	// is in the page right now is the one that answers.
+	function fields() {
 		form = document.querySelector('.nav-search');
-		if (!form) return;
+		if (!form) return false;
 		input = form.querySelector('#siteSearch');
 		status = form.querySelector('#siteSearchStatus');
 		results = form.querySelector('#siteSearchResults');
-
-		input.addEventListener('focus', load, { once: true });
-
-		var timer;
-		input.addEventListener('input', function () {
-			clearTimeout(timer);
-			timer = setTimeout(run, 140);
-		});
-
-		form.addEventListener('keydown', function (ev) {
-			if (ev.key === 'ArrowDown') { ev.preventDefault(); move(1); }
-			else if (ev.key === 'ArrowUp') { ev.preventDefault(); move(-1); }
-			else if (ev.key === 'Escape') {
-				if (input.value) { input.value = ''; render([], ''); input.focus(); }
-			} else if (ev.key === 'Enter' && ev.target === input) {
-				ev.preventDefault();
-				var first = results.querySelector('a');
-				if (first) first.click();
-			}
-		});
+		return !!(input && status && results);
 	}
 
-	// The menu is injected by site-nav.js, so the field may not exist yet.
-	if (document.querySelector('.nav-search')) init();
-	else {
-		var tries = 0;
-		var wait = setInterval(function () {
-			if (document.querySelector('.nav-search') || ++tries > 60) {
-				clearInterval(wait);
-				init();
-			}
-		}, 50);
+	function inField(ev) {
+		return ev.target && ev.target.id === 'siteSearch' && fields();
 	}
+
+	document.addEventListener('focusin', function (ev) {
+		if (inField(ev)) load();
+	});
+
+	var timer;
+	document.addEventListener('input', function (ev) {
+		if (!inField(ev)) return;
+		clearTimeout(timer);
+		timer = setTimeout(run, 140);
+	});
+
+	document.addEventListener('keydown', function (ev) {
+		var within = ev.target && ev.target.closest && ev.target.closest('.nav-search');
+		if (!within || !fields()) return;
+
+		if (ev.key === 'ArrowDown') { ev.preventDefault(); move(1); }
+		else if (ev.key === 'ArrowUp') { ev.preventDefault(); move(-1); }
+		else if (ev.key === 'Escape') {
+			if (input.value) { input.value = ''; render([], ''); input.focus(); }
+		} else if (ev.key === 'Enter' && ev.target === input) {
+			ev.preventDefault();
+			var first = results.querySelector('a');
+			if (first) first.click();
+		}
+	});
 
 })();
