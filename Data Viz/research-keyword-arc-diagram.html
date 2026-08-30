@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ASB — Theme connections</title>
+
+<!-- These are separate documents, so the family the styles below ask for
+     has to be fetched here too; framed by a page that already has it, the
+     stylesheet and the faces both come from cache. Without this the labels
+     fell back to Helvetica while the page around them did not. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <style>
   :root{
@@ -68,9 +76,13 @@
     stroke-width:3;
   }
 
+  /* 600, not 500: the theme's name is meant to read heavier than the count
+     under it, and Source Sans Pro has no 500 -- a missing 500 matches down to
+     400, which is the count's own weight, so the two were identical. 600 is
+     also what Data Viz/who-works-on-what.html gives the same theme names. */
   .seg .label{
     font-size:14px;
-    font-weight:500;
+    font-weight:600;
     fill:var(--ink);
     pointer-events:none;
     transition:fill-opacity .25s;
@@ -88,6 +100,9 @@
 
   .tooltip{
     position:fixed;
+    /* Not a target until it is on screen, or an invisible panel would sit over
+       the diagram swallowing the pointer. .is-open turns it on so the link in
+       it can be clicked. */
     pointer-events:none;
     opacity:0;
     transition:opacity .15s;
@@ -108,7 +123,17 @@
     margin-bottom:.15rem;
   }
 
+  .tooltip.is-open{pointer-events:auto}
+
   .tooltip .meta{color:var(--muted)}
+
+  .tooltip a{
+    color:inherit;
+    text-decoration:underline;
+    text-underline-offset:.15em;
+  }
+
+  .tooltip a:hover{color:#30363d}
 
   .tooltip .about{
     margin:.45rem 0 0;
@@ -147,6 +172,10 @@ let THEME_COLOURS = {};
 // The same descriptions the research page's cards show, so a segment explains
 // itself here too rather than only offering a name and two counts.
 let THEME_ABOUT = {};
+// research-themes.json's own slug for each theme, so the tooltip can link to
+// the publications page filtered to it. The slug is stored rather than derived
+// from the name, which is why /publications/ prefers it over the label.
+let THEME_SLUG = {};
 
 // Absolute, so it does not matter that this file sits in "Data Viz/" or which
 // page embeds it. It was once written relative and resolved against this
@@ -162,6 +191,7 @@ async function loadThemes(){
   THEMES = themes.map(t => t.name);
   THEME_COLOURS = Object.fromEntries(themes.map(t => [t.name, t.colour]));
   THEME_ABOUT = Object.fromEntries(themes.map(t => [t.name, t.description || '']));
+  THEME_SLUG = Object.fromEntries(themes.map(t => [t.name, t.slug || '']));
 }
 
 const DATA_URL = '/data/publications.json';
@@ -295,13 +325,10 @@ function render(data){
   const padTop = 4;
   const padBot = 4;
 
-  const vbX = contentL - padX;
-  const lift = 140;
-  const vbY = topY - padTop + lift;
-  const vbW = (contentR - contentL) + padX * 2;
-  const vbH = (baseY - topY) + padTop + padBot;
-
-  svg.attr('viewBox', `${vbX} ${vbY} ${vbW} ${vbH}`);
+  // A provisional box from the arc geometry, so the first paint is roughly the
+  // right shape. The real one is set from the drawing's own bounding box at the
+  // end of render(), once the dots and their labels exist too.
+  svg.attr('viewBox', `${contentL - padX} ${topY - padTop} ${(contentR - contentL) + padX * 2} ${(baseY - topY) + padTop + padBot}`);
 
   const strands = [];
   links.forEach(l => {
@@ -415,6 +442,27 @@ function render(data){
       wrapLabel(d3.select(this), Math.max(step * 0.9, 90));
     });
 
+  // Now that everything is drawn, size the box to it.
+  //
+  // This used to be computed from the arcs alone and then shifted down by a
+  // constant 140 units to bring the labels, which sit below the baseline, into
+  // view. Shifting moves the window without growing it, so the box no longer
+  // agreed with the drawing at either end: it began 140 units below where the
+  // arcs could reach, and ended 140 units below where they did.
+  //
+  // topY is the apex of the tallest arc the layout allows, and the shift ate
+  // 136 of the 140 units between it and the top of the box. It happens to fit
+  // today only because no publication joins the leftmost theme to the
+  // rightmost; one that did would draw an arc reaching topY exactly, and the
+  // top of it would fall outside the box. svg is overflow:visible, so it would
+  // still be painted, and then clipped by the frame's own edge -- cut off from
+  // above with nothing on the page to explain it.
+  //
+  // Measuring what was drawn asks no constant to be right.
+  const bb = svg.node().getBBox();
+  svg.attr('viewBox',
+    `${bb.x - padX} ${bb.y - padTop} ${bb.width + padX * 2} ${bb.height + padTop + padBot}`);
+
   const tooltip = d3.select('#tooltip');
   // Names carry ampersands and the descriptions are prose, so both are escaped
   // before going into the tooltip's markup.
@@ -444,8 +492,31 @@ function render(data){
     neighbours.get(l.target).add(l.source);
   });
 
+  // The word "publications" in the tooltip goes to the publications page
+  // filtered to this theme -- the same link the Research page's theme cards
+  // offer, built the same way, slug first with the label as the fallback the
+  // page matches loosely. target="_top" because this diagram is framed by the
+  // home page, and without it the whole site would open inside the frame.
+  const pubHref = theme =>
+    '/publications/?theme=' + encodeURIComponent(THEME_SLUG[theme] || '') +
+    '&label=' + encodeURIComponent(theme);
+
+  // The tooltip is reachable now, so it cannot vanish the moment the pointer
+  // leaves the dot: there is a 14px gap between the two to cross. Hiding is
+  // deferred long enough to cross it, and cancelled if the pointer arrives.
+  let hideTimer = null;
+  const cancelHide = () => { clearTimeout(hideTimer); hideTimer = null; };
+  const hideNow = () => {
+    cancelHide();
+    seg.classed('faded', false);
+    arcs.attr('stroke-opacity', 0.34).attr('stroke-width', 0.8);
+    tooltip.style('opacity', 0).classed('is-open', false);
+  };
+  const scheduleHide = () => { cancelHide(); hideTimer = setTimeout(hideNow, 260); };
+
   seg
     .on('mouseenter', function(ev, d){
+      cancelHide();
       const keep = neighbours.get(d.index);
       seg.classed('faded', n => n.index !== d.index && !keep.has(n.index));
       arcs
@@ -453,49 +524,39 @@ function render(data){
         .attr('stroke-width', s => (s.source === d.index || s.target === d.index) ? 1 : 0.8);
 
       const conn = keep.size;
+      const word = 'publication' + (d.count === 1 ? '' : 's');
       tipAt(this,
         `<strong>${esc(d.theme)}</strong>` +
-        `<span class="meta">${d.count} publication${d.count === 1 ? '' : 's'} · ${conn} connection${conn === 1 ? '' : 's'}</span>` +
+        `<span class="meta">${d.count} ` +
+          `<a href="${esc(pubHref(d.theme))}" target="_top">${word}</a>` +
+          ` · ${conn} connection${conn === 1 ? '' : 's'}</span>` +
         (THEME_ABOUT[d.theme] ? `<p class="about">${esc(THEME_ABOUT[d.theme])}</p>` : '')
       );
+      tooltip.classed('is-open', true);
     })
-    .on('mouseleave', function(){
-      seg.classed('faded', false);
-      arcs.attr('stroke-opacity', 0.34).attr('stroke-width', 0.8);
-      tooltip.style('opacity', 0);
-    })
+    .on('mouseleave', scheduleHide);
+
+  tooltip.on('mouseenter', cancelHide).on('mouseleave', hideNow);
 }
 
-loadThemes().then(loadPubs).then(pubs => { render(build(pubs)); postHeight(); });
+loadThemes().then(loadPubs).then(pubs => {
+  render(build(pubs));
+  if (window.frameFit) window.frameFit.report();
+});
 
-// Report our height so the embedding page can size the frame to fit, the same
-// way Data Viz/who-works-on-what.html does. Without it the frame keeps a fixed
-// height: too small and the diagram is clipped or scrolls, too large and it
-// floats in a band of white -- which is what made it look tiny in print.
-//
-// html and body are height:100%;overflow:hidden here, so scrollHeight reports
-// the frame's own height and tells us nothing. The content box does.
-(function () {
-  var last = 0;
-  window.postHeight = function () {
-    var wrap = document.querySelector('.wrap');
-    if (!wrap) return;
-    var h = Math.ceil(wrap.getBoundingClientRect().height + 4);
-    if (!h || Math.abs(h - last) < 2) return;
-    last = h;
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'asb-arc-resize', height: h }, '*');
-    }
-  };
-  // Re-render on resize, but never with nothing: the publications may not
-  // have arrived yet, and rendering an empty set is what put the page into
-  // its empty state in the first place.
-  window.addEventListener('resize', function () {
-    if (LAST_PUBS.length) render(build(LAST_PUBS));
-    postHeight();
-  }, { passive: true });
-  if (window.ResizeObserver) new ResizeObserver(window.postHeight).observe(document.body);
-})();
+// The frame this draws in is sized by assets/js/frame-fit.js, loaded below.
+// All that is left here is the redraw: the arcs are laid out for a width, so a
+// narrower window needs a new drawing, not a rescaled one. frame-fit notices
+// the height that follows on its own.
+window.addEventListener('resize', function () {
+  // Never re-render with nothing: the publications may not have arrived yet,
+  // and rendering an empty set is what put the page into its empty state in
+  // the first place.
+  if (LAST_PUBS.length) render(build(LAST_PUBS));
+  if (window.frameFit) window.frameFit.report();
+}, { passive: true });
 </script>
+
+<script src="/assets/js/frame-fit.js" data-content=".wrap"></script>
 </body>
 </html>

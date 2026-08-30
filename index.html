@@ -20,7 +20,8 @@
 		<meta property="og:image:alt" content="The Algebraic Systems Biology logo" />
 		<meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/main.css" />
 <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 <link rel="stylesheet" href="/assets/css/mobile.css" />
@@ -211,51 +212,19 @@
         <!-- scrolling="no": the frame is sized to its content by the message
              below, so it should never need a scrollbar, and Firefox will
              otherwise show one while the diagram is still settling. -->
+        <!-- data-frame-fit: assets/js/frame-fit.js sizes this to the height
+             the diagram reports. Its floor is #themesFrame's min-height in the
+             stylesheet above, and nowhere else. -->
         <iframe
           id="themesFrame"
+          data-frame-fit
           src="/Data Viz/research-keyword-arc-diagram.html"
           title="How research themes connect"
           scrolling="no"
           loading="lazy">
         </iframe>
       </div>
-      <script>
-        // Size the frame to the diagram, rather than the diagram to a fixed
-        // frame. The same handling as the People page's network diagram.
-        (function () {
-          var frame = document.getElementById('themesFrame');
-          if (!frame) return;
-          window.addEventListener('message', function (e) {
-            var data = e.data || {};
-            if (data.type !== 'asb-arc-resize') return;
-            if (e.source !== frame.contentWindow) return;
-            var h = Math.ceil(data.height);
-            if (h > 0) frame.style.height = Math.max(240, h + 4) + 'px';
-          });
-        })();
-      </script>
     </section>
-
-    <script>
-      (function(){
-        var frame=document.getElementById('themesFrame');
-        function setFrameHeight(h){
-          if(!h || !isFinite(h)) return;
-          frame.style.height=Math.max(240, Math.ceil(h))+'px';
-        }
-
-        window.addEventListener('message', function(e){
-          var data=e.data || {};
-          if(data.type !== 'asb-arc-resize') return;
-          if(e.source !== frame.contentWindow) return;
-          setFrameHeight(data.height);
-        });
-
-        frame.addEventListener('load', function(){
-          setFrameHeight(frame.getBoundingClientRect().height || 320);
-        });
-      })();
-    </script>
 
     <section id="contact" class="wrapper style1 align-center">
       <div class="inner">
@@ -312,6 +281,7 @@
   <script src="/assets/js/site-footer.js"></script>
   <script src="/assets/js/site-logo.js"></script>
   <script src="/assets/js/site-search.js"></script>
+  <script src="/assets/js/frame-fit.js"></script>
 
 		<script src="/assets/js/screen-pdf.js"></script>
 </body>

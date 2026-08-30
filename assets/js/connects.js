@@ -282,7 +282,7 @@
         // from the name, so this link cannot drift from the one the
         // research page's tiles use.
         const slug = THEME_SLUGS[g.theme] || '';
-        window.location.href = `publications.html?theme=${encodeURIComponent(slug)}&label=${encodeURIComponent(g.theme)}`;
+        window.location.href = `/publications/?theme=${encodeURIComponent(slug)}&label=${encodeURIComponent(g.theme)}`;
       });
 
     ribbons

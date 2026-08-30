@@ -18,7 +18,10 @@
 		<meta property="og:image:alt" content="The Algebraic Systems Biology logo" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
 		<link rel="stylesheet" href="/assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 		<link rel="stylesheet" href="/assets/css/mobile.css" />
@@ -61,13 +64,14 @@
 		<p>The same research themes explained on <a href="/research/">Research</a>, here mapped to the people behind them.</p>
 
 		<div class="network-shell">
-			<!-- scrolling="no": the frame is grown to its content by the message
-			     handler at the foot of this page, so it has nothing to scroll.
-			     Firefox draws a scrollbar anyway whenever the content is even a
-			     pixel taller than the frame -- while the diagram settles, or
-			     after a resize -- and this is the only thing that stops it. -->
+			<!-- data-frame-fit: assets/js/frame-fit.js grows this to the height
+			     the diagram reports, so it has nothing to scroll. Firefox draws
+			     a scrollbar anyway whenever the content is even a pixel taller
+			     than the frame -- while the diagram settles, or after a resize
+			     -- and scrolling="no" is the only thing that stops it. -->
 			<iframe
 				id="networkFrame"
+				data-frame-fit
 				src="/Data Viz/who-works-on-what.html"
 				title="Who works on what — researchers and research themes"
 				scrolling="no"
@@ -124,25 +128,7 @@
 
 
 
-	<script>
-		// Size the Who Works On What frame to its content. The diagram is taller
-		// than any fixed height worth setting, and a fixed height gives the frame
-		// a scrollbar of its own.
-		(function () {
-			var frame = document.getElementById('networkFrame');
-			if (!frame) return;
-			window.addEventListener('message', function (e) {
-				var data = e.data || {};
-				if (data.type !== 'asb-network-resize') return;
-				if (e.source !== frame.contentWindow) return;
-				var h = Math.ceil(data.height);
-				// +4: a hair of headroom, so rounding cannot leave the content
-				// a pixel taller than the frame and bring the scrollbar back.
-				if (h > 0) frame.style.height = Math.max(240, h + 4) + 'px';
-			});
-		})();
-	</script>
-
+		<script src="/assets/js/frame-fit.js"></script>
 		<script src="/assets/js/screen-pdf.js"></script>
 </body>
 </html>

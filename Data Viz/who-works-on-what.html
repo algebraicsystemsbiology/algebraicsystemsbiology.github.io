@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Who Works On What | Algebraic Systems Biology</title>
 
+<!-- These are separate documents, so the family the styles below ask for
+     has to be fetched here too; framed by a page that already has it, the
+     stylesheet and the faces both come from cache. Without this the labels
+     fell back to Helvetica while the page around them did not. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
+
 <!--
   Standalone network of researchers and the themes they work on, embedded in
   an iframe by people.html. It lived inline in that page; extracting it keeps
@@ -84,6 +92,13 @@
   font-size: 15px;
   fill: #555;
   cursor: pointer;
+}
+/* The narrow layout draws the same picture in a 700-unit viewBox instead of
+   1200, so every unit is worth about 1.7x more screen. The type is grown to
+   match, or it would simply be the same tiny lettering in a smaller box. */
+#network-svg.narrow .node text,
+#network-svg.narrow .node.theme text {
+  font-size: 19px;
 }
 /* One target per node, covering the dot and its name together, so the gap
    between them is not dead space. Transparent, and sized from the node's own
@@ -251,17 +266,24 @@ async function loadMembers() {
 
   const knownThemes = new Set(Object.keys(THEME_COLOURS));
 
+  // Down the column by surname, the order the People page lists the same
+  // people in. name_last is in the data; the split is the fallback for a
+  // record that has not got one, and is the idiom assets/js/who-we-are.js
+  // already uses for the member cards.
+  const surname = m => (m.name_last || (m.name_full || '').split(' ').pop() || '');
+
   const members = Object.values(raw)
     .filter(m => m && m.temporal_tag === 'Current' && m.name_full)
     .map(m => ({
       id: m.name_full,
+      sortKey: surname(m),
       role: (m.internal_roles && m.internal_roles[0]) || '',
       keywords: (m.keywords || []).filter(k => knownThemes.has(k))
     }))
     // Someone tagged with no research theme has nothing to join here, and drew
     // as a lone dot with no line at all.
     .filter(m => m.keywords.length > 0)
-    .sort((a, b) => a.id.localeCompare(b.id));
+    .sort((a, b) => a.sortKey.localeCompare(b.sortKey) || a.id.localeCompare(b.id));
 
   return members;
 }
@@ -276,22 +298,21 @@ function showMessage(text) {
 // ── Render ───────────────────────────────────────────────────────────
 
 
+  // Greedy: each word joins the current line if it still fits, and starts a new
+  // one if it does not, so the words come back in the order they were written.
+  // Two lines was the old limit, and it scrambled names that needed three --
+  // "Software & Computational Mathematics" came back as "Software & /
+  // Computational Mathematics", one line half again as wide as the cap.
   function wrapLabel(text, maxCharsPerLine = 20) {
-    if (text.length <= maxCharsPerLine) return [text];
-    const words = text.split(' ');
-    let line1 = '', line2 = '';
-    for (const word of words) {
-      // Once a word has gone to the second line every later word follows it.
-      // Without that, a short word that still fits the first line jumps ahead
-      // of the longer ones already pushed down, and the name reads back
-      // scrambled: "Applied Algebraic & / Geometry Tensors".
-      if (!line2 && ((line1 + ' ' + word).trim().length <= maxCharsPerLine || !line1)) {
-        line1 = (line1 + ' ' + word).trim();
-      } else {
-        line2 = (line2 + ' ' + word).trim();
-      }
+    const lines = [];
+    let line = '';
+    for (const word of text.split(' ')) {
+      if (!line) line = word;
+      else if ((line + ' ' + word).length <= maxCharsPerLine) line += ' ' + word;
+      else { lines.push(line); line = word; }
     }
-    return line2 ? [line1, line2] : [line1];
+    if (line) lines.push(line);
+    return lines;
   }
 
   function render(members) {
@@ -311,14 +332,36 @@ function showMessage(text) {
     });
   });
 
-  const width = 1200, height = Math.max(1100, Math.max(members.length, themes.length) * 26);
   // Who on the left, what they work on on the right, so the picture reads in
-  // the same order as its title. People sit further in than the themes did,
-  // because a name label runs leftwards and the longest is about 220px.
-  const peopleX = 300, themeX = 900;
+  // the same order as its title. People sit further in than the themes do,
+  // because a name label runs leftwards from its dot and the longest is about
+  // 220 units wide; a theme's runs rightwards from its own.
+  //
+  // The narrow variant is the same drawing in a 700-unit box rather than 1200,
+  // almost all of it taken out of the 600 units of empty middle the curves
+  // crossed. Fitting a 1200-wide picture to a 390px phone scales it by 0.33 and
+  // leaves 15px labels rendering at 5px, which is why the diagram was no use on
+  // a phone. At 700 the scale is 0.56, and with the type grown to 19 units the
+  // labels land near 11px and the rows are tall enough to hit with a fingertip.
+  //
+  // It is also taller. At nineteen units a line and twenty characters a line,
+  // five of the twelve themes wrap to three lines, and at 1200 units of height
+  // those ran into their neighbours; 1500 leaves about 110 units a theme.
+  const narrow = window.matchMedia('(max-width: 700px)').matches;
+  const geom = narrow
+    ? { width: 720,  peopleX: 300, themeX: 480, height: 1500,
+        wrapAt: 20, lineHeight: 30, labelGap: 24, hitPadX: 10, hitPadY: 14 }
+    : { width: 1200, peopleX: 300, themeX: 900,  height: 1100,
+        wrapAt: 20, lineHeight: 26, labelGap: 28, hitPadX: 8,  hitPadY: 5  };
+
+  const width = geom.width;
+  const height = Math.max(geom.height, Math.max(members.length, themes.length) * 26);
+  const peopleX = geom.peopleX, themeX = geom.themeX;
   const topPad = 55, bottomPad = 55;
 
-  const svg = d3.select('#network-svg').attr('viewBox', `0 0 ${width} ${height}`);
+  const svg = d3.select('#network-svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .classed('narrow', narrow);
   svg.selectAll('*').remove();
 
   const themeY = d3.scalePoint()
@@ -367,13 +410,13 @@ function showMessage(text) {
     .attr('fill-opacity', 0.9);
 
   themeNodes.each(function(d) {
-    const lines = wrapLabel(d);
-    const lineHeight = 26;
+    const lines = wrapLabel(d, geom.wrapAt);
+    const lineHeight = geom.lineHeight;
     const startDy = -((lines.length - 1) * lineHeight) / 2;
     const g = d3.select(this);
     lines.forEach((line, i) => {
       g.append('text')
-        .attr('x', 28)
+        .attr('x', geom.labelGap)
         .attr('dy', (startDy + i * lineHeight) + 'px')
         .attr('text-anchor', 'start')
         .attr('dominant-baseline', 'middle')
@@ -399,14 +442,17 @@ function showMessage(text) {
     .text(d => d.id);
 
   // The dot alone is a small target, and the name beside it is what people
-  // actually point at. Each node gets one hit area covering both.
+  // actually point at. Each node gets one hit area covering both. On the narrow
+  // layout the vertical padding is grown until the rect nearly fills the gap to
+  // the next row, so there is no dead band between one name and the one below.
   function addHitArea(selection) {
     selection.each(function () {
       const b = this.getBBox();
       d3.select(this).insert('rect', ':first-child')
         .attr('class', 'hit')
-        .attr('x', b.x - 8).attr('y', b.y - 5)
-        .attr('width', b.width + 16).attr('height', b.height + 10);
+        .attr('x', b.x - geom.hitPadX).attr('y', b.y - geom.hitPadY)
+        .attr('width', b.width + geom.hitPadX * 2)
+        .attr('height', b.height + geom.hitPadY * 2);
     });
   }
   addHitArea(themeNodes);
@@ -501,7 +547,14 @@ function showMessage(text) {
 }
 
 loadMembers()
-  .then(render)
+  .then(members => {
+    render(members);
+    // Rotating a phone, or dragging a desktop window past the breakpoint,
+    // changes which of the two layouts applies; the picture is cheap to
+    // redraw and stale geometry is what the user would otherwise be left with.
+    window.matchMedia('(max-width: 700px)')
+      .addEventListener('change', () => render(members));
+  })
   .catch(err => {
     console.error(err);
     showMessage('Sorry — the research network could not be loaded.');
@@ -510,40 +563,6 @@ loadMembers()
 })();
 </script>
 
-<script>
-  // Report our height so the embedding page can size the iframe to fit.
-  // Without this the frame keeps a fixed height and the diagram, which is
-  // taller than any sensible fixed value, gets its own scrollbar.
-  (function () {
-    var last = 0;
-
-    function postHeight() {
-      // The *content's* height, not the document's. documentElement
-      // .scrollHeight can never be less than the viewport, and the viewport
-      // here is the frame the parent sizes from this number -- so reporting
-      // it fed straight back: the parent set the frame to content + 4, the
-      // next measurement read content + 4, and the frame grew by four pixels
-      // for as long as the page was open, sliding everything below it down.
-      var content = document.querySelector('.frame-inner');
-      var h = Math.ceil(content ? content.getBoundingClientRect().height
-                                : document.documentElement.scrollHeight);
-      if (!h || Math.abs(h - last) < 2) return;
-      last = h;
-      if (window.parent !== window) {
-        window.parent.postMessage({ type: 'asb-network-resize', height: h }, '*');
-      }
-    }
-
-    window.addEventListener('load', postHeight);
-    window.addEventListener('resize', postHeight, { passive: true });
-
-    // The SVG is built asynchronously after the data loads, so watch for it.
-    if (window.ResizeObserver) {
-      new ResizeObserver(postHeight).observe(document.body);
-    } else {
-      setInterval(postHeight, 500);
-    }
-  })();
-</script>
+<script src="/assets/js/frame-fit.js" data-content=".frame-inner"></script>
 </body>
 </html>
