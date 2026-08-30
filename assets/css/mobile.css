@@ -1,33 +1,14 @@
 /*
  * mobile.css — ASB Group Website
- * Only handles our custom hero-menu nav and scrollable visualisations.
- * Everything else is handled by the HTML5UP template's own responsive CSS.
+ * Phone handling for a few of our own blocks. Everything else is handled by
+ * the HTML5UP template's own responsive CSS.
+ *
+ * The hero-menu rules that opened this file are gone: .hero-menu was the row
+ * of links the dot-burst menu replaced, and it is in no page any more.
  */
 
-/* ── Hero menu — portrait/mobile ─────────────────────────────────── */
-
-@media screen and (orientation: portrait) {
-  .hero-menu {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 0.6rem 1.5rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-  .hero-menu .dropdown {
-    display: none !important;
-  }
-}
-
 @media screen and (max-width: 736px) {
-  .hero-menu {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-  }
-  .hero-menu .dropdown {
-    display: none !important;
-  }
-    /* ── Short Talks gallery — title always visible on mobile ────── */
+  /* ── Short Talks gallery — title always visible on mobile ────── */
   .gallery.style2.medium article .caption {
     opacity: 1 !important;
     transform: none !important;
