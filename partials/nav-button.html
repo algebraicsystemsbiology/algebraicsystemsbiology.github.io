@@ -2,17 +2,32 @@
      Injected by assets/js/site-nav.js into <nav class="nav" id="nav">.
      Edit here and it changes everywhere; do not paste it back into pages.
 
-     Page-specific sub-links are not listed here. A page that wants them
-     declares its own, and site-nav.js inserts them under the matching entry:
-
-       <template id="nav-sublinks" data-under="people.html">
-         <a href="#members" class="sub">Current Members</a>
-       </template>
+     Page-specific sub-links are not listed here. They come from
+     partials/nav-sections.json, keyed by the same paths the links below use
+     ("/people/"), and site-nav.js inserts them under the matching entry. The
+     <template id="nav-sublinks" data-under="..."> this note used to describe
+     was read from the page itself; nothing declares one now, and site-nav.js
+     has no code left that would look at it.
 
      The link for the current page is marked aria-current="page" at runtime,
      so it does not need special-casing per page. -->
 <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
 	<svg viewBox="0 0 40 40" aria-hidden="true">
+		<!-- A soft round shadow, drawn rather than filtered. The centre dot is
+		     white, so on the pale pages it needs something behind it to read
+		     against; on the home page's hero it is the whole burst that needs
+		     lifting off the photo. A radial gradient is geometry, so it is round
+		     in every engine -- a CSS filter here is applied to a box, and drew a
+		     grey square around the menu instead. -->
+		<defs>
+			<radialGradient id="navBurstShadow">
+				<stop offset="0%"   stop-color="#000" stop-opacity=".26"/>
+				<stop offset="42%"  stop-color="#000" stop-opacity=".17"/>
+				<stop offset="100%" stop-color="#000" stop-opacity="0"/>
+			</radialGradient>
+		</defs>
+		<circle cx="20" cy="21" r="19" fill="url(#navBurstShadow)"/>
+
 		<circle class="c" cx="20" cy="20" r="4.4"/>
 		<circle class="b" cx="20" cy="6" r="3.4"/><circle class="p" cx="20" cy="34" r="3.4"/>
 		<circle class="b" cx="6" cy="20" r="3.4"/><circle class="p" cx="34" cy="20" r="3.4"/>
@@ -32,9 +47,12 @@
 	     private files come to about 200KB between them and most visits never
 	     search. assets/js/site-search.js does the work. -->
 	<form class="nav-search" role="search" onsubmit="return false;">
-		<label for="siteSearch">Search</label>
+		<!-- No visible label and no words in the field: the magnifying glass says
+		     what it is, and the two lines they took made the menu taller than it
+		     needed to be. aria-label carries the name for anyone who cannot see
+		     the glyph -- a placeholder is not a label, and is not read as one. -->
 		<input id="siteSearch" type="search" autocomplete="off" spellcheck="false"
-		       placeholder="Papers, people, themes"
+		       aria-label="Search" placeholder="&#x2315;"
 		       aria-describedby="siteSearchStatus" aria-controls="siteSearchResults" />
 		<p id="siteSearchStatus" class="nav-search-status" role="status"></p>
 		<ul id="siteSearchResults" class="nav-search-results"></ul>

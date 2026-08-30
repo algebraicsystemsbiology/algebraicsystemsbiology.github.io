@@ -22,14 +22,27 @@
  */
 
   /* ===== Unified dot-burst menu (shared across all pages) ===== */
-  .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem}
+  /* pointer-events:none on the container, auto on the parts that are actually
+     visible. .nav is a fixed box 250px wide -- the width of the link panel --
+     and as tall as that panel, which keeps its layout height while closed
+     because it is hidden with opacity rather than display. Only the 68px toggle
+     shows, but the whole box was taking the clicks: on the publications page
+     the top three theme filters sat under it and could not be clicked at all,
+     and filtering moved the list so a different three fell dead each time.
+     .nav-links is already pointer-events:none until .nav.open turns it on. */
+  .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
+    pointer-events:none}
+  .nav-toggle{pointer-events:auto}
   .nav-toggle{width:68px;height:68px;border:none!important;padding:0;background:transparent!important;cursor:pointer;
     box-shadow:none!important;border-radius:0;flex:none;
     display:grid;place-items:center;
     transition:transform .55s cubic-bezier(.2,.7,.2,1)}
   .nav-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
   .nav.open .nav-toggle{transform:rotate(225deg)}
-  .nav-toggle svg{width:44px;height:44px;display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+  /* No drop-shadow. It was there to lift the dots off the home page's hero
+     photo, and they read on it perfectly well without one; everywhere else it
+     put a soft grey smudge on a pale background, which is all it ever did. */
+  .nav-toggle svg{width:44px;height:44px;display:block}
   .nav-toggle .b{fill:var(--blue)} .nav-toggle .p{fill:var(--pink)} .nav-toggle .c{fill:#fff}
   .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:0;
     text-align:left;
@@ -119,12 +132,19 @@
   /* Search, at the foot of the menu. Its results are links, so links.css would
      otherwise underline them and paint them the link colour; the selectors here
      carry a class and so outrank it. */
-  .nav-search{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem;
+  /* margin-bottom:0 undoes main.css's `form { margin: 0 0 2rem }`, which put
+     2rem of nothing between the field and the foot of the menu panel. */
+  .nav-search{display:flex;flex-direction:column;gap:.35rem;margin:.6rem 0 0;
     padding:.8rem 0 0;border-top:1px solid rgba(48,54,61,.28)}
-  .nav-search label{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#5a616b}
   .nav-search input{font:inherit;font-size:.82rem;width:100%;padding:.4rem .55rem;color:#30363d;
     background:#fff;border:1px solid rgba(48,54,61,.28);border-radius:4px}
   .nav-search input:focus-visible{outline:2px solid var(--link);outline-offset:1px}
+  /* The magnifying glass stands in for the label, so it must not read as
+     louder than what gets typed over it: same family, a size up because U+2315
+     draws small, and the muted grey used elsewhere in this menu -- lighter than
+     the field's own #30363d. opacity:1 because Firefox dims placeholders by
+     default, which would put it lighter again than intended. */
+  .nav-search input::placeholder{color:#5a616b;opacity:1;font-size:1.3em}
   /* Both of these are empty until something is typed. Hidden rather than merely
      blank, so the panel does not carry a band of nothing under the field. */
   .nav-search-status{margin:0;font-size:.68rem;color:#5a616b}
@@ -146,8 +166,12 @@
   .nav-search-results a:focus-visible{background:rgba(48,54,61,.08);outline:none}
   .nav-search-results .r-kind{display:block;font-size:.57rem;letter-spacing:.11em;
     text-transform:uppercase;color:#7a8089}
+  /* 600, not 500: the label is meant to sit a little heavier than the result's
+     own 400, and Source Sans Pro has no 500 -- CSS matches a missing 500 down
+     to 400, so it was rendering at exactly the weight it meant to stand out
+     from. The family goes 200, 300, 400, 600, 700, 900. */
   .nav-search-results .r-label{display:block;font-size:.8rem;line-height:1.3;color:#30363d;
-    font-weight:500}
+    font-weight:600}
   /* A theme's sub-line is its whole description, which is several sentences.
      Clamped so eight results still fit the panel; the full text stays in the
      markup for a screen reader. */
