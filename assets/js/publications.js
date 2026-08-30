@@ -178,23 +178,15 @@ function themeMatchesPublication(pub, theme) {
   return Array.isArray(pub.keywords) && pub.keywords.includes(theme);
 }
 
-function updateThemeHeader() {
-  const titleEl = document.getElementById('theme-title');
+// The line under the filter list. It used to sit above the list and name the
+// chosen theme, which the list already says: the chosen button is underlined
+// and recoloured. What it says now is the one thing the buttons cannot -- how
+// many publications the filter matched.
+function updateThemeSummary() {
   const editorialEl = document.getElementById('theme-editorial');
   const countEl = document.getElementById('publication-count');
 
   const config = getThemeConfigByLabel(activeTheme);
-
-  if (titleEl) {
-    // Nothing under the heading when no theme is chosen. The line only ever
-    // said "All", which the heading above it already implies; it is a subtitle
-    // for the filtered views, naming the theme you are looking at.
-    //
-    // Emptied rather than hidden: the line keeps its height either way (see
-    // #theme-title in publications.html), so choosing a theme does not shift
-    // the filter list and the publications below it.
-    titleEl.textContent = activeTheme === 'All' ? '' : config?.label || activeTheme;
-  }
 
   if (editorialEl) {
     const editorial = config?.editorial?.trim() || '';
@@ -220,7 +212,7 @@ function setActiveTheme(theme) {
     button.classList.toggle('is-active', (button.dataset.theme || 'All') === activeTheme);
   });
 
-  updateThemeHeader();
+  updateThemeSummary();
   renderPublications();
 }
 

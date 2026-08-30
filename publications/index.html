@@ -18,7 +18,10 @@
 		<meta property="og:image:alt" content="The Algebraic Systems Biology logo" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
 		<link rel="stylesheet" href="/assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 		<link rel="stylesheet" href="/assets/css/publications.css" />
@@ -45,12 +48,6 @@
 				<div class="inner">
 					<header>
 						<h1>Publications and Preprints</h1>
-						<!-- Filled in by assets/js/publications.js with the name of
-						     the theme being filtered on, and left empty when there
-						     is none. Starts empty so the unfiltered view does not
-						     flash a subtitle before the script runs. -->
-						<p id="theme-title"></p>
-						<p id="theme-editorial" class="publication-editorial" hidden></p>
 					</header>
 
 					<div class="publications-layout">
@@ -62,6 +59,15 @@
 							     drifted from that list in name, colour and
 							     membership. -->
 							<ul class="alt theme-filter-list" id="theme-filter-list"></ul>
+
+							<!-- Both filled in by assets/js/publications.js, and
+							     both under the list rather than over it: anything
+							     above the options moves them when its own height
+							     changes, and the theme names are long enough to
+							     wrap on a narrow screen. Under the list nothing
+							     they do can shift what you are aiming at. -->
+							<p id="publication-count"></p>
+							<p id="theme-editorial" class="publication-editorial" hidden></p>
 						</aside>
 
 						<div id="publications-list"></div>
