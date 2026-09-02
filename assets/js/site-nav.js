@@ -19,7 +19,8 @@
 // :focus-within actively broke the toggle, since clicking it focuses it and
 // the group then stayed open regardless of state. The toggle is a real
 // <button> with aria-expanded, so the keyboard already works. The entry for
-// the current page starts open.
+// the current page starts open. The menu itself starts open on the home
+// page only.
 
 (function () {
 	'use strict';
@@ -103,6 +104,11 @@
 			btn.setAttribute('aria-expanded', open ? 'true' : 'false');
 			btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 		}
+
+		// The home page shows the menu already open, so a first-time visitor
+		// sees where the site goes without having to find the button. Every
+		// other page loads it closed, out of the way of the content.
+		setOpen(currentPage() === '/');
 
 		btn.addEventListener('click', function () {
 			setOpen(!nav.classList.contains('open'));
