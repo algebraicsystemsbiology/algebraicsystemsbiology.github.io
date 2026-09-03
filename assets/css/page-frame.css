@@ -433,9 +433,34 @@
 	   section above it ends with 3rem of its own, so the gap over the footer
 	   came to about 150px on every page. Only the vertical padding is
 	   overridden, so the responsive left/right values still apply. */
+	/* The footer's rows want more air than the 1.5rem that separated stacked
+	   sections. The icon row is 50px of round buttons, and 28px above and below
+	   it read as cramped next to the openness of the page it follows. The same
+	   value above the icons, between the rows, and below the credits, so the
+	   footer is evenly spaced rather than evenly cramped. */
 	#wrapper > footer.wrapper > .inner {
-		padding-top: 1.5rem;
-		padding-bottom: 1.5rem;
+		padding-top: 2.25rem;
+		padding-bottom: 2.25rem;
+
+		/* A grid at every width, one column or two. The two-column rule below
+		   used to bring the grid with it, so on a narrow screen the rows fell
+		   back to whatever margins the elements happened to carry -- and the
+		   icon row, whose own margin is dropped here, ended up sitting almost
+		   on top of the first address. One row gap, everywhere. */
+		display: grid;
+		justify-items: center;
+		align-items: start;
+		gap: 2.25rem 2.5rem;
+	}
+
+	/* The icons above the addresses, the credits below them: both are about
+	   the site rather than about a place, and neither belongs in a column of
+	   one. Their own margins go, so the grid's row gap is the only thing
+	   setting the space between rows. */
+	#wrapper > footer.wrapper > .inner > ul.icons,
+	#wrapper > footer.wrapper > .inner > p {
+		grid-column: 1 / -1;
+		margin: 0;
 	}
 
 	/* The footer is small print and now looks like it, which sets it apart
@@ -459,10 +484,15 @@
 	   second were a continuation of the first. Side by side they read as what
 	   they are -- two places.
 
-	   981px complements the site's usual 980px wide/narrow line, and is about
-	   the narrowest a row of three can be before "Max Planck Institute of
-	   Molecular Cell Biology and Genetics" wraps enough to tower over its
-	   neighbours. Below it they stack, which is the layout without this rule.
+	   500px, which is far lower than it looks like it should be. The site's
+	   base font size steps down as the page narrows, and the addresses are set
+	   in rem, so they shrink with it -- the pair keeps fitting long after a
+	   fixed-size version would have stopped. Measured rather than guessed:
+	   every line still holds at 480, and "University of Oxford" is the first
+	   to wrap somewhere below that, so the line goes just above it with a
+	   little room for a substituted font. Two earlier guesses, 980 and 737,
+	   both left the footer stacked and twice as tall on screens with ample
+	   room for two columns.
 
 	   The icon list is a flex item too, so it is given the whole width to keep
 	   it above the row rather than in it.
@@ -482,28 +512,20 @@
 	   half: the Max Planck name is broken after "of" in the partial, by hand,
 	   since it is the one line long enough to need it and a machine would
 	   break it in the wrong place. */
-	@media (min-width: 981px) {
+	@media (min-width: 500px) {
 
 		#wrapper > footer.wrapper > .inner {
-			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 17rem));
 			justify-content: center;
-			justify-items: center;
-			align-items: start;
-			gap: 1.5rem 2.5rem;
 		}
 
-		/* The icons above the addresses, the credits below them: both are
-		   about the site rather than about a place, and neither belongs in a
-		   column of one. */
-		#wrapper > footer.wrapper > .inner > ul.icons,
+		/* One address per column; the icons and the credits still span both. */
+		#wrapper > footer.wrapper > .inner > p {
+			grid-column: auto;
+		}
+
 		#wrapper > footer.wrapper > .inner > p.credits {
 			grid-column: 1 / -1;
-			margin: 0;
-		}
-
-		#wrapper > footer.wrapper > .inner > p {
-			margin: 0;
 		}
 
 	}

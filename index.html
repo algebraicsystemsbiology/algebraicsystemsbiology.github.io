@@ -70,6 +70,28 @@
      padding to the gap between them. One of them is enough. */
   #contact > .inner { padding-top: 2rem; }
 
+  /* .items carries a bottom margin meant to separate it from whatever follows
+     it inside a section. Nothing follows it here -- it is the last thing on
+     the page before the footer -- so it was stacking with the section's own
+     padding and the footer's, three separate gaps doing one job. */
+  #contact .items { margin-bottom: 0; }
+
+  /* And the section adds no bottom padding of its own. Under the shortest of
+     three equal-height columns there is already a good deal of blank, and the
+     footer brings its own space above the icons.
+
+     #wrapper > #contact, not #contact: page-frame.css sets this padding on
+     `#wrapper > .wrapper:nth-last-child(2) > .inner`, which is the more
+     specific selector of the two. Written the short way this rule was in the
+     stylesheet, looked right, and did nothing. */
+  #wrapper > #contact > .inner { padding-bottom: 0; }
+
+  /* The last paragraph in a column keeps its bottom margin, which is there to
+     separate it from a following paragraph. There is never one -- it is the
+     last thing in the column -- so all it did was hold the footer away,
+     29px on a narrow screen where the column stands alone. */
+  #contact .items > section > :last-child { margin-bottom: 0; }
+
   .themes-shell{
     width:100vw;
     /* 4rem here, plus the section's own 3rem below it, plus 5rem above Get
