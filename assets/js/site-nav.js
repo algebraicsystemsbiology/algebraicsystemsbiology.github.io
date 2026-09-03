@@ -105,10 +105,13 @@
 			btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 		}
 
-		// The home page shows the menu already open, so a first-time visitor
-		// sees where the site goes without having to find the button. Every
-		// other page loads it closed, out of the way of the content.
-		setOpen(currentPage() === '/');
+		// Closed on every page, home included. It used to open itself on the
+		// home page so that a first-time visitor could see where the site
+		// went -- but that said "this is a menu" once, at the cost of sitting
+		// over the page from then on, through every scroll and every reload.
+		// The button now carries the word "Menu", which says it always and
+		// covers nothing.
+		setOpen(false);
 
 		btn.addEventListener('click', function () {
 			setOpen(!nav.classList.contains('open'));
@@ -119,6 +122,49 @@
 		document.addEventListener('click', function (e) {
 			if (!nav.contains(e.target)) setOpen(false);
 		});
+	}
+
+	// The button wears a white chip at the top of a page and sheds it as you
+	// scroll: prominent enough to be spotted on arrival, out of the way for the
+	// rest of the page. This sets --chip, between 1 and 0; the CSS draws the
+	// chip's ground and shadow from it.
+	//
+	// No flag is stored anywhere. Scroll position is state the page already
+	// has, so this needs nothing from the visitor's browser -- and it resets
+	// itself at the top of every page, which is where someone who has lost the
+	// menu looks first.
+	function wireScrollFade(nav) {
+		// The chip is whole until FROM, gone by TO, and somewhere in between for
+		// the stretch of scrolling between them. FROM is deep enough not to
+		// react to the small bounce a trackpad makes at the top of a page; TO
+		// is about the point where the first heading has gone.
+		var FROM = 40;
+		var TO = 200;
+		var pending = false;
+
+		function apply() {
+			pending = false;
+
+			// 1 at the top, 0 once past TO, and a straight ramp between: the
+			// fade follows the scroll rather than happening all at once when it
+			// crosses a line.
+			var t = (window.scrollY - FROM) / (TO - FROM);
+			var chip = 1 - Math.min(1, Math.max(0, t));
+
+			nav.style.setProperty('--chip', chip.toFixed(3));
+		}
+
+		window.addEventListener('scroll', function () {
+			// One class change per frame at most; scroll fires far faster than
+			// anything can be drawn.
+			if (pending) return;
+			pending = true;
+			window.requestAnimationFrame(apply);
+		}, { passive: true });
+
+		// A page restored mid-scroll, or opened at an anchor, starts where it
+		// starts rather than assuming the top.
+		apply();
 	}
 
 	function init() {
@@ -138,6 +184,7 @@
 		]).then(function (results) {
 			nav.innerHTML = results[0];
 			buildGroups(nav, results[1]);
+			wireScrollFade(nav);
 			wireToggle(nav);
 		}).catch(function (err) {
 			console.warn('site-nav.js: could not build the menu —', err.message);

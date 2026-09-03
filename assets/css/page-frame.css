@@ -33,16 +33,83 @@
   .nav{position:fixed;top:2rem;left:2.5rem;z-index:50;display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
     pointer-events:none}
   .nav-toggle{pointer-events:auto}
-  .nav-toggle{width:68px;height:68px;border:none!important;padding:0;background:transparent!important;cursor:pointer;
-    box-shadow:none!important;border-radius:0;flex:none;
-    display:grid;place-items:center;
-    transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  /* The burst sits on a chip, because the complaint behind all of this was
+     that a visitor did not know it was a menu -- and unlabelled, uncontained,
+     over a photograph, it read as an ornament rather than a control. A round
+     white ground with a shadow is the shape of a button, and says so without
+     a word on it and without hover, which is the only signal a phone gets. */
+  .nav-toggle{width:60px;height:60px;border:none!important;padding:0;cursor:pointer;
+    border-radius:50%;flex:none;
+    position:relative;display:grid;place-items:center;
+    transition:background-color .15s linear,box-shadow .15s linear,transform .2s ease}
+
+  /* Away from the top of the page the chip fades off and leaves the burst
+     alone. It has already done its work by then -- it is there to be noticed
+     on arrival, and a white disc pinned over the content for the rest of the
+     page is just something in the way. The dots keep their own drawn shadow,
+     so they still read against whatever scrolls under them.
+
+     --chip goes 1 to 0 as the page scrolls, set from site-nav.js, and both the
+     ground and the shadow are drawn from it. It tops out at .78 rather than 1:
+     even at its most prominent the chip is a little translucent, so it sits on
+     the hero photograph rather than punching a white hole in it. Not a class that flips at a
+     threshold: that switched the whole chip on or off in one step, at one
+     particular scroll position, which is a blink rather than a fade however
+     long the transition on it is. Scrolling back up brings it in again just as
+     gradually.
+
+     Scroll position rather than a stored flag: the page already knows how far
+     down it is, so nothing is written to the visitor's browser and there is
+     nothing to disclose. It also means the chip is back at the top of every
+     page, which is where a visitor who has lost the menu will look first. */
+  .nav-toggle{background:rgba(255,255,255,calc(.78 * var(--chip, 1)))!important;
+    box-shadow:0 2px 12px rgba(0,0,0,calc(.18 * var(--chip, 1)))!important}
+
+  /* Hovered, focused, or open, it is a button again wherever you are on the
+     page -- otherwise the one way to confirm it is still a control is to click
+     a thing that looks like decoration. Setting --chip on the button itself
+     beats the value inherited from .nav, and the transition above means it
+     arrives as a fade rather than a snap. */
+  .nav-toggle:hover,
+  .nav-toggle:focus-visible,
+  .nav.open .nav-toggle{--chip:1}
+  .nav-toggle:hover{box-shadow:0 4px 18px rgba(0,0,0,.24)!important;transform:translateY(-1px)}
   .nav-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
-  .nav.open .nav-toggle{transform:rotate(225deg)}
+  /* The burst turns; the word stays the right way up. Rotating the button
+     rotated its label with it. */
+  .nav-toggle svg{transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  .nav.open .nav-toggle svg{transform:rotate(225deg)}
+  /* The word is a tooltip and nothing more: absolutely positioned so it does
+     not widen the chip, and invisible until the button is hovered or focused.
+     A phone never shows it, which is why the chip above has to carry the
+     meaning on its own. */
+  .nav-toggle-label{position:absolute;left:calc(100% + .5rem);top:50%;white-space:nowrap;
+    font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;
+    color:#30363d;background:rgba(255,255,255,.94);border-radius:20px;padding:.34rem .72rem;
+    box-shadow:0 2px 10px rgba(0,0,0,.14);line-height:1;pointer-events:none;
+    opacity:0;transform:translateY(-50%) translateX(-.4rem);
+    transition:opacity .18s ease,transform .18s ease}
+
+  /* Where there is a pointer, the word is a tooltip: hidden until the burst is
+     hovered or focused, so the page is not carrying a label it does not need.
+
+     Where there is not -- a phone, a tablet -- the word simply stays. Nothing
+     on a touch screen can reveal a tooltip, so hiding it there would hide it
+     for good, from exactly the visitor who has the least room to go hunting.
+     This is the one case where the two kinds of device genuinely want
+     different things rather than one being a narrow version of the other.
+
+     Declared visible above and hidden here, so a browser that understands
+     neither query shows the word rather than losing it. */
+  .nav-toggle:hover .nav-toggle-label,
+  .nav-toggle:focus-visible .nav-toggle-label{opacity:1;transform:translateY(-50%)}
+  /* Once the panel is open it has said what it is, and the tooltip is only
+     something else hanging over the page. */
+  .nav.open .nav-toggle-label{opacity:0!important}
   /* No drop-shadow. It was there to lift the dots off the home page's hero
      photo, and they read on it perfectly well without one; everywhere else it
      put a soft grey smudge on a pale background, which is all it ever did. */
-  .nav-toggle svg{width:44px;height:44px;display:block}
+  .nav-toggle svg{width:44px;height:44px;display:block;flex:none}
   .nav-toggle .b{fill:var(--blue)} .nav-toggle .p{fill:var(--pink)} .nav-toggle .c{fill:#fff}
   .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:0;
     text-align:left;
