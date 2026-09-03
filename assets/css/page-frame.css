@@ -394,29 +394,30 @@
 	   The icon list is a flex item too, so it is given the whole width to keep
 	   it above the row rather than in it.
 
-	   The paragraphs size to their content rather than taking an equal third
-	   each, so that every line of an address stays on one line -- which is the
-	   point of an address. At full size the three together were wider than
-	   .inner and the last dropped onto a row of its own; at the smaller size
-	   above they fit with room to spare. The two are load bearing together:
-	   putting the body size back would break the row. */
+	   Three equal columns, each centred in its own. Sizing them to their
+	   content instead makes three blocks of different widths huddled in the
+	   middle, which does not read as columns.
+
+	   Nothing here wraps a line of an address, because none of them is wider
+	   than a third: the Max Planck name is broken after "of" in the partial,
+	   by hand, since it is the one line long enough to need it and a machine
+	   would break it in the wrong place. */
 	@media (min-width: 981px) {
 
 		#wrapper > footer.wrapper > .inner {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: center;
-			align-items: flex-start;
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			justify-items: center;
+			align-items: start;
 			gap: 1.5rem 2.5rem;
 		}
 
 		#wrapper > footer.wrapper > .inner > ul.icons {
-			flex: 0 0 100%;
+			grid-column: 1 / -1;
 			margin: 0;
 		}
 
 		#wrapper > footer.wrapper > .inner > p {
-			flex: 0 1 auto;
 			margin: 0;
 		}
 
