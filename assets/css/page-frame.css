@@ -371,6 +371,49 @@
 		padding-bottom: 1.5rem;
 	}
 
+	/* Three paragraphs now: the site's own credits, and a postal address for
+	   each of the two institutes. Stacked they make a tall column of small
+	   print, and one address sitting under the other reads as though the
+	   second were a continuation of the first. Side by side they read as what
+	   they are -- two places.
+
+	   981px complements the site's usual 980px wide/narrow line, and is about
+	   the narrowest a row of three can be before "Max Planck Institute of
+	   Molecular Cell Biology and Genetics" wraps enough to tower over its
+	   neighbours. Below it they stack, which is the layout without this rule.
+
+	   The icon list is a flex item too, so it is given the whole width to keep
+	   it above the row rather than in it.
+
+	   The paragraphs take an equal third each and wrap inside it, rather than
+	   sizing to their content. Content sizing looks tidier when it fits, but
+	   the three together are wider than .inner, so the last one dropped onto a
+	   row of its own -- which is the stacked layout again, only lopsided. An
+	   equal third always makes a row of three; the Max Planck name takes two
+	   lines to do it. */
+	@media (min-width: 981px) {
+
+		#wrapper > footer.wrapper > .inner {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: flex-start;
+			gap: 1.5rem 2.5rem;
+		}
+
+		#wrapper > footer.wrapper > .inner > ul.icons {
+			flex: 0 0 100%;
+			margin: 0;
+		}
+
+		#wrapper > footer.wrapper > .inner > p {
+			flex: 1 1 0;
+			min-width: 0;
+			margin: 0;
+		}
+
+	}
+
 	/* The last section before the footer has nothing below it to be separated
 	   from. (:nth-last-child(2) rather than :last-of-type -- the footer is the
 	   last child, and is itself a .wrapper.) */
