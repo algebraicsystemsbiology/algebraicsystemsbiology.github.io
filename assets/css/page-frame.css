@@ -380,6 +380,12 @@
 		font-size: 0.75rem;
 	}
 
+	/* The credits are smaller again: a line about the site itself, under the
+	   two places the group actually is. */
+	#wrapper > footer.wrapper > .inner p.credits {
+		font-size: 0.65rem;
+	}
+
 	/* Three paragraphs now: the site's own credits, and a postal address for
 	   each of the two institutes. Stacked they make a tall column of small
 	   print, and one address sitting under the other reads as though the
@@ -394,25 +400,37 @@
 	   The icon list is a flex item too, so it is given the whole width to keep
 	   it above the row rather than in it.
 
-	   Three equal columns, each centred in its own. Sizing them to their
-	   content instead makes three blocks of different widths huddled in the
-	   middle, which does not read as columns.
+	   Two equal columns, one institute in each, centred in its own. Sizing
+	   them to their content instead makes two blocks of different widths
+	   huddled in the middle, which does not read as columns.
 
-	   Nothing here wraps a line of an address, because none of them is wider
-	   than a third: the Max Planck name is broken after "of" in the partial,
-	   by hand, since it is the one line long enough to need it and a machine
-	   would break it in the wrong place. */
+	   The columns are capped rather than taking half of .inner each. At half
+	   of a wide page the two addresses end up a screen apart, each marooned in
+	   the middle of its own half, and read as two unrelated things. Capped and
+	   centred as a pair they stay a pair however wide the window is. 17rem is
+	   a little over the widest line either address has, and in rem so it
+	   shrinks with the type through the breakpoints rather than staying put.
+
+	   Nothing here wraps a line of an address, because neither is wider than
+	   half: the Max Planck name is broken after "of" in the partial, by hand,
+	   since it is the one line long enough to need it and a machine would
+	   break it in the wrong place. */
 	@media (min-width: 981px) {
 
 		#wrapper > footer.wrapper > .inner {
 			display: grid;
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 17rem));
+			justify-content: center;
 			justify-items: center;
 			align-items: start;
 			gap: 1.5rem 2.5rem;
 		}
 
-		#wrapper > footer.wrapper > .inner > ul.icons {
+		/* The icons above the addresses, the credits below them: both are
+		   about the site rather than about a place, and neither belongs in a
+		   column of one. */
+		#wrapper > footer.wrapper > .inner > ul.icons,
+		#wrapper > footer.wrapper > .inner > p.credits {
 			grid-column: 1 / -1;
 			margin: 0;
 		}
