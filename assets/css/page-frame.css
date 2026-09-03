@@ -371,6 +371,15 @@
 		padding-bottom: 1.5rem;
 	}
 
+	/* The footer is small print and now looks like it, which sets it apart
+	   from the page above without a rule or a background, and buys the
+	   addresses enough width to keep a line to a line. In rem, so it rides the
+	   base size down through the site's breakpoints rather than staying put
+	   while everything around it shrinks. */
+	#wrapper > footer.wrapper > .inner p {
+		font-size: 0.75rem;
+	}
+
 	/* Three paragraphs now: the site's own credits, and a postal address for
 	   each of the two institutes. Stacked they make a tall column of small
 	   print, and one address sitting under the other reads as though the
@@ -385,12 +394,12 @@
 	   The icon list is a flex item too, so it is given the whole width to keep
 	   it above the row rather than in it.
 
-	   The paragraphs take an equal third each and wrap inside it, rather than
-	   sizing to their content. Content sizing looks tidier when it fits, but
-	   the three together are wider than .inner, so the last one dropped onto a
-	   row of its own -- which is the stacked layout again, only lopsided. An
-	   equal third always makes a row of three; the Max Planck name takes two
-	   lines to do it. */
+	   The paragraphs size to their content rather than taking an equal third
+	   each, so that every line of an address stays on one line -- which is the
+	   point of an address. At full size the three together were wider than
+	   .inner and the last dropped onto a row of its own; at the smaller size
+	   above they fit with room to spare. The two are load bearing together:
+	   putting the body size back would break the row. */
 	@media (min-width: 981px) {
 
 		#wrapper > footer.wrapper > .inner {
@@ -407,8 +416,7 @@
 		}
 
 		#wrapper > footer.wrapper > .inner > p {
-			flex: 1 1 0;
-			min-width: 0;
+			flex: 0 1 auto;
 			margin: 0;
 		}
 
