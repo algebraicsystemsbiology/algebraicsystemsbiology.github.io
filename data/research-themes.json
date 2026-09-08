@@ -29,7 +29,10 @@
     "colour": "#829dc9",
     "short": "Software & Comp. Math",
     "area": "mathematics",
-    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source."
+    "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source.",
+    "links": [
+      { "label": "Software", "href": "https://github.com/algebraicsystemsbiology" }
+    ]
   },
   {
     "name": "Identifiability, Statistics, & AI",

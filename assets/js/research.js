@@ -100,13 +100,34 @@
 		body.className = 'theme-body';
 		const text = document.createElement('p');
 		text.textContent = theme.description || '';
-		const link = document.createElement('a');
-		link.className = 'button small';
-		link.href = '/publications/?theme=' + encodeURIComponent(theme.slug) +
+		const links = document.createElement('div');
+		links.className = 'theme-links';
+
+		const pubs = document.createElement('a');
+		pubs.className = 'button small';
+		pubs.href = '/publications/?theme=' + encodeURIComponent(theme.slug) +
 		            '&label=' + encodeURIComponent(theme.name);
-		link.setAttribute('aria-label', 'Publications on ' + theme.name);
-		link.textContent = 'Publications';
-		body.append(text, link);
+		pubs.setAttribute('aria-label', 'Publications on ' + theme.name);
+		pubs.textContent = 'Publications';
+		links.append(pubs);
+
+		// A theme may carry buttons of its own beside Publications, listed as
+		// {label, href} in data/research-themes.json. Off-site ones open in a
+		// new tab, the way the footer's links do.
+		(theme.links || []).forEach(extra => {
+			if (!extra || !extra.href || !extra.label) return;
+			const link = document.createElement('a');
+			link.className = 'button small';
+			link.href = extra.href;
+			link.textContent = extra.label;
+			if (/^https?:/i.test(extra.href)) {
+				link.target = '_blank';
+				link.rel = 'noopener';
+			}
+			links.append(link);
+		});
+
+		body.append(text, links);
 
 		card.append(summary, body);
 		if (theme.colour) paint(card, theme.colour);
