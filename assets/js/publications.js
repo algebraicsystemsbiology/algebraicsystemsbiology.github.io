@@ -263,11 +263,53 @@ function setupThemeFilters() {
   });
 }
 
+// Links a theme carries beside its papers, out of the "links" array in
+// data/research-themes.json -- the same field the research page draws its extra
+// buttons from. The group's software is the one there today: it belongs at the
+// top of the list its theme filters to, and it is not a paper, so it sits above
+// the year groups rather than inside one.
+//
+// A link belongs to its theme, so it appears only while that theme is the
+// filter. The All view is the whole list of papers and shows none of them.
+function extraLinksFor(theme) {
+  if (theme === 'All') return [];
+  const config = THEMES.find(t => t.name === theme);
+  return (config?.links || []).filter(link => link && link.href && link.label);
+}
+
+function renderExtraLinks(container, theme) {
+  extraLinksFor(theme).forEach(link => {
+    const card = document.createElement('a');
+    card.className = 'publication-aside';
+    card.href = link.href;
+    if (/^https?:/i.test(link.href)) {
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+    }
+
+    const label = document.createElement('span');
+    label.className = 'publication-aside-label';
+    label.textContent = link.label;
+    card.appendChild(label);
+
+    if (link.note) {
+      const note = document.createElement('span');
+      note.className = 'publication-aside-note';
+      note.textContent = link.note;
+      card.appendChild(note);
+    }
+
+    container.appendChild(card);
+  });
+}
+
 function renderPublications() {
   const container = document.getElementById('publications-list');
   if (!container) return;
 
   container.innerHTML = '';
+
+  renderExtraLinks(container, activeTheme);
 
   const filtered = allPublications.filter(pub => themeMatchesPublication(pub, activeTheme));
 
@@ -279,7 +321,9 @@ function renderPublications() {
   const years = [...new Set(sorted.map(pub => parseYear(pub)).filter(Boolean))];
 
   if (!sorted.length) {
-    container.innerHTML = '<p>No publications found for this theme yet.</p>';
+    const empty = document.createElement('p');
+    empty.textContent = 'No publications found for this theme yet.';
+    container.appendChild(empty);
     return;
   }
 

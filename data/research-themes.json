@@ -31,7 +31,11 @@
     "area": "mathematics",
     "description": "Applicable mathematics requires algorithms. We build computational tools to make theory practical and open source.",
     "links": [
-      { "label": "Software", "href": "https://github.com/algebraicsystemsbiology" }
+      {
+        "label": "Software",
+        "href": "https://github.com/algebraicsystemsbiology",
+        "note": "Open-source tools from the group."
+      }
     ]
   },
   {
