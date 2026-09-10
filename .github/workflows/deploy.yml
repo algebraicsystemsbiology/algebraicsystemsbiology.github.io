@@ -75,14 +75,25 @@ jobs:
           # from that repo's hand-maintained files (README, sync/). The research
           # themes are not among them: that list is hand-authored in this
           # repository, as data/research-themes.json.
+          # Named files rather than a wildcard, and this matters: data/
+          # software.json sits beside these in that repository. It is the
+          # software ledger -- every repository considered, including the ones
+          # awaiting review and the ones declined -- and it is read by that
+          # repo's sync/publish_software.py to write the org profile page, not
+          # by this website. A `cp data/*.json` published it here, at a
+          # guessable url, which is the one thing keeping that repo private is
+          # meant to prevent. Anything new in data/ is therefore not served
+          # until it is named on this line; a missing file is a stale page,
+          # where an unnamed one would be a disclosure.
+          mkdir -p _site/data/photos
           for f in data/group_members.json data/publications.json data/photos; do
             if [ ! -e ".data-src/$f" ]; then
               echo "::error::expected .data-src/$f in asb-website-data; has its layout changed?"
               exit 1
             fi
           done
-          mkdir -p _site/data/photos
-          cp .data-src/data/*.json _site/data/
+          cp .data-src/data/group_members.json _site/data/
+          cp .data-src/data/publications.json _site/data/
           cp -a .data-src/data/photos/. _site/data/photos/
 
       - name: Verify data and site agree
