@@ -377,6 +377,23 @@ filter or shipping stale prose.
 `research/index.html`, and make sure the name matches Coda exactly. Nothing else
 needs touching.
 
+### The Adventures album lives in one file
+
+`data/travels.json` is the list of trips on the Engage page, one album spread
+each. It is hand-maintained and tracked in this repository. A trip has a
+`title`, `date`, `location`, `note`, and a list of `photos`; each photo names a
+file under `images/Travels/` and carries a caption, with an optional credit:
+
+```json
+{ "file":    "MPI_CBG-Atrium_1.jpg",
+  "caption": "The atrium at MPI-CBG",
+  "credit":  "H. Yang" }
+```
+
+`credit` is the photographer's name alone. The page prefixes it with "Photo:"
+and sets it in the lower-right corner of the photograph, in the same type as
+the credit on the home-page hero. Leave it out and nothing is shown.
+
 ### Checking the data is consistent
 
 ```sh

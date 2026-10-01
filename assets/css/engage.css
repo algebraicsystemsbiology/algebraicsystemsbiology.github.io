@@ -63,6 +63,22 @@
 	max-width: 100%;
 }
 
+/* The photograph and its credit, so the credit can sit in the corner of
+   the enlarged picture as it does on the card. */
+.photo-viewer-photo {
+	display: block;
+	position: relative;
+	max-width: 100%;
+}
+
+/* The enlarged image wears a white frame; the credit is inset past it so
+   it stays on the photograph, not the border. */
+.photo-viewer .polaroid-credit {
+	left: 0.85rem;
+	right: 0.85rem;
+	bottom: 0.8rem;
+}
+
 .photo-viewer img {
 	display: block;
 	max-width: 100%;
@@ -224,12 +240,39 @@
 .polaroid:nth-child(even) { transform: rotate(1.8deg); }
 .polaroid:nth-child(3n)   { transform: rotate(-1deg) translateY(10px); }
 
+.polaroid-photo {
+	display: block;
+	position: relative;
+}
+
 .polaroid img {
 	width: 100%;
 	aspect-ratio: 1 / 1;
 	object-fit: cover;
 	display: block;
 	background: #e8e0d4;
+}
+
+/* Photo credit, in the lower-right corner of the photograph. Same type
+   as the hero credit on the home page: small, spaced, translucent white
+   with a shadow so it reads on any photograph. The card is rotated, so
+   the credit must be small enough not to crowd the corner. */
+.polaroid-credit {
+	position: absolute;
+	/* Anchored to both sides so a long name wraps inside the photograph,
+	   right-aligned, instead of running off its edge. */
+	left: 0.35rem;
+	right: 0.35rem;
+	bottom: 0.3rem;
+	text-align: right;
+	color: rgba(255,255,255,.62);
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: .65rem;
+	letter-spacing: .06em;
+	line-height: 1.2;
+	text-shadow: 0 1px 8px rgba(var(--shadow),.7);
+	/* A click on the credit is a click on the photograph: it still zooms. */
+	pointer-events: none;
 }
 
 .polaroid-caption {

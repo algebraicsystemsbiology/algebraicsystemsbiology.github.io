@@ -216,7 +216,7 @@
 			var album = document.getElementById('travels-album');
 			if (!album) return;
 
-			var viewer, viewerImg, viewerCaption, opener;
+			var viewer, viewerImg, viewerCaption, viewerCredit, opener;
 			// The photos the arrow keys move between: the ones on the spread
 			// the open photo came from. Crossing into another trip would
 			// change the album underneath the viewer, which reads as the page
@@ -231,10 +231,11 @@
 				viewer.setAttribute('aria-label', 'Photograph');
 				viewer.innerHTML =
 					'<button type="button" class="photo-viewer-close" aria-label="Close">&times;</button>' +
-					'<figure><img alt=""><figcaption></figcaption></figure>';
+					'<figure><span class="photo-viewer-photo"><img alt=""><span class="polaroid-credit"></span></span><figcaption></figcaption></figure>';
 				document.body.appendChild(viewer);
 				viewerImg = viewer.querySelector('img');
 				viewerCaption = viewer.querySelector('figcaption');
+				viewerCredit = viewer.querySelector('.polaroid-credit');
 
 				// A click anywhere closes it -- the backdrop, the close button,
 				// or the photograph itself. On a phone the photo fills most of
@@ -249,11 +250,16 @@
 				var polaroid = img.closest('.polaroid');
 				var caption = polaroid && polaroid.querySelector('.polaroid-caption');
 				var text = (caption ? caption.textContent : img.alt || '').trim();
+				// The credit comes along from the card, already prefixed.
+				var credit = polaroid && polaroid.querySelector('.polaroid-credit');
+				var creditText = (credit ? credit.textContent : '').trim();
 
 				viewerImg.src = img.currentSrc || img.src;
 				viewerImg.alt = img.alt || '';
 				viewerCaption.textContent = text;
 				viewerCaption.hidden = !text;
+				viewerCredit.textContent = creditText;
+				viewerCredit.hidden = !creditText;
 			}
 
 			function open(img) {
@@ -348,7 +354,12 @@
 					var spread = document.createElement('div');
 					spread.className = 'album-spread' + (i === 0 ? ' is-active' : '');
 					var photosHtml = (trip.photos || []).map(function(p) {
-						return '<div class="polaroid"><img src="/images/Travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight=\'120px\'"><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
+						// The photograph sits in its own box so a credit can be
+						// pinned to its corner, the way the hero credit is on the
+						// home page. The credit holds the photographer's name;
+						// the "Photo:" prefix is added here so every card agrees.
+						var credit = p.credit ? '<span class="polaroid-credit">Photo: ' + p.credit + '</span>' : '';
+						return '<div class="polaroid"><span class="polaroid-photo"><img src="/images/Travels/' + p.file + '" alt="' + (p.caption || '') + '" onerror="this.style.minHeight=\'120px\'">' + credit + '</span><p class="polaroid-caption">' + (p.caption || '') + '</p></div>';
 					}).join('');
 					spread.innerHTML =
 						'<div class="spread-header"><div>' +
