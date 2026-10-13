@@ -303,6 +303,74 @@ function renderExtraLinks(container, theme) {
   });
 }
 
+// A paper is a preprint until it has a published version to link to. The same
+// two fields getLinks reads decide it: link_arxiv alone means the preprint is
+// all there is.
+function isPreprint(pub) {
+  return !pub.link_publication && Boolean(pub.link_arxiv);
+}
+
+// When a preprint was posted, as YYYYMM, so preprints from the same year can be
+// put newest first. There is no month in the bibtex, but the link carries one:
+// an arXiv id begins with the year and month (2503.09767), and a bioRxiv or
+// medRxiv DOI holds the posting date (2024.01.05.574362). 0 when neither does.
+function postedMonth(pub) {
+  const link = pub.link_arxiv || '';
+  let match = link.match(/(20\d{2})\.(\d{2})\.\d{2}\.\d+/);
+  if (match) return Number(match[1] + match[2]);
+  match = link.match(/arxiv\.org\/(?:abs|pdf)\/(\d{2})(\d{2})\.\d{4,5}/i);
+  if (match) return Number(`20${match[1]}${match[2]}`);
+  return 0;
+}
+
+function byTitle(a, b) {
+  return (a.publication_title || '').localeCompare(b.publication_title || '');
+}
+
+function renderGroupHeading(container, heading) {
+  const header = document.createElement('section');
+  header.className = 'publication-year-group';
+  header.innerHTML = `<h3>${heading}</h3>`;
+  container.appendChild(header);
+}
+
+function renderPublication(container, pub) {
+  const authors = getAuthorsFromBibtex(pub);
+  const citationLine = getCitationLine(pub);
+  const links = getLinks(pub);
+
+  const card = document.createElement('section');
+  card.className = 'publication-entry';
+  // A slug of the title, not the source database's row id: those are
+  // stripped before the data is published, and a title is a better
+  // anchor for a human to land on anyway.
+  card.id = `pub-${slugify(pub.publication_title)}`;
+
+  card.innerHTML = `
+    <p class="publication-title"><em>${pub.publication_title}</em></p>
+    <p class="publication-citation">
+      ${authors ? `<span class="publication-authors">${authors}.</span>` : ''}
+      ${citationLine ? `<span class="publication-meta">${citationLine}</span>` : ''}
+    </p>
+    <div class="publication-links">
+      ${links.map(link => `
+        <a href="${link.href}" target="_blank" rel="noopener noreferrer">${link.label}</a>
+      `).join('')}
+      ${pub.bibtex ? `
+        <details class="publication-bibtex">
+          <summary>BibTeX</summary>
+          <pre><code>${pub.bibtex}</code></pre>
+        </details>
+      ` : ''}
+    </div>
+  `;
+
+  container.appendChild(card);
+}
+
+// Preprints first, under one heading, newest first -- by the year the citation
+// shows, then by when they were posted. The published papers follow in their
+// year groups, newest year first.
 function renderPublications() {
   const container = document.getElementById('publications-list');
   if (!container) return;
@@ -313,61 +381,31 @@ function renderPublications() {
 
   const filtered = allPublications.filter(pub => themeMatchesPublication(pub, activeTheme));
 
-  const sorted = filtered.sort((a, b) => {
-    return parseYear(b) - parseYear(a) ||
-      (a.publication_title || '').localeCompare(b.publication_title || '');
-  });
-
-  const years = [...new Set(sorted.map(pub => parseYear(pub)).filter(Boolean))];
-
-  if (!sorted.length) {
+  if (!filtered.length) {
     const empty = document.createElement('p');
     empty.textContent = 'No publications found for this theme yet.';
     container.appendChild(empty);
     return;
   }
 
+  const preprints = filtered.filter(isPreprint).sort((a, b) =>
+    parseYear(b) - parseYear(a) || postedMonth(b) - postedMonth(a) || byTitle(a, b));
+
+  const published = filtered.filter(pub => !isPreprint(pub)).sort((a, b) =>
+    parseYear(b) - parseYear(a) || byTitle(a, b));
+
+  if (preprints.length) {
+    renderGroupHeading(container, 'Preprints');
+    preprints.forEach(pub => renderPublication(container, pub));
+  }
+
+  const years = [...new Set(published.map(pub => parseYear(pub)).filter(Boolean))];
+
   years.forEach(year => {
-    const yearHeader = document.createElement('section');
-    yearHeader.className = 'publication-year-group';
-    yearHeader.innerHTML = `<h3>${year}</h3>`;
-    container.appendChild(yearHeader);
-
-    sorted
+    renderGroupHeading(container, year);
+    published
       .filter(pub => parseYear(pub) === year)
-      .forEach(pub => {
-        const authors = getAuthorsFromBibtex(pub);
-        const citationLine = getCitationLine(pub);
-        const links = getLinks(pub);
-
-        const card = document.createElement('section');
-        card.className = 'publication-entry';
-        // A slug of the title, not the source database's row id: those are
-        // stripped before the data is published, and a title is a better
-        // anchor for a human to land on anyway.
-        card.id = `pub-${slugify(pub.publication_title)}`;
-
-        card.innerHTML = `
-          <p class="publication-title"><em>${pub.publication_title}</em></p>
-          <p class="publication-citation">
-            ${authors ? `<span class="publication-authors">${authors}.</span>` : ''}
-            ${citationLine ? `<span class="publication-meta">${citationLine}</span>` : ''}
-          </p>
-          <div class="publication-links">
-            ${links.map(link => `
-              <a href="${link.href}" target="_blank" rel="noopener noreferrer">${link.label}</a>
-            `).join('')}
-            ${pub.bibtex ? `
-              <details class="publication-bibtex">
-                <summary>BibTeX</summary>
-                <pre><code>${pub.bibtex}</code></pre>
-              </details>
-            ` : ''}
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
+      .forEach(pub => renderPublication(container, pub));
   });
 }
 
