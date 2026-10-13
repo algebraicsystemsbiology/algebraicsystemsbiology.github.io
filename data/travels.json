@@ -6,8 +6,8 @@
     "location": "",
     "note": "Two cities connected.",
     "photos": [
-      { "file": "CentreforSystemsBiology.jpg", "caption": "Home →" },
-      { "file": "MPI_CBG-Atrium_1.jpg", "caption": "The atrium at MPI-CBG" },
+      { "file": "CSBD.jpg", "caption": "Home →", "credit": "MPI-CBG" },
+      { "file": "Atrium-2ndfloor-web.jpg", "caption": "The atrium at MPI-CBG", "credit": "MPI-CBG" },
       { "file": "Andrew Wiles Building.jpg", "caption": "Also home →" }
     ]
   },

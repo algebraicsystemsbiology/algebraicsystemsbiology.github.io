@@ -385,12 +385,13 @@ each. It is hand-maintained and tracked in this repository. A trip has a
 file under `images/Travels/` and carries a caption, with an optional credit:
 
 ```json
-{ "file":    "MPI_CBG-Atrium_1.jpg",
+{ "file":    "Atrium-2ndfloor-web.jpg",
   "caption": "The atrium at MPI-CBG",
-  "credit":  "H. Yang" }
+  "credit":  "MPI-CBG" }
 ```
 
-`credit` is the photographer's name alone. The page prefixes it with "Photo:"
+`credit` is the photographer or source alone, as the credit line names it
+(here, the institute's own photograph). The page prefixes it with "Photo:"
 and sets it in the lower-right corner of the photograph, in the same type as
 the credit on the home-page hero. Leave it out and nothing is shown.
 
