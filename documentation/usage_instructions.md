@@ -411,6 +411,9 @@ the assembled `_site/` and fails the deploy if anything is wrong. It verifies:
 - no email addresses have crept into the published JSON
 - no publication is present twice — see below
 - every travel photo resolves
+- no published JPEG or PNG carries metadata — EXIF, XMP, IPTC, a JPEG comment,
+  or PNG text and timestamp chunks. Originals keep theirs in asb-group-images;
+  `scripts/clean_image.py` strips it on the way in
 - the twelve research themes agree everywhere they are written, against
   `data/research-themes.json`
 - `partials/nav-sections.json` still matches the pages

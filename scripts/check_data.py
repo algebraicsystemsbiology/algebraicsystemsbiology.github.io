@@ -64,6 +64,61 @@ def theme_vocabularies(root):
     return vocab
 
 
+# Directories the deploy's rsync leaves out of _site. Skipped here so that a
+# run against the repo root checks the same images a deploy would publish.
+NOT_PUBLISHED = {".git", ".github", ".data-src", "_site", "scripts", "documentation", "wip"}
+
+# PNG chunks that carry something other than pixels: EXIF, free text (which is
+# also where XMP goes), and a modification time.
+PNG_METADATA_CHUNKS = {b"eXIf": "EXIF", b"tEXt": "text", b"zTXt": "text",
+                       b"iTXt": "text/XMP", b"tIME": "timestamp"}
+
+
+def image_metadata(path):
+    """Name the metadata a JPEG or PNG still carries; an empty list if none.
+
+    Read from the file's own segments rather than through Pillow, because the
+    deploy runs this on the runner's bare python3. Originals keep their
+    metadata in the private asb-group-images repository; nothing published may,
+    and scripts/clean_image.py is what removes it on the way in.
+    """
+    with open(path, "rb") as fh:
+        data = fh.read()
+    found = []
+
+    if data[:2] == b"\xff\xd8":                     # JPEG: walk the segments up to the image data
+        i = 2
+        while i + 4 <= len(data) and data[i] == 0xFF:
+            marker = data[i + 1]
+            if marker == 0xFF:                      # fill byte
+                i += 1
+                continue
+            if marker in (0xDA, 0xD9):              # start of scan, or end of image
+                break
+            length = int.from_bytes(data[i + 2:i + 4], "big")
+            body = data[i + 4:i + 2 + length]
+            if marker == 0xE1:
+                found.append("EXIF" if body.startswith(b"Exif\0") else "XMP")
+            elif marker == 0xED:
+                found.append("IPTC")
+            elif marker == 0xFE:
+                found.append("comment")
+            i += 2 + length
+
+    elif data[:8] == b"\x89PNG\r\n\x1a\n":
+        i = 8
+        while i + 8 <= len(data):
+            length = int.from_bytes(data[i:i + 4], "big")
+            kind = data[i + 4:i + 8]
+            if kind in PNG_METADATA_CHUNKS:
+                found.append(PNG_METADATA_CHUNKS[kind])
+            if kind == b"IEND":
+                break
+            i += 12 + length
+
+    return sorted(set(found))
+
+
 def fail(problems):
     for p in problems:
         print(f"  FAIL  {p}")
@@ -248,6 +303,21 @@ def main():
             name = photo.get("file", "")
             if name and not os.path.exists(os.path.join(travel_dir, name)):
                 problems.append(f"travel photo missing: images/Travels/{name} (trip {trip.get('id')})")
+
+    # No published image may carry metadata: camera, dates, editing history,
+    # location. Member photos included, since they arrive by a separate route.
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in NOT_PUBLISHED]
+        for name in sorted(filenames):
+            if not name.lower().endswith((".jpg", ".jpeg", ".png")):
+                continue
+            path = os.path.join(dirpath, name)
+            kinds = image_metadata(path)
+            if kinds:
+                problems.append(
+                    f"image carries metadata ({', '.join(kinds)}): {os.path.relpath(path, root)} "
+                    f"-- re-derive it with scripts/clean_image.py"
+                )
 
     if problems:
         fail(problems)
