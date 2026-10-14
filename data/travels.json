@@ -6,9 +6,19 @@
     "location": "",
     "note": "Two cities connected.",
     "photos": [
-      { "file": "CSBD.jpg", "caption": "Home →", "credit": "MPI-CBG" },
+      { "file": "CSBD.jpg", "caption": "Home in Dresden", "credit": "MPI-CBG" },
       { "file": "Atrium-2ndfloor-web.jpg", "caption": "The atrium at MPI-CBG", "credit": "MPI-CBG" },
-      { "file": "Andrew Wiles Building.jpg", "caption": "Also home →" }
+      { "file": "Andrew Wiles Building.jpg", "caption": "Home in Oxford" }
+    ]
+  },
+  {
+    "id": "grosser-garten-2026",
+    "title": "Großer Garten",
+    "date": "October 2026",
+    "location": "Dresden",
+    "note": "An autumn walk in Dresden.",
+    "photos": [
+      { "file": "20261010_grossergarten.jpeg", "caption": "Autumn in the Großer Garten", "credit": "S. Amethyst" }
     ]
   },
   {
