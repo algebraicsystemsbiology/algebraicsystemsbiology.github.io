@@ -16,9 +16,13 @@ reported and passed over.
 
     python3 scripts/check_links.py .                  # internal only, fast
     python3 scripts/check_links.py . --external       # and the outside world
-    python3 scripts/check_links.py _site --external   # what CI runs
+    python3 scripts/check_links.py _site --external --external-report broken.txt
+                                                      # what CI runs
 
-Exits non-zero if anything is broken.
+Exits non-zero if anything is broken. With --external-report, broken external
+links are written to that file instead and do not affect the exit status: the
+deploy publishes over them and a later job fails on the list, because fixing
+one usually means waiting on someone outside the group.
 """
 
 import argparse
@@ -247,15 +251,43 @@ def external_urls(root):
     return found
 
 
+# bsky.app is a single-page app: it answers every HEAD with 404 and every GET
+# with 200, whether or not the profile exists, so neither says anything. The
+# public AppView API does -- 200 for a profile, 400 "Profile not found" for a
+# handle nobody holds.
+BLUESKY_PROFILE = re.compile(r"^https?://(?:www\.)?bsky\.app/profile/([^/?#]+)")
+BLUESKY_API = "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor="
+
+
+def fetch_bluesky(actor):
+    url = BLUESKY_API + urllib.parse.quote(actor)
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+            return "ok", response.status
+    except urllib.error.HTTPError as e:
+        body = e.read(500).decode("utf-8", errors="replace")
+        if e.code == 400 and "not found" in body.lower():
+            return "broken", "no such Bluesky profile"
+        return "unverified", f"Bluesky API HTTP {e.code}"
+    except Exception as e:
+        return "unverified", type(e).__name__
+
+
 def fetch(url):
     """(verdict, detail). verdict is 'ok', 'broken' or 'unverified'."""
+    bluesky = BLUESKY_PROFILE.match(url)
+    if bluesky:
+        return fetch_bluesky(bluesky.group(1))
+
     request = urllib.request.Request(url, method="HEAD", headers={"User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
             return "ok", response.status
     except urllib.error.HTTPError as e:
-        # Plenty of servers refuse HEAD but answer GET.
-        if e.code in (403, 405, 501):
+        # Plenty of servers refuse HEAD but answer GET, and some answer HEAD
+        # with a 404 they do not mean, so a 404 is only believed from a GET.
+        if e.code in (403, 404, 405, 410, 501):
             try:
                 get = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
                 with urllib.request.urlopen(get, timeout=TIMEOUT) as response:
@@ -266,8 +298,6 @@ def fetch(url):
                 return "unverified", f"HTTP {e2.code}"
             except Exception as e2:
                 return "unverified", type(e2).__name__
-        if e.code in (404, 410):
-            return "broken", f"HTTP {e.code}"
         return "unverified", f"HTTP {e.code}"
     except urllib.error.URLError as e:
         reason = getattr(e, "reason", e)
@@ -296,6 +326,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("root", nargs="?", default=".", help="site directory (default: .)")
     ap.add_argument("--external", action="store_true", help="also check links that leave the site")
+    ap.add_argument("--external-report", metavar="FILE",
+                    help="write broken external links to FILE, one per line, instead of failing on them")
     args = ap.parse_args()
     root = os.path.normpath(args.root)
 
@@ -322,7 +354,15 @@ def main():
             print("  refuses automated requests. Worth an eye, not a build failure:")
             for u in unverified:
                 print(f"    ?  {u}")
-        failed = failed or bool(broken)
+        if args.external_report:
+            with open(args.external_report, "w", encoding="utf-8") as fh:
+                fh.writelines(f"{b}\n" for b in broken)
+            if broken and not failed:
+                print(f"\nInternal links resolve. {len(broken)} broken external link(s) "
+                      f"written to {args.external_report}, not failed on.")
+                return 0
+        else:
+            failed = failed or bool(broken)
 
     if failed:
         print("\nBroken links found.")

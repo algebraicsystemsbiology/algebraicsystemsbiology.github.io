@@ -51,7 +51,8 @@ for the PDFs, a browser.
 
 The deploy runs `check_data.py` and `check_links.py --external` against the
 assembled site on every push, so anything they catch locally would have
-stopped the build anyway.
+stopped the build anyway — except broken *external* links, which the deploy
+publishes over and then reports (see [Checking links](#checking-links)).
 
 **After editing anything, the short loop is:**
 
@@ -205,9 +206,17 @@ not from the pages — those links are rendered at runtime, so scanning the
 html would check none of the ones most likely to rot. Only a definite 404,
 410 or a hostname that does not resolve counts as broken; a timeout, a rate
 limit or a server that refuses automated requests is reported and passed
-over, because none of those is a reason to block a deploy.
+over, because none of those is a reason to block a deploy. A 404 to a HEAD
+request is confirmed with a GET before it counts, and Bluesky profiles are
+checked through Bluesky's public API: `bsky.app` answers every HEAD with 404
+and every GET with 200, so the page itself proves nothing either way.
 
-CI runs `check_links.py _site --external` on every build.
+CI runs `check_links.py _site --external --external-report …` on every
+build. A broken internal link stops the deploy. A broken external link does
+not — fixing one usually means waiting on whoever owns it — so the site is
+published anyway, and the `external-links` job then fails the run with the
+list in its summary. A red run with a green `deploy` job means the site is
+live and some outside links need chasing.
 
 ### Regenerating the menu after editing a page
 

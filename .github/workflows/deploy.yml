@@ -26,6 +26,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      broken-links: ${{ steps.links.outputs.broken }}
     steps:
       - name: Check out site
         uses: actions/checkout@v7
@@ -118,11 +120,22 @@ jobs:
       # After the bake, so the links the page scripts generate are checked too,
       # rather than the empty containers they were generated into. Internal
       # links always fail the build. External ones -- members' own sites, ORCID
-      # and Scholar profiles, every publication link -- only fail on a definite
-      # 404 or a hostname that does not resolve: those servers are not ours, and
-      # a timeout is not a reason to block a deploy.
+      # and Scholar profiles, every publication link -- are only broken on a
+      # definite 404 or a hostname that does not resolve, and even then they do
+      # not stop the build: fixing one means waiting on whoever owns the link,
+      # and the rest of the site should not wait with it. They are handed to
+      # the external-links job, which fails the run once the site is live.
       - name: Verify links resolve
-        run: python3 scripts/check_links.py _site --external
+        id: links
+        run: |
+          set -euo pipefail
+          report="$RUNNER_TEMP/broken-links.txt"
+          python3 scripts/check_links.py _site --external --external-report "$report"
+          {
+            echo 'broken<<EOF_BROKEN_LINKS'
+            cat "$report"
+            echo 'EOF_BROKEN_LINKS'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Guard against leaked internals
         run: |
@@ -203,3 +216,29 @@ jobs:
             gh api -X DELETE "repos/${{ github.repository }}/actions/artifacts/$id"
             echo "deleted artifact $id"
           done
+
+  # The site is already published by the time this runs; failing here is how a
+  # broken external link gets noticed -- a red run and the usual failure email
+  # -- without having held the deploy up. Skipped, and the run green, when
+  # there is nothing to report.
+  external-links:
+    needs: [build, deploy]
+    if: needs.build.outputs.broken-links != ''
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report broken external links
+        env:
+          BROKEN: ${{ needs.build.outputs.broken-links }}
+        run: |
+          {
+            echo '### Published, but these external links are broken'
+            echo
+            echo 'Fix them at the source (the data, or whoever owns the link) and the next deploy rechecks.'
+            echo
+            printf '%s\n' "$BROKEN" | sed 's/^/- /'
+          } >> "$GITHUB_STEP_SUMMARY"
+          printf '%s\n' "$BROKEN" | while IFS= read -r line; do
+            echo "::error::broken link: $line"
+          done
+          exit 1
